@@ -1,0 +1,10 @@
+# Local Python environment
+.venv/
+__pycache__/
+.ipynb_checkpoints/
+
+# macOS
+.DS_Store
+
+# Course brief from the professor (available on Teams, not ours to publish)
+IS511E_Midterm1_Project_Overleaf_100.pdf

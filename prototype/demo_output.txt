@@ -1,0 +1,38 @@
+======================================================================
+DEMONSTRATION A — data integrity
+======================================================================
+Approved record : {'record_id': 'REC-001', 'event': 'SLAUGHTER', 'batch_id': 'RO-2026-0412', 'species': 'HORSE', 'weight_kg': 2400, 'site': 'Carpati Meat (RO)', 'date': '2026-10-05'}
+Approved hash   : b2d7a81a41a3ae8e3847b21c821538803f7268b85e502cb86736d78f6d2272e6
+
+Relabelled record: {'record_id': 'REC-001', 'event': 'SLAUGHTER', 'batch_id': 'RO-2026-0412', 'species': 'BEEF', 'weight_kg': 2400, 'site': 'Carpati Meat (RO)', 'date': '2026-10-05'}
+Relabelled hash  : b2c60303ead9a020cc82bbf4de7292c4885478ab67f2ec54c967d8992228bc52
+Same record?     : False
+
+======================================================================
+EXTENSION — block linked by previous hash
+======================================================================
+Block 40 hash          : 29726fadb781f5e3f582c80bf3b7a9853f120274ae4056194bbdfb2de52b42de
+Block 41 previous_hash : 29726fadb781f5e3f582c80bf3b7a9853f120274ae4056194bbdfb2de52b42de
+Block 41 transactions  :
+    b2d7a81a41a3ae8e3847b21c821538803f7268b85e502cb86736d78f6d2272e6
+    e8ecd7fed07e7885a854863dd1902b638ec2ff893f4c4b7243230ab996ea60b7
+    0a98d81b19ff396b8ab67722908ffb60d1f728ffa496352ad5ebd2de0ea505a1
+Block 41 hash          : 9c2833fa8fa111e44e17a33253067832dd7d4a09f36cf2a39348b233a0a3b30c
+Block 41 hash after relabelling REC-001: b992d559746882244f36a7f6ddf7c8041ba154a66ef5ee704112f7726862934f
+Block still valid?     : False
+
+======================================================================
+BUSINESS RULE — declared species must equal the signed history
+======================================================================
+REC-004 declares       : BEEF
+Signed history says    : HORSE
+Check                  : MISMATCH, batch blocked
+
+======================================================================
+DEMONSTRATION B — access rights
+======================================================================
+ALLOWED | anna   (lab_inspector  ) | approve_record | REC-001 | permission granted
+ALLOWED | claire (quality_manager) | read_batch     | REC-001 | permission granted
+DENIED  | pieter (trader         ) | edit_record    | REC-001 | role 'trader' has no 'edit_record' right
+DENIED  | claire (quality_manager) | approve_record | REC-007 | separation of duties: cannot approve own record
+DENIED  | dan    (trader         ) | create_record  | -       | account revoked

@@ -1,0 +1,549 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MeatTrace – IS511E Midterm 1 – Clodic, Ouillet, Kozhina</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Open+Sans:ital,wght@0,400;0,600;0,700;1,400&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #8E2433;
+    --red-light: #FBEDEE;
+    --text: #222;
+    --grey: #666;
+    --line: #DDD;
+    --box: #F4F4F4;
+    --blue: #4472C4;
+    --orange: #ED7D31;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { font-family: "Open Sans", Arial, sans-serif; color: var(--text); background: #3a3a3a; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  .slide { width: 1280px; height: 720px; background: #fff; position: relative; overflow: hidden; padding: 44px 64px 60px; font-size: 20px; line-height: 1.4; }
+  h1, h2, h3 { font-family: "Poppins", Arial, sans-serif; }
+  h2 { font-size: 36px; font-weight: 600; color: var(--red); margin: 0 0 6px; }
+  h2::after { content: ""; display: block; width: 70px; height: 5px; background: var(--red); margin-top: 8px; border-radius: 3px; }
+  h3 { font-size: 21px; font-weight: 600; margin: 0 0 8px; }
+  p { margin: 0 0 10px; }
+  ul { margin: 0 0 8px; padding-left: 24px; }
+  li { margin-bottom: 7px; }
+  b { font-weight: 700; }
+  .grey { color: var(--grey); }
+  .small { font-size: 17px; }
+  .tiny { font-size: 15px; }
+  .box { background: var(--box); border-radius: 10px; padding: 14px 18px; }
+  .box-red { background: var(--red-light); border-radius: 10px; padding: 14px 18px; }
+  .row { display: flex; gap: 28px; }
+  .fn { position: absolute; left: 64px; right: 120px; bottom: 16px; font-size: 12.5px; color: var(--grey); line-height: 1.35; border-top: 1px solid var(--line); padding-top: 6px; }
+  .num { position: absolute; right: 40px; bottom: 16px; font-size: 14px; color: var(--grey); }
+  sup { font-size: 0.7em; color: var(--red); font-weight: 700; }
+
+  table { border-collapse: collapse; width: 100%; font-size: 17px; }
+  th { background: var(--red); color: #fff; text-align: left; padding: 7px 10px; font-weight: 600; }
+  td { padding: 7px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tr:nth-child(even) td { background: #FAFAFA; }
+
+  .chain { display: flex; align-items: center; gap: 6px; font-size: 16px; }
+  .chain .c { border: 2px solid #999; border-radius: 8px; padding: 8px 10px; background: #fff; text-align: center; line-height: 1.25; }
+  .chain .c.bad { border-color: var(--red); background: var(--red-light); }
+  .arrow { color: #999; font-size: 22px; }
+
+  .step { border-radius: 10px; background: var(--box); padding: 12px 14px; font-size: 17px; line-height: 1.3; }
+  .step b { color: var(--red); }
+
+  /* Colab-like code cells */
+  .colab { font-family: "Roboto Mono", monospace; font-size: 13.5px; line-height: 1.5; }
+  .cell { display: flex; gap: 10px; background: #F7F7F7; border: 1px solid #E3E3E3; border-radius: 4px; padding: 8px 10px; }
+  .cell .run { flex: none; width: 34px; color: #999; font-size: 12.5px; padding-top: 1px; }
+  .cell pre, .out pre { margin: 0; white-space: pre; font: inherit; }
+  .out { padding: 8px 10px 10px 54px; }
+  .kw { color: #0000CC; } .st { color: #A31515; } .cm { color: #008000; }
+  .df { border-collapse: collapse; font-family: "Open Sans", Arial, sans-serif; font-size: 13.5px; width: auto; }
+  .df th { background: #fff; color: #000; border-bottom: 1px solid #000; padding: 4px 9px; font-weight: 700; text-align: right; }
+  .df td { padding: 4px 9px; text-align: right; border: none; }
+  .df tr:nth-child(even) td { background: #F5F5F5; }
+
+  .title-slide { padding: 0; display: flex; }
+  .title-slide .left { width: 62%; padding: 80px 64px; }
+  .title-slide .right { flex: 1; background: var(--red); color: #fff; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 40px; }
+
+  @media screen {
+    .deck { position: fixed; inset: 0; }
+    .slide { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(var(--s, 1)); display: none; }
+    .slide.active { display: block; }
+    .slide.title-slide.active { display: flex; }
+  }
+  @media print {
+    body { background: none; }
+    .slide { display: block !important; break-after: page; page-break-after: always; }
+    .slide.title-slide { display: flex !important; }
+  }
+  @page { size: 1280px 720px; margin: 0; }
+</style>
+</head>
+<body>
+<main class="deck">
+
+<!-- 1 -->
+<section class="slide title-slide">
+  <div class="left">
+    <p class="grey small">IS511E – Blockchain in Business<br>Midterm 1 – Group project</p>
+    <h1 style="font-size:84px; color:var(--red); margin:40px 0 6px; font-weight:700;">MeatTrace</h1>
+    <p style="font-size:26px; margin-bottom:48px;">How a shared ledger could stop meat fraud in the food supply chain</p>
+    <p style="font-size:21px; line-height:1.6;"><b>Group:</b> Lucas Clodic, Elisa Ouillet, Julia Kozhina</p>
+    <p class="grey small" style="margin-top:30px;">Rabat Business School – 22 October 2026</p>
+  </div>
+  <div class="right">
+    <div style="font-size:92px; line-height:1;">🐎 ➜ 🐄 ?</div>
+    <p style="font-size:24px; margin-top:28px; font-family:Poppins, Arial, sans-serif; font-weight:600;">Horse or beef?</p>
+    <p style="font-size:18px; max-width:340px;">In 2013, nobody could say where the label changed.</p>
+  </div>
+</section>
+
+<!-- 2 -->
+<section class="slide">
+  <h2>The problem: horse meat sold as beef</h2>
+  <div class="row" style="margin-top:20px;">
+    <div style="flex:1.15;">
+      <ul>
+        <li>In 2013, around <b>750 tonnes</b> of horse meat were sold as beef in Europe<sup>*</sup></li>
+        <li>It ended up in about <b>4.5 million products</b> (Findus lasagne…), from 28 companies in 13 countries<sup>*</sup></li>
+        <li>EU tests: <b>4.66 %</b> of beef products had horse DNA (193 out of 4,144)<sup>**</sup></li>
+      </ul>
+    </div>
+    <div class="box-red" style="flex:0.85; font-size:18px;">
+      <h3>And today?</h3>
+      Food fraud is still here: in a 2022 EU operation, <b>46 %</b> of imported honey samples were adulterated, some with fake traceability documents<sup>***</sup>
+    </div>
+  </div>
+  <p class="small grey" style="margin:18px 0 8px;">How the meat travelled:</p>
+  <div class="chain">
+    <div class="c">2 abattoirs<br><span class="tiny grey">Romania</span></div><span class="arrow">➜</span>
+    <div class="c">Trader<br><span class="tiny grey">Cyprus</span></div><span class="arrow">➜</span>
+    <div class="c">Warehouse<br><span class="tiny grey">Netherlands</span></div><span class="arrow">➜</span>
+    <div class="c bad">Spanghero<br><span class="tiny">“beef” on the papers</span></div><span class="arrow">➜</span>
+    <div class="c">Comigel<br><span class="tiny grey">ready meals, France</span></div><span class="arrow">➜</span>
+    <div class="c">Findus + others<br><span class="tiny grey">13 countries</span></div>
+  </div>
+  <p class="small" style="margin-top:22px;">The abattoirs say the meat was labelled “horse”, French investigators blamed Spanghero (which denied it)<sup>*</sup>. <b>We chose this case because every company blamed the next one, and nobody could quickly prove where the label changed.</b></p>
+  <div class="fn">* AFP via IOL, “Horsemeat: French company blamed”, 14/02/2013 and Al Jazeera, 15/02/2013 &nbsp; ** European Commission, horse meat test results 2013 &nbsp; *** OLAF (EU anti-fraud office), report 2023, “No money for fake honey”</div>
+  <div class="num">2</div>
+</section>
+
+<!-- 3 -->
+<section class="slide">
+  <h2>Who is involved, and what goes wrong today</h2>
+  <div class="row" style="margin-top:20px;">
+    <div style="flex:1.05;">
+      <table>
+        <tr><th>Stakeholder</th><th>What they want</th></tr>
+        <tr><td>Abattoir</td><td>Sell batches, prove it labelled correctly</td></tr>
+        <tr><td>Trader</td><td>Buy and resell fast, keep prices secret</td></tr>
+        <tr><td><b>FreshMeals</b> (our client)</td><td>Avoid recalls and bad press</td></tr>
+        <tr><td>Retailers</td><td>Proof of origin for their customers</td></tr>
+        <tr><td>DNA lab</td><td>Be trusted by everybody</td></tr>
+        <tr><td>Food safety authority</td><td>Fast audits during a crisis</td></tr>
+      </table>
+    </div>
+    <div style="flex:0.95;">
+      <h3>Today</h3>
+      <ul class="small">
+        <li>Certificates on paper or PDF, sent by email</li>
+        <li>Each company keeps its own system (ERP)</li>
+        <li>To trace a batch: phone calls and emails, one company at a time. It takes days (Walmart needed almost 7 days for mangoes<sup>*</sup>)</li>
+        <li>The law only asks each firm to know its supplier and its customer (“one step back, one step forward”)<sup>**</sup>, so nobody sees the whole chain</li>
+      </ul>
+      <div class="box-red" style="margin-top:12px;"><b>Our goal:</b> trace any beef batch back to its abattoir in <b>less than 1 hour</b>, with every handover signed.</div>
+    </div>
+  </div>
+  <div class="fn">* LF Decentralized Trust (Hyperledger), Walmart case study &nbsp; ** EU Regulation 178/2002, article 18</div>
+  <div class="num">3</div>
+</section>
+
+<!-- 4 -->
+<section class="slide">
+  <h2>Our solution: MeatTrace</h2>
+  <p style="margin-top:16px;">To make the case concrete, we imagined a client: <b>FreshMeals</b>, a French ready-meal company (fictional) with €120M sales, 6 beef suppliers in 3 countries and about 1,500 batches a year <span class="grey small">(our assumptions)</span>.</p>
+  <h3 style="margin-top:14px;">How it works for each batch</h3>
+  <div class="chain" style="font-size:17px; align-items:stretch;">
+    <div class="step" style="flex:1;"><b>1.</b> The sender records the batch and <b>signs</b> it</div><span class="arrow" style="align-self:center;">➜</span>
+    <div class="step" style="flex:1;"><b>2.</b> The receiver checks it and <b>confirms</b></div><span class="arrow" style="align-self:center;">➜</span>
+    <div class="step" style="flex:1.1;"><b>3.</b> A lab <b>tests</b> some samples (DNA)</div><span class="arrow" style="align-self:center;">➜</span>
+    <div class="step" style="flex:1.2;"><b>4.</b> Everyone allowed can <b>trace</b> the batch in minutes</div>
+  </div>
+  <div class="row" style="margin-top:22px;">
+    <div style="flex:1;">
+      <h3>What it brings</h3>
+      <ul class="small">
+        <li><b>Faster:</b> minutes instead of days</li>
+        <li><b>Safer:</b> a relabelled batch is stopped at the next step</li>
+        <li><b>Fewer disputes:</b> one shared history</li>
+        <li><b>Compliance</b> with EU traceability rules</li>
+      </ul>
+    </div>
+    <div style="flex:1;">
+      <h3>Why would partners join?</h3>
+      <ul class="small">
+        <li><b>Retailers:</b> proof of origin for customers</li>
+        <li><b>Honest suppliers:</b> it's free, and it proves they were honest</li>
+        <li><b>FreshMeals:</b> smaller recalls, faster audits</li>
+        <li><b>The lab:</b> more tests to do</li>
+      </ul>
+    </div>
+  </div>
+  <p class="tiny grey">Users: abattoirs, traders, FreshMeals quality team, retailers, the DNA lab, the food authority (read only).</p>
+  <div class="num">4</div>
+</section>
+
+<!-- 5 -->
+<section class="slide">
+  <h2>Business model and KPIs</h2>
+  <div class="row" style="margin-top:18px;">
+    <div style="flex:1;">
+      <h3>Who pays?</h3>
+      <ul class="small">
+        <li>We chose a <b>consortium model</b>: 4 founding members (FreshMeals, 2 retailers, the DNA lab) share all the costs, about <b>€25k each per year</b> (our estimate)</li>
+        <li>Suppliers join for free. We think getting them on board matters more than fees</li>
+        <li>Later, new buyers pay a membership fee</li>
+      </ul>
+      <h3 style="margin-top:12px;">Rollout</h3>
+      <p class="small"><b>Year 1:</b> pilot with FreshMeals, 3 suppliers and the lab<br><b>Year 2:</b> all 6 suppliers + 2 retailers<br><b>Year 3:</b> other buyers of the same suppliers</p>
+      <p class="tiny grey">Resources: IT partner, hosting of 4 nodes, security, training, support, a governance board.</p>
+    </div>
+    <div style="flex:1.05;">
+      <h3>Our 3 KPIs</h3>
+      <table style="font-size:16px;">
+        <tr><th>KPI</th><th>Today</th><th>Target</th></tr>
+        <tr><td>Time to trace a batch to the abattoir</td><td>Days<sup>*</sup></td><td><b>&lt; 1 hour</b></td></tr>
+        <tr><td>Batches with every handover signed</td><td>0 %</td><td><b>100 %</b></td></tr>
+        <tr><td>Batches with a linked DNA test</td><td>Rare</td><td><b>≥ 10 %</b></td></tr>
+      </table>
+      <h3 style="margin-top:16px;">Expected benefits</h3>
+      <ul class="small">
+        <li>A recall only hits the guilty batches, not the whole product line (a full recall ≈ €2M, our assumption)</li>
+        <li>Less staff time spent on tracing</li>
+        <li>Carrefour said its blockchain-tracked chicken sold better (no figures given)<sup>**</sup></li>
+      </ul>
+    </div>
+  </div>
+  <div class="fn">* Order of magnitude from the Walmart case study (LF Decentralized Trust) &nbsp; ** ESM Magazine, “Carrefour says blockchain tracking boosting sales of some products”, 2019</div>
+  <div class="num">5</div>
+</section>
+
+<!-- 6 -->
+<section class="slide">
+  <h2>3-year costs: database vs blockchain</h2>
+  <div class="row" style="margin-top:16px;">
+    <div style="flex:1.2;">
+      <div class="tiny" style="display:flex; gap:20px; margin:4px 0 2px 6px;">
+        <span><svg width="13" height="13" aria-hidden="true"><rect width="13" height="13" fill="#4472C4"/></svg> Setup</span>
+        <span><svg width="13" height="13" aria-hidden="true"><rect width="13" height="13" fill="#ED7D31"/></svg> 3 years of running costs</span>
+      </div>
+      <svg width="650" height="330" viewBox="0 0 650 330" role="img" aria-label="3-year costs: database 116k euros, consortium 305k euros, FreshMeals share 76k euros">
+        <g stroke="#E5E5E5"><line x1="20" y1="14" x2="20" y2="292"/><line x1="170" y1="14" x2="170" y2="292"/><line x1="320" y1="14" x2="320" y2="292"/><line x1="470" y1="14" x2="470" y2="292"/></g>
+        <g font-family="Open Sans, Arial" font-size="13" fill="#666" text-anchor="middle"><text x="20" y="312">0</text><text x="170" y="312">€100k</text><text x="320" y="312">€200k</text><text x="470" y="312">€300k</text></g>
+        <g font-family="Open Sans, Arial" font-size="16" fill="#222">
+          <text x="22" y="36">Secure database (FreshMeals alone)</text>
+          <rect x="20" y="46" width="75" height="30" fill="#4472C4"/><rect x="97" y="46" width="97" height="30" fill="#ED7D31"/>
+          <text x="204" y="67" font-weight="700">€116k</text>
+          <text x="22" y="128">Blockchain consortium (whole network)</text>
+          <rect x="20" y="138" width="210" height="30" fill="#4472C4"/><rect x="232" y="138" width="246" height="30" fill="#ED7D31"/>
+          <text x="488" y="159" font-weight="700">€305k</text>
+          <text x="22" y="220">Consortium, FreshMeals' share (1 of 4)</text>
+          <rect x="20" y="230" width="52" height="30" fill="#4472C4"/><rect x="74" y="230" width="60" height="30" fill="#ED7D31"/>
+          <text x="144" y="251" font-weight="700">€76k</text>
+        </g>
+      </svg>
+    </div>
+    <div style="flex:0.8;">
+      <table style="font-size:16px;">
+        <tr><th></th><th>Setup</th><th>Per year</th><th>3 years</th></tr>
+        <tr><td>Database</td><td>€50k</td><td>€22k</td><td><b>€116k</b></td></tr>
+        <tr><td>Consortium</td><td>€140k</td><td>€55k</td><td><b>€305k</b></td></tr>
+        <tr><td>1 share of 4</td><td>€35k</td><td>€13.75k</td><td><b>€76k</b></td></tr>
+      </table>
+      <p class="tiny grey" style="margin-top:8px;">How we estimated: €500 per developer day (≈80 days for the database, ≈180 for the blockchain), hosting, security audit, training. No crypto fees (private network). Details in the appendix.</p>
+      <div class="box-red small" style="margin-top:10px;"><b>What we conclude:</b> blockchain costs €189k more in total, but FreshMeals pays less if 4 members share. If FreshMeals had to pay alone, we would choose the database.</div>
+    </div>
+  </div>
+  <div class="fn">All figures are our own estimates in euros. 3-year cost = setup + 3 × yearly cost.</div>
+  <div class="num">6</div>
+</section>
+
+<!-- 7 -->
+<section class="slide">
+  <h2>Why we chose a permissioned consortium</h2>
+  <table style="margin-top:20px; font-size:16.5px;">
+    <tr><th style="width:23%;">Option</th><th style="width:31%;">Good points</th><th style="width:34%;">Problem for our case</th><th>Our choice</th></tr>
+    <tr><td>Public blockchain</td><td>Anyone can verify</td><td>Everyone sees our batches and partners; fees; slower</td><td>❌</td></tr>
+    <tr><td>Private blockchain run by FreshMeals</td><td>Fast, private</td><td>FreshMeals would be “judge and party”</td><td>❌</td></tr>
+    <tr style="outline:3px solid var(--red); outline-offset:-2px;"><td><b>Permissioned consortium</b></td><td>Every member has a copy, nobody can rewrite alone, rights per role, a few seconds per block</td><td>More coordination; €305k but shared by 4; needs a board</td><td>✅ <b>chosen</b></td></tr>
+    <tr><td>Secure database run by FreshMeals</td><td>Cheapest (€116k), fastest, simple</td><td>Partners must trust FreshMeals' admins, who could edit the history</td><td>Plan B</td></tr>
+  </table>
+  <div class="row" style="margin-top:22px;">
+    <div class="box" style="flex:1;"><h3>When a database is enough</h3><p class="small" style="margin:0;">When one trusted company runs the whole process. Then it is cheaper and simpler, and we would choose it.</p></div>
+    <div class="box-red" style="flex:1.1;"><h3>Why not here</h3><p class="small" style="margin:0;">6+ companies in 3+ countries, some of them competitors, blamed each other in 2013. Nobody would accept that a competitor controls the data.</p></div>
+  </div>
+  <div class="num">7</div>
+</section>
+
+<!-- 8 -->
+<section class="slide">
+  <h2>Transactions, blocks, hash and signature</h2>
+  <div class="row" style="margin-top:16px;">
+    <div style="flex:1;">
+      <h3>The 3 transactions we record</h3>
+      <ul class="small">
+        <li><b>Slaughter:</b> batch_id, species, weight_kg, site, date, signed by the abattoir</li>
+        <li><b>Transfer:</b> batch_id, from, to, species_declared, weight_kg, signed by the sender, confirmed by the receiver</li>
+        <li><b>DNA test:</b> batch_id, lab, result, hash of the lab report, signed by the lab</li>
+      </ul>
+      <ul class="small" style="margin-top:6px;">
+        <li><b>Hash (SHA-256):</b> a 64-character fingerprint of these fields. One letter changes, the fingerprint changes</li>
+        <li><b>Signature:</b> the sender signs with its private key, the others check with its public key. It proves <i>who</i> sent it and that it was <i>not changed</i></li>
+        <li><b>Off-chain:</b> prices, contracts and full lab reports stay with each company, only their hash is shared</li>
+      </ul>
+    </div>
+    <div style="flex:0.95;">
+      <div style="display:flex; align-items:center; gap:8px; margin-top:6px;">
+        <div class="box" style="width:150px; font-size:15px; padding:10px 12px;"><b>Block 40</b><br><span class="tiny" style="font-family:'Roboto Mono',monospace;">hash<br>29726fad…</span></div>
+        <span class="arrow">⬅</span>
+        <div class="box" style="flex:1; font-size:14px; padding:10px 12px;">
+          <b style="font-size:16px;">Block 41</b>
+          <div style="font-family:'Roboto Mono',monospace; font-size:12.5px; line-height:1.55; margin-top:4px;">
+            previous hash: 29726fad…<br>
+            T1 slaughter: b2d7a81a…<br>
+            T2 transfer: e8ecd7fe…<br>
+            T3 DNA test: 0a98d81b…<br>
+            block hash: 9c2833fa…
+          </div>
+        </div>
+      </div>
+      <p class="tiny grey" style="margin-top:6px;">Real hashes from our Python code.</p>
+      <p class="small" style="margin-top:10px;"><b>Workflow:</b> create ➜ check the role ➜ verify hash + signature ➜ validators agree ➜ shared history for audits</p>
+      <div class="box-red small" style="margin-top:10px;">⚠️ A signature proves <b>who</b> said something, not that it is <b>true</b>. If a partner signs something false, random DNA tests catch it, and the contract says who is responsible.</div>
+    </div>
+  </div>
+  <div class="num">8</div>
+</section>
+
+<!-- 9 -->
+<section class="slide">
+  <h2>Who can do what? Access rights and governance</h2>
+  <div class="row" style="margin-top:16px;">
+    <div style="flex:1.25;">
+      <table style="font-size:15px;">
+        <tr><th>Role</th><th>Create</th><th>Approve</th><th>Read</th><th>Validate blocks</th></tr>
+        <tr><td>Abattoir</td><td>Slaughter records</td><td>❌</td><td>Own batches</td><td>❌</td></tr>
+        <tr><td>Trader</td><td>Transfers</td><td>❌</td><td>Batches it held</td><td>❌</td></tr>
+        <tr><td>FreshMeals quality manager</td><td>Receptions</td><td>✅ not its own</td><td>Batches it buys</td><td>✅</td></tr>
+        <tr><td>DNA lab</td><td>Test results</td><td>✅ what it tested</td><td>Batches it tests</td><td>✅</td></tr>
+        <tr><td>Retailer</td><td>❌</td><td>❌</td><td>Origin of what it sells</td><td>✅</td></tr>
+        <tr><td>Food authority</td><td>❌</td><td>❌</td><td>Everything (audits)</td><td>Observer</td></tr>
+      </table>
+    </div>
+    <div style="flex:1;">
+      <div class="box-red small">
+        <h3>Consensus: 3 out of 4</h3>
+        The 4 validators (FreshMeals, 2 retailers, the lab) take turns proposing blocks. A block is accepted when 3 of 4 sign it (like PBFT), so one dishonest member can't fake or block it. We know all the members, so no mining (PoW) or staking (PoS).
+      </div>
+      <h3 style="margin-top:14px;">Our rules</h3>
+      <ul class="tiny">
+        <li><b>Identity:</b> company certificate + personal login with 2FA</li>
+        <li><b>Nobody approves their own record</b></li>
+        <li><b>Confidential:</b> prices and contracts stay off-chain</li>
+        <li><b>Revocation:</b> people who leave are removed the same day</li>
+        <li><b>Board:</b> the 4 founders, 1 vote each; new members or new rules need 3 votes; DNA results settle disputes</li>
+      </ul>
+    </div>
+  </div>
+  <div class="num">9</div>
+</section>
+
+<!-- 10 -->
+<section class="slide">
+  <h2>Python demo 1: hashing (integrity)</h2>
+  <div class="row" style="margin-top:16px; gap:24px;">
+    <div class="colab" style="flex:1.45;">
+      <div class="cell"><div class="run">[4]</div><pre>relabelled_record = {**slaughter_record, <span class="st">"species"</span>: <span class="st">"BEEF"</span>}   <span class="cm"># new dict</span>
+relabelled_hash = record_hash(relabelled_record)
+
+print(<span class="st">"Approved hash  :"</span>, approved_hash)
+print(<span class="st">"Relabelled hash:"</span>, relabelled_hash)
+print(<span class="st">"Same record?   :"</span>, approved_hash == relabelled_hash)</pre></div>
+      <div class="out"><pre>Approved hash  : b2d7a81a41a3ae8e3847b21c821538803f7268b85e502cb86736d78f6d2272e6
+Relabelled hash: b2c60303ead9a020cc82bbf4de7292c4885478ab67f2ec54c967d8992228bc52
+Same record?   : False</pre></div>
+      <div class="cell" style="margin-top:8px;"><div class="run">[7]</div><pre><span class="cm"># the 2013 case: a NEW transfer document says "BEEF"</span>
+signed_species = slaughter_record[<span class="st">"species"</span>]
+status = <span class="st">"OK"</span> <span class="kw">if</span> resale_transfer[<span class="st">"species_declared"</span>] == signed_species \
+         <span class="kw">else</span> <span class="st">"MISMATCH, batch blocked"</span>
+print(<span class="st">"Check                  :"</span>, status)</pre></div>
+      <div class="out"><pre>Check                  : MISMATCH, batch blocked</pre></div>
+    </div>
+    <div style="flex:0.75;">
+      <h3>What we see</h3>
+      <ul class="small">
+        <li>We only changed one word (HORSE ➜ BEEF) and the hash is completely different</li>
+        <li>Every validator keeps the original hash, so nobody can secretly edit a signed record</li>
+        <li>In 2013 the fraud was a <i>new</i> “beef” document, so we added a rule: the declared species must match the signed history</li>
+        <li><b>Limit:</b> it proves nothing was changed, not that the abattoir told the truth</li>
+      </ul>
+    </div>
+  </div>
+  <div class="fn">Screenshot of our notebook (IS511E_Midterm1_MeatTrace.ipynb), cells 4 and 7. Cell 7 is shortened here.</div>
+  <div class="num">10</div>
+</section>
+
+<!-- 11 -->
+<section class="slide">
+  <h2>Python demo 2: who is allowed?</h2>
+  <div class="row" style="margin-top:16px; gap:24px;">
+    <div class="colab" style="flex:1.3;">
+      <div class="cell"><div class="run">[10]</div><pre><span class="kw">def</span> can_do(user, action, record_id=<span class="kw">None</span>):
+    account = users[user]
+    <span class="kw">if not</span> account[<span class="st">"active"</span>]:
+        <span class="kw">return False</span>, <span class="st">"account revoked"</span>
+    <span class="kw">if</span> action <span class="kw">not in</span> role_permissions[account[<span class="st">"role"</span>]]:
+        <span class="kw">return False</span>, <span class="st">f"role '{account['role']}' has no '{action}' right"</span>
+    <span class="kw">if</span> action == <span class="st">"approve_record"</span> <span class="kw">and</span> records[record_id][<span class="st">"created_by"</span>] == user:
+        <span class="kw">return False</span>, <span class="st">"separation of duties: cannot approve own record"</span>
+    <span class="kw">return True</span>, <span class="st">"permission granted"</span></pre></div>
+      <div class="cell" style="margin-top:8px;"><div class="run">[11]</div><pre>tests = [(<span class="st">"anna"</span>, <span class="st">"approve_record"</span>, <span class="st">"REC-001"</span>), (<span class="st">"claire"</span>, <span class="st">"read_batch"</span>, <span class="st">"REC-001"</span>), ...]
+...
+display(pd.DataFrame(results))</pre></div>
+      <div class="out" style="padding-left:54px;">
+        <table class="df">
+          <tr><th></th><th>Result</th><th>User</th><th>Role</th><th>Action</th><th>Record</th></tr>
+          <tr><td><b>0</b></td><td>ALLOWED</td><td>anna</td><td>lab_inspector</td><td>approve_record</td><td>REC-001</td></tr>
+          <tr><td><b>1</b></td><td>ALLOWED</td><td>claire</td><td>quality_manager</td><td>read_batch</td><td>REC-001</td></tr>
+          <tr><td><b>2</b></td><td>DENIED</td><td>pieter</td><td>trader</td><td>edit_record</td><td>REC-001</td></tr>
+          <tr><td><b>3</b></td><td>DENIED</td><td>claire</td><td>quality_manager</td><td>approve_record</td><td>REC-007</td></tr>
+          <tr><td><b>4</b></td><td>DENIED</td><td>dan</td><td>trader</td><td>create_record</td><td>-</td></tr>
+        </table>
+      </div>
+    </div>
+    <div style="flex:0.8;">
+      <h3>Why the 3 refusals matter</h3>
+      <ul class="small">
+        <li>❌ <b>Pieter</b> (trader) can't edit the slaughter record: no relabelling like in 2013</li>
+        <li>❌ <b>Claire</b> can't approve her own reception: no self-approval</li>
+        <li>❌ <b>Dan</b> left his company: his account is revoked, he can't sign for them</li>
+      </ul>
+      <p class="small">✅ Anna (lab) approves the abattoir's record and Claire reads the batch history: normal work.</p>
+      <p class="tiny grey">6 users, 5 roles. In real life this check would run on every node, not in a notebook.</p>
+    </div>
+  </div>
+  <div class="fn">Screenshot of our notebook, cells 10 and 11 (cell 11 shortened, “Reason” column hidden).</div>
+  <div class="num">11</div>
+</section>
+
+<!-- 12 -->
+<section class="slide">
+  <h2>Roadmap, risks and our recommendation</h2>
+  <div class="chain" style="margin-top:18px; align-items:stretch; font-size:15.5px;">
+    <div class="step" style="flex:1;"><b>Oct 2026</b><br>Proof of concept (done): our Python tests</div><span class="arrow" style="align-self:center;">➜</span>
+    <div class="step" style="flex:1.2;"><b>Jan–Jun 2027: pilot</b><br>FreshMeals, 3 suppliers, the lab, one product (beef lasagne). ≈ €70k</div><span class="arrow" style="align-self:center;">➜</span>
+    <div class="step" style="flex:1.2;"><b>2027–2028: deployment</b><br>6 suppliers, 2 retailers, authority as observer. ≈ €70k + €55k/year</div><span class="arrow" style="align-self:center;">➜</span>
+    <div class="step" style="flex:1;"><b>2028+: improve</b><br>KPIs every quarter, add chicken and pork</div>
+  </div>
+  <div class="row" style="margin-top:20px;">
+    <div style="flex:1;">
+      <h3>Main risks</h3>
+      <ul class="tiny">
+        <li><b>False data entered:</b> random DNA tests + the receiver must confirm</li>
+        <li><b>Data leaks:</b> rights per role, prices stay off-chain</li>
+        <li><b>Members disagree:</b> written rules, 3-of-4 vote</li>
+        <li><b>Costs too high:</b> pilot first, database as plan B</li>
+        <li><b>Partners don't join:</b> free for suppliers, simple website. TradeLens (300+ members) announced its closure in 2022 because the industry didn't join<sup>*</sup></li>
+      </ul>
+    </div>
+    <div class="box-red small" style="flex:1;">
+      <h3>Our recommendation</h3>
+      <p>Build MeatTrace as a permissioned consortium (FreshMeals, 2 retailers, a DNA lab): <b>€305k over 3 years, €76k for FreshMeals</b>.</p>
+      <p>First pilot goal: 100 % of pilot batches traced to the abattoir in under 1 hour.</p>
+      <p style="margin:0;">Limits: it can't see inside the meat (we still need DNA tests), and without 3 co-funders we would go for the database. Still to build: real identities, nodes, website, security audit.</p>
+    </div>
+  </div>
+  <div class="fn">* Container Magazine, “Maersk and IBM to discontinue TradeLens following lack of industry collaboration”, 30/11/2022. Costs per stage are our estimates.</div>
+  <div class="num">12</div>
+</section>
+
+<!-- 13 -->
+<section class="slide">
+  <h2>Sources</h2>
+  <ul class="small" style="margin-top:18px; line-height:1.45;">
+    <li>AFP via IOL (14/02/2013), <i>Horsemeat: French company blamed</i>, iol.co.za/news/world/horsemeat-french-company-blamed-1470925</li>
+    <li>Al Jazeera (15/02/2013), <i>France says horse meat tip-offs ignored</i>, aljazeera.com/news/2013/2/15/france-says-horse-meat-tip-offs-ignored</li>
+    <li>European Commission, <i>Horse meat 2013–14: test results</i>, food.ec.europa.eu</li>
+    <li>OLAF (2023 report), <i>No money for fake honey</i>, ec.europa.eu/olaf-report/2023</li>
+    <li>EU Regulation 178/2002, article 18 (traceability), eur-lex.europa.eu</li>
+    <li>LF Decentralized Trust, <i>Walmart case study</i> (Hyperledger Fabric), lfdecentralizedtrust.org/case-studies/walmart-case-study</li>
+    <li>Container Magazine (30/11/2022), <i>Maersk and IBM to discontinue TradeLens</i>, container-mag.com</li>
+    <li>ESM Magazine (2019), <i>Carrefour says blockchain tracking boosting sales of some products</i>, esmmagazine.com</li>
+    <li>IS511E course, sessions 1 to 5</li>
+  </ul>
+  <p class="tiny grey" style="margin-top:14px;">FreshMeals, its users and all business-plan numbers are our own assumptions.</p>
+  <div class="num">13</div>
+</section>
+
+<!-- 14 -->
+<section class="slide">
+  <h2>Appendix: how we estimated the costs</h2>
+  <div class="row" style="margin-top:18px;">
+    <div style="flex:1;">
+      <h3>Secure database</h3>
+      <table style="font-size:15px;">
+        <tr><th>Item</th><th>Setup</th><th>Per year</th></tr>
+        <tr><td>Website + database (≈80 days × €500)</td><td>40,000</td><td></td></tr>
+        <tr><td>Security (2FA, encryption, test)</td><td>6,000</td><td></td></tr>
+        <tr><td>Supplier training</td><td>4,000</td><td></td></tr>
+        <tr><td>Cloud hosting + backups</td><td></td><td>6,000</td></tr>
+        <tr><td>Maintenance (≈24 days)</td><td></td><td>12,000</td></tr>
+        <tr><td>Security monitoring + audit</td><td></td><td>4,000</td></tr>
+        <tr><td><b>Total</b></td><td><b>50,000</b></td><td><b>22,000</b></td></tr>
+      </table>
+      <p class="small" style="margin-top:8px;">3 years = 50,000 + 3 × 22,000 = <b>€116,000</b></p>
+    </div>
+    <div style="flex:1;">
+      <h3>Permissioned consortium (4 nodes)</h3>
+      <table style="font-size:15px;">
+        <tr><th>Item</th><th>Setup</th><th>Per year</th></tr>
+        <tr><td>Ledger + smart contracts + website (≈180 days)</td><td>90,000</td><td></td></tr>
+        <tr><td>Network, identities, certificates</td><td>20,000</td><td></td></tr>
+        <tr><td>External security audit</td><td>15,000</td><td></td></tr>
+        <tr><td>Legal charter + onboarding</td><td>15,000</td><td></td></tr>
+        <tr><td>Hosting (4 nodes × €5,000)</td><td></td><td>20,000</td></tr>
+        <tr><td>Maintenance (≈50 days)</td><td></td><td>25,000</td></tr>
+        <tr><td>Board, audits, certificates</td><td></td><td>10,000</td></tr>
+        <tr><td><b>Total</b></td><td><b>140,000</b></td><td><b>55,000</b></td></tr>
+      </table>
+      <p class="small" style="margin-top:8px;">3 years = 140,000 + 3 × 55,000 = <b>€305,000</b> (1 share of 4 = €76,250)</p>
+    </div>
+  </div>
+  <div class="num">14</div>
+</section>
+
+</main>
+<script>
+  (function () {
+    var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+    var i = Math.max(0, Math.min(slides.length - 1, (parseInt(location.hash.slice(1), 10) || 1) - 1));
+    function fit() { document.documentElement.style.setProperty('--s', Math.min(innerWidth / 1280, innerHeight / 720)); }
+    function show(n) {
+      i = Math.max(0, Math.min(slides.length - 1, n));
+      slides.forEach(function (el, k) { el.classList.toggle('active', k === i); });
+      history.replaceState(null, '', '#' + (i + 1));
+    }
+    document.addEventListener('keydown', function (e) {
+      if (['ArrowRight', 'PageDown', ' '].indexOf(e.key) > -1) { e.preventDefault(); show(i + 1); }
+      if (['ArrowLeft', 'PageUp'].indexOf(e.key) > -1) { e.preventDefault(); show(i - 1); }
+    });
+    addEventListener('resize', fit); fit(); show(i);
+  })();
+</script>
+</body>
+</html>
