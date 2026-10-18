@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3. La fraude de 2013 et les droits d'accès · MeatTrace</title>
+<style>
+  :root {
+    --paper: #FAFAF7; --ink: #1E2033; --muted: #5E6275; --rule: #DADCE3; --panel: #F1F2F5;
+    --violet: #5B45C2; --violet-wash: #EFECFA;
+    --ok: #1F7A4D; --ok-wash: #E4F1E9; --no: #B42318; --no-wash: #FBEAE8;
+    --sans: "Archivo", "Helvetica Neue", Arial, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+    --t: 450ms;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { background: var(--paper); color: var(--ink); font-family: var(--sans); font-size: 18px; line-height: 1.45; }
+  main { max-width: 1200px; margin: 0 auto; padding: 14px 32px 24px; }
+  button, select { font-family: inherit; font-size: inherit; color: inherit; }
+  code, .mono, .code, .term, .pill, .token { font-family: var(--mono); font-variant-ligatures: none; }
+  code { font-size: 0.88em; background: var(--panel); padding: 1px 5px; border-radius: 4px; }
+
+  /* ---------- header ---------- */
+  .topbar { display: flex; justify-content: space-between; align-items: center; font-size: 15px; }
+  .topbar a { color: var(--violet); text-decoration: none; font-weight: 600; }
+  .topbar a:hover, .topbar a:focus-visible { text-decoration: underline; }
+  .part { color: var(--muted); }
+  .part b { color: var(--violet); }
+  h1 { font-size: 27px; line-height: 1.15; margin: 4px 0 2px; }
+  h2.steptitle { font-size: 21px; margin: 2px 0 10px; font-weight: 700; }
+  h2.steptitle .n { color: var(--violet); margin-right: 8px; }
+
+  /* ---------- stage ---------- */
+  .stage { position: relative; height: 560px; background: #fff; border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; }
+  .step { position: absolute; inset: 0; padding: 20px 26px; opacity: 0; visibility: hidden; transition: opacity var(--t) ease, visibility 0s linear var(--t); }
+  .step.active { opacity: 1; visibility: visible; transition: opacity var(--t) ease, visibility 0s; }
+  .caption { min-height: 54px; margin: 10px 2px 0; color: var(--ink); font-size: 17px; max-width: 980px; }
+  .navrow { display: flex; justify-content: flex-end; align-items: center; gap: 12px; margin-top: 6px; }
+  .counter { color: var(--muted); font-size: 15px; margin-right: auto; }
+  .dots { display: flex; gap: 6px; margin-right: 10px; }
+  .dots button { width: 11px; height: 11px; padding: 0; border-radius: 50%; border: 1.5px solid var(--violet); background: #fff; cursor: pointer; }
+  .dots button.on { background: var(--violet); }
+  .btn { border: 1.5px solid var(--ink); background: #fff; border-radius: 8px; padding: 8px 16px; cursor: pointer; font-size: 16px; font-weight: 600; transition: background 200ms, color 200ms, border-color 200ms; }
+  .btn:hover { background: var(--panel); }
+  .btn:focus-visible, .dots button:focus-visible, select:focus-visible { outline: 3px solid var(--violet); outline-offset: 2px; }
+  .btn.primary { background: var(--violet); border-color: var(--violet); color: #fff; }
+  .btn.primary:hover { background: #4a36a8; }
+  .btn:disabled { opacity: .35; cursor: default; }
+  .btn.small { font-size: 14px; padding: 5px 11px; }
+
+  /* ---------- shared bits ---------- */
+  .muted { color: var(--muted); }
+  .pill { display: inline-block; font-family: var(--mono); font-size: 14px; font-weight: 700; padding: 1px 8px; border-radius: 6px; }
+  .pill.no { background: var(--no-wash); color: var(--no); }
+  .pill.ok { background: var(--ok-wash); color: var(--ok); }
+  .pill.vi { background: var(--violet-wash); color: var(--violet); }
+  .note { background: var(--panel); border-radius: 8px; padding: 10px 14px; font-size: 15px; }
+  .note.vi { background: var(--violet-wash); border-left: 3px solid var(--violet); }
+  .note.no { background: var(--no-wash); border-left: 3px solid var(--no); }
+  .note.ok { background: var(--ok-wash); border-left: 3px solid var(--ok); }
+  .label { font-size: 12.5px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 700; }
+  .check { color: var(--ok); font-weight: 800; }
+  .cross { color: var(--no); font-weight: 800; }
+
+  /* ---------- step 1 : chain ---------- */
+  .facts { display: flex; gap: 10px; font-size: 15px; margin-bottom: 26px; flex-wrap: wrap; }
+  .facts span { background: var(--panel); border-radius: 6px; padding: 4px 10px; }
+  .facts b { color: var(--no); }
+  .chain { display: flex; align-items: flex-start; justify-content: space-between; position: relative; }
+  .link { width: 158px; display: flex; flex-direction: column; align-items: center; gap: 14px; opacity: 0; transform: translateY(8px); transition: opacity var(--t), transform var(--t); }
+  .link.in { opacity: 1; transform: none; }
+  .actor { position: relative; width: 100%; height: 124px; border: 1.5px solid var(--ink); border-radius: 8px; padding: 8px 9px; background: #fff; text-align: center; transition: box-shadow var(--t), border-color var(--t), opacity var(--t); }
+  .actor .where { font-size: 12.5px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+  .actor b { display: block; font-size: 16px; line-height: 1.2; margin: 2px 0; }
+  .actor small { display: block; font-size: 13px; color: var(--muted); line-height: 1.25; }
+  .doc { width: 138px; height: 108px; border: 1px solid var(--rule); border-radius: 6px; background: #fff; box-shadow: 2px 2px 0 var(--rule); display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity var(--t), box-shadow var(--t), border-color var(--t); position: relative; }
+  .doc .kind { font-size: 12px; color: var(--muted); }
+  .doc .word { font-size: 26px; font-weight: 800; }
+  .doc.bad { border: 1.5px solid var(--no); background: var(--no-wash); }
+  .doc.bad .word { color: var(--no); }
+  .doc .newtag { position: absolute; top: -10px; right: -8px; background: var(--no); color: #fff; font-size: 11px; font-weight: 700; padding: 1px 6px; border-radius: 5px; }
+  .arrow { flex: 0 0 auto; align-self: flex-start; margin-top: 50px; color: var(--muted); font-size: 22px; opacity: 0; transition: opacity var(--t); }
+  .arrow.in { opacity: 1; }
+  .eye { position: absolute; top: -16px; right: -12px; width: 38px; height: 38px; border-radius: 50%; background: var(--violet); display: flex; align-items: center; justify-content: center; opacity: 0; transform: scale(.6); transition: opacity var(--t), transform var(--t); }
+  .chain.spot .eye { opacity: 1; transform: none; }
+  .chain.spot .link .doc { opacity: .22; }
+  .chain.spot .link.spg .doc { opacity: 1; box-shadow: 0 0 0 4px var(--violet-wash), 0 0 0 6px var(--violet); }
+  .chain.spot .link.cmg .actor { border-color: var(--violet); box-shadow: 0 0 0 4px var(--violet-wash); }
+  .seen { margin: 22px 0 0 0; display: flex; gap: 14px; opacity: 0; transition: opacity var(--t); }
+  .chain.spot + .seen { opacity: 1; }
+  .seen .left { flex: 0 0 528px; text-align: center; font-size: 14px; color: var(--muted); border-top: 2px dashed var(--rule); padding-top: 6px; }
+  .seen .right { flex: 1; font-size: 16px; background: var(--violet-wash); border-left: 3px solid var(--violet); border-radius: 6px; padding: 8px 12px; }
+  .s1-foot { position: absolute; left: 26px; right: 26px; bottom: 20px; display: flex; gap: 14px; align-items: center; }
+  .s1-foot .note { flex: 1; }
+
+  /* ---------- step 2 : hash ---------- */
+  .def { margin-bottom: 14px; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  .case { border: 1px solid var(--rule); border-radius: 8px; padding: 14px 16px; background: #fff; }
+  .case h3 { margin: 0 0 10px; font-size: 17px; }
+  .case h3 .label { display: block; margin-bottom: 2px; }
+  .docrow { display: flex; align-items: center; gap: 10px; margin: 8px 0; }
+  .fiche { flex: 1; border: 1.5px solid var(--ink); border-radius: 8px; padding: 7px 10px; font-size: 14.5px; background: #fff; }
+  .fiche .fid { font-family: var(--mono); font-size: 13px; color: var(--muted); }
+  .fiche .sp { font-family: var(--mono); font-weight: 700; }
+  .fiche.edited { border-color: var(--no); background: var(--no-wash); }
+  .fiche.newdoc { border-color: var(--ok); }
+  .fp { font-family: var(--mono); font-size: 12.5px; color: var(--muted); }
+  .fp b { color: var(--ink); }
+  .fp.bad b { color: var(--no); }
+  .verdict { flex: 0 0 150px; font-size: 14px; font-weight: 700; text-align: center; border-radius: 6px; padding: 6px; }
+  .verdict.ok { background: var(--ok-wash); color: var(--ok); }
+  .verdict.no { background: var(--no-wash); color: var(--no); }
+  .mid { text-align: center; font-size: 14px; color: var(--muted); margin: 2px 0; }
+  .concl { margin-top: 10px; font-weight: 700; font-size: 16px; padding: 8px 12px; border-radius: 6px; }
+  .concl.ok { background: var(--ok-wash); color: var(--ok); }
+  .concl.no { background: var(--no-wash); color: var(--no); }
+  .s2-foot { margin-top: 14px; }
+
+  /* ---------- step 3 : rule ---------- */
+  .s3 { display: grid; grid-template-columns: 250px 1fr 300px; gap: 20px; align-items: start; }
+  .rec { border: 1.5px solid var(--ink); border-radius: 8px; padding: 10px 12px; font-size: 14.5px; background: #fff; transition: transform 600ms ease, opacity 600ms; }
+  .rec .rid { font-family: var(--mono); font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+  .rec .kv { font-family: var(--mono); font-size: 13px; }
+  .s3 .rec-new { opacity: 0; transform: translateX(-30px); }
+  .s3.p1 .rec-new { opacity: 1; transform: none; }
+  .samebatch { margin-top: 10px; font-size: 14px; color: var(--violet); font-weight: 700; opacity: 0; transition: opacity var(--t); }
+  .s3.p1 .samebatch { opacity: 1; }
+  .reg { border: 2px solid var(--violet); border-radius: 8px; background: var(--violet-wash); padding: 10px 12px; transition: box-shadow var(--t); }
+  .s3.p2 .reg { box-shadow: 0 0 0 5px rgba(91,69,194,.18); }
+  .reg-head { font-weight: 700; color: var(--violet); font-size: 15px; margin-bottom: 8px; display: flex; justify-content: space-between; }
+  .reg-row { background: #fff; border: 1px solid var(--rule); border-radius: 6px; padding: 6px 10px; margin-bottom: 6px; font-size: 14px; transition: border-color var(--t), box-shadow var(--t), background var(--t); }
+  .reg-row .rid { font-family: var(--mono); font-size: 12.5px; font-weight: 700; }
+  .reg-row.slot { border-style: dashed; color: var(--muted); background: transparent; }
+  .s3.p3 .reg-row.r1 { border: 2px solid var(--ink); box-shadow: 0 0 0 4px #fff; }
+  .s3.p3 .reg-row.r1 .pill { background: var(--ink); color: #fff; }
+  .copies { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin-top: 8px; font-size: 12.5px; }
+  .copies span { background: #fff; border: 1px solid var(--violet); color: var(--violet); border-radius: 5px; padding: 1px 7px; font-weight: 600; }
+  .lookup { font-size: 13.5px; color: var(--violet); margin-top: 6px; min-height: 20px; opacity: 0; transition: opacity var(--t); }
+  .s3.p2 .lookup { opacity: 1; }
+  .cmp { border: 1.5px solid var(--ink); border-radius: 8px; padding: 10px 12px; background: #fff; opacity: 0; transform: translateY(8px); transition: opacity var(--t), transform var(--t); }
+  .s3.p4 .cmp { opacity: 1; transform: none; }
+  .cmp-grid { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; text-align: center; margin-top: 6px; }
+  .cmp-grid .lab { font-size: 12.5px; color: var(--muted); }
+  .cmp-grid .val { font-family: var(--mono); font-weight: 800; font-size: 20px; }
+  .neq { font-size: 30px; font-weight: 800; color: var(--no); }
+  .door { margin-top: 14px; border: 1.5px solid var(--ink); border-radius: 8px; padding: 10px 12px; background: #fff; transition: background var(--t), border-color var(--t); }
+  .door .who { font-size: 14px; color: var(--muted); }
+  .door .res { font-family: var(--mono); font-weight: 800; font-size: 16px; color: var(--muted); }
+  .s3.p5 .door { border-color: var(--no); background: var(--no-wash); }
+  .s3.p5 .door .res { color: var(--no); }
+  .phases { display: flex; gap: 8px; margin: 16px 0 0; padding: 0; list-style: none; counter-reset: ph; }
+  .phases li { flex: 1; font-size: 14px; padding: 7px 10px; border-radius: 6px; background: var(--panel); color: var(--muted); transition: background var(--t), color var(--t); counter-increment: ph; }
+  .phases li::before { content: counter(ph) ". "; font-weight: 700; }
+  .phases li.on { background: var(--violet-wash); color: var(--ink); }
+  .phases li.on.red { background: var(--no-wash); color: var(--no); font-weight: 700; }
+  .cant { display: grid; grid-template-columns: 1fr 1fr auto; gap: 12px; margin-top: 12px; align-items: center; }
+
+  /* ---------- code panels ---------- */
+  .code { background: var(--panel); border-radius: 8px; padding: 10px 0; font-family: var(--mono); font-size: 14px; line-height: 1.62; overflow: hidden; }
+  .code .ln { display: block; padding: 0 14px 0 10px; white-space: pre; border-left: 4px solid transparent; transition: background var(--t), border-color var(--t), opacity var(--t); }
+  .code .ln .num { display: inline-block; width: 24px; color: #A3A6B4; user-select: none; }
+  .code.focus .ln { opacity: .42; }
+  .code.focus .ln.hl { opacity: 1; background: var(--violet-wash); border-left-color: var(--violet); }
+  .code.focus .ln.hl.red { background: var(--no-wash); border-left-color: var(--no); }
+  .code.focus .ln.hl.green { background: var(--ok-wash); border-left-color: var(--ok); }
+  .kw { color: var(--violet); font-weight: 700; }
+  .st { color: #3A5A40; }
+  .cm { color: var(--muted); font-style: italic; }
+
+  /* ---------- step 4 ---------- */
+  .s4 { display: grid; grid-template-columns: 1fr; gap: 12px; }
+  .s4-bottom { display: grid; grid-template-columns: 1fr 430px; gap: 14px; }
+  .explain { border: 1.5px solid var(--violet); border-radius: 8px; padding: 10px 14px; min-height: 168px; background: #fff; font-size: 16px; }
+  .explain .label { color: var(--violet); }
+  .explain p { margin: 4px 0; }
+  .explain-nav { display: flex; gap: 8px; align-items: center; margin-top: 6px; }
+  .term { background: var(--ink); color: #E9EAF0; border-radius: 8px; padding: 10px 14px; font-family: var(--mono); font-size: 13px; min-height: 168px; }
+  .term .label { color: #A3A6B4; }
+  .term .out { white-space: pre; opacity: 0; transition: opacity var(--t); }
+  .term .out.in { opacity: 1; }
+  .term .out .r { color: #FF9C91; font-weight: 700; }
+  .mem { margin: 4px 0 8px; display: flex; flex-direction: column; gap: 3px; }
+  .mem div { opacity: 0; transition: opacity var(--t); white-space: pre; }
+  .mem div.in { opacity: 1; }
+  .mem .v { color: #C9BFFF; }
+
+  /* ---------- step 5 ---------- */
+  .traps { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  .trap { border: 1.5px solid var(--ink); border-radius: 8px; padding: 14px 16px; background: #fff; height: 462px; display: flex; flex-direction: column; }
+  .trap .q { font-size: 19px; font-weight: 700; line-height: 1.25; margin: 4px 0 12px; }
+  .flow { display: flex; flex-direction: column; gap: 6px; font-size: 14.5px; }
+  .flow .box { border: 1px solid var(--rule); border-radius: 6px; padding: 6px 10px; background: var(--panel); }
+  .flow .box.no { background: var(--no-wash); border-color: var(--no); color: var(--no); font-weight: 700; }
+  .flow .box.ok { background: var(--ok-wash); border-color: var(--ok); color: var(--ok); font-weight: 700; }
+  .flow .down { text-align: center; color: var(--muted); font-size: 13px; line-height: 1; }
+  .answer { margin-top: auto; transition: opacity var(--t), filter var(--t); }
+  .answer .note { font-size: 15.5px; }
+  .answer .key { margin-top: 8px; font-weight: 700; color: var(--violet); font-size: 15.5px; }
+  .traps.hide .answer, .traps.hide .flow { opacity: 0; filter: blur(4px); }
+  .s5-bar { display: flex; justify-content: flex-end; margin-bottom: 10px; gap: 10px; align-items: center; font-size: 14px; }
+
+  /* ---------- step 6 ---------- */
+  .badges { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-bottom: 16px; }
+  .badge { border: 1.5px solid var(--ink); border-radius: 8px; padding: 8px 10px; background: #fff; font-size: 13.5px; line-height: 1.3; position: relative; }
+  .badge .nm { font-size: 17px; font-weight: 800; }
+  .badge .org { color: var(--muted); min-height: 36px; }
+  .badge .role { font-family: var(--mono); font-size: 12.5px; color: var(--violet); font-weight: 700; }
+  .badge .stat { margin-top: 4px; }
+  .badge.revoked { border-color: var(--no); background: var(--no-wash); }
+  .badge.revoked .nm { text-decoration: line-through; text-decoration-color: var(--no); }
+  table.matrix { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 14.5px; }
+  .matrix th, .matrix td { padding: 6px 8px; text-align: center; border-bottom: 1px solid var(--rule); }
+  .matrix thead th { vertical-align: bottom; font-weight: 700; }
+  .matrix thead th code { font-size: 12.5px; background: none; padding: 0; display: block; }
+  .matrix thead th span { display: block; font-weight: 400; color: var(--muted); font-size: 12.5px; line-height: 1.2; }
+  .matrix tbody th { text-align: left; font-weight: 400; white-space: nowrap; }
+  .matrix tbody th code { background: none; padding: 0; color: var(--violet); font-weight: 700; }
+  .matrix tbody th span { color: var(--muted); font-size: 13px; }
+  .matrix td.y { color: var(--ok); font-weight: 800; font-size: 17px; }
+  .matrix td.n { color: #B5B8C4; }
+  .matrix .edit { background: var(--no-wash); }
+  .matrix thead th.edit { border-top-left-radius: 6px; border-top-right-radius: 6px; color: var(--no); }
+  .matrix thead th.edit code { color: var(--no); }
+  .s6-foot { margin-top: 10px; }
+
+  /* ---------- gate track (steps 7, 8) ---------- */
+  .track { position: relative; display: grid; grid-template-columns: 150px 1fr 1fr 1fr 150px; gap: 0; align-items: start; }
+  .station { position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; }
+  .station .box { width: calc(100% - 34px); min-height: 66px; border: 1.5px solid var(--ink); border-radius: 8px; padding: 6px 8px; background: #fff; font-size: 14.5px; line-height: 1.25; display: flex; flex-direction: column; justify-content: center; transition: background var(--t), border-color var(--t), box-shadow var(--t), color var(--t); }
+  .station .box .gk { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 700; }
+  .station .box b { font-size: 15px; }
+  .station:not(.end)::after { content: "→"; position: absolute; right: -2px; top: 20px; color: var(--muted); font-size: 20px; }
+  .station .deny { margin-top: 8px; width: calc(100% - 34px); font-size: 12.5px; color: var(--muted); border-top: 2px dashed var(--rule); padding-top: 4px; transition: color var(--t); }
+  .station .deny code { font-size: 11.5px; display: block; margin-top: 2px; white-space: normal; }
+  .station.cur .box { border-color: var(--violet); box-shadow: 0 0 0 4px var(--violet-wash); }
+  .station.pass .box { border-color: var(--ok); background: var(--ok-wash); }
+  .station.fail .box { border-color: var(--no); background: var(--no-wash); color: var(--no); }
+  .station.fail .deny { color: var(--no); font-weight: 700; }
+  .station.fail .deny code { background: var(--no-wash); color: var(--no); }
+  .station.end .box { border-style: dashed; }
+  .station.end.pass .box { border-style: solid; color: var(--ok); font-weight: 700; }
+  .token { position: absolute; top: -14px; left: 0; z-index: 3; background: var(--ink); color: #fff; font-size: 12.5px; font-weight: 700; font-family: var(--mono); padding: 2px 8px; border-radius: 10px; transform: translateX(-50%); transition: left 550ms ease, background var(--t); white-space: nowrap; opacity: 0; }
+  .token.show { opacity: 1; }
+  .token.red { background: var(--no); }
+  .token.green { background: var(--ok); }
+
+  /* ---------- step 7 ---------- */
+  .s7-bottom { display: grid; grid-template-columns: 1fr 360px; gap: 16px; margin-top: 18px; align-items: start; }
+  .s7-bottom .code { font-size: 13.5px; line-height: 1.7; }
+  .s7-side { display: flex; flex-direction: column; gap: 8px; }
+  .s7-side .explain { min-height: 236px; font-size: 15.5px; }
+
+  /* ---------- step 8 ---------- */
+  .s8-bottom { display: grid; grid-template-columns: 470px 1fr; gap: 18px; margin-top: 12px; }
+  .tests { display: flex; flex-direction: column; gap: 6px; }
+  .tbtn { display: grid; grid-template-columns: 22px 1fr auto; gap: 8px; align-items: center; text-align: left; border: 1.5px solid var(--rule); border-radius: 8px; padding: 7px 10px; background: #fff; cursor: pointer; font-size: 14px; transition: border-color 200ms, background 200ms; }
+  .tbtn:hover { border-color: var(--ink); }
+  .tbtn:focus-visible { outline: 3px solid var(--violet); outline-offset: 2px; }
+  .tbtn .i { font-family: var(--mono); color: var(--muted); font-weight: 700; }
+  .tbtn .c { font-family: var(--mono); font-size: 13px; }
+  .tbtn .tag { font-size: 11.5px; font-weight: 700; padding: 1px 6px; border-radius: 5px; visibility: hidden; }
+  .tbtn.done .tag { visibility: visible; }
+  .tbtn.sel { border-color: var(--violet); background: var(--violet-wash); }
+  .free { margin-top: 10px; border: 1px solid var(--rule); border-radius: 8px; padding: 8px 10px; background: var(--panel); }
+  .free .row { display: flex; gap: 6px; align-items: center; margin-top: 6px; }
+  .free select { flex: 1 1 0; min-width: 0; font-size: 13.5px; padding: 4px 4px; border: 1.5px solid var(--ink); border-radius: 6px; background: #fff; }
+  .free .btn { flex: 0 0 auto; }
+  .free select:disabled { opacity: .45; }
+  .result { border: 1.5px solid var(--rule); border-radius: 8px; padding: 12px 16px; background: #fff; height: 100%; transition: border-color var(--t), background var(--t); }
+  .result.ok { border-color: var(--ok); }
+  .result.no { border-color: var(--no); }
+  .result .call { font-family: var(--mono); font-size: 13px; background: var(--panel); border-radius: 6px; padding: 5px 8px; margin: 6px 0; white-space: pre-wrap; }
+  .result .big { font-size: 24px; font-weight: 800; margin: 4px 0; }
+  .result.ok .big { color: var(--ok); }
+  .result.no .big { color: var(--no); }
+  .result .reason { font-family: var(--mono); font-size: 14px; font-weight: 700; }
+  .result.ok .reason { color: var(--ok); }
+  .result.no .reason { color: var(--no); }
+  .result .fr { font-size: 15px; color: var(--muted); margin-bottom: 8px; }
+  .result .risk { font-size: 15.5px; }
+  .result .placeholder { color: var(--muted); font-size: 16px; margin-top: 60px; text-align: center; }
+
+  /* ---------- step 9 ---------- */
+  .quotes { display: flex; flex-direction: column; gap: 14px; }
+  .quote { display: grid; grid-template-columns: 46px 1fr auto; gap: 14px; align-items: center; border: 1.5px solid var(--ink); border-radius: 8px; padding: 14px 18px; background: #fff; }
+  .quote .qn { width: 40px; height: 40px; border-radius: 50%; background: var(--violet); color: #fff; font-weight: 800; display: flex; align-items: center; justify-content: center; font-size: 19px; }
+  .quote p { margin: 0; font-size: 20px; line-height: 1.35; }
+  .quote p b { color: var(--violet); }
+  .quote .btn { white-space: nowrap; }
+
+  .lex { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .lex div { background: var(--panel); border-radius: 8px; padding: 8px 12px; font-size: 15px; line-height: 1.35; }
+  .lex b { display: block; font-family: var(--mono); font-variant-ligatures: none; color: var(--violet); font-size: 14px; }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition-duration: 0ms !important; transition-delay: 0ms !important; animation: none !important; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <div class="topbar">
+    <a href="index.html">← Sommaire</a>
+    <span class="part" id="partLabel"></span>
+  </div>
+  <h1>3. La fraude de 2013 et les droits d'accès</h1>
+  <h2 class="steptitle" id="stepTitle"></h2>
+
+  <div class="stage" id="stage">
+
+    <!-- ===================== STEP 1 ===================== -->
+    <section class="step" data-step="1" data-part="A" data-title="Ce qui s'est passé en 2013"
+      data-caption="Chaque entreprise ne voit que le document du maillon juste avant elle. Comigel n'a vu qu'une facture de Spanghero qui disait « bœuf ». Il ne pouvait pas remonter jusqu'à l'abattoir.">
+      <div class="facts">
+        <span>Environ <b>750 tonnes</b> de viande de cheval vendues comme du bœuf</span>
+        <span><b>28</b> entreprises</span>
+        <span><b>13</b> pays</span>
+      </div>
+      <div class="chain" id="chain">
+        <div class="link"><div class="actor"><div class="where">Roumanie</div><b>2 abattoirs</b><small>étiquette claire : cheval</small></div>
+          <div class="doc"><span class="kind">étiquette</span><span class="word">cheval</span></div></div>
+        <div class="arrow">→</div>
+        <div class="link"><div class="actor"><div class="where">Chypre</div><b>Négociant</b><small>un « trader » enregistré à Chypre</small></div>
+          <div class="doc"><span class="kind">facture</span><span class="word">cheval</span></div></div>
+        <div class="arrow">→</div>
+        <div class="link"><div class="actor"><div class="where">Pays-Bas</div><b>Entrepôt</b><small>stocke la viande</small></div>
+          <div class="doc"><span class="kind">bon de stock</span><span class="word">cheval</span></div></div>
+        <div class="arrow">→</div>
+        <div class="link spg"><div class="actor"><div class="where">France</div><b>Spanghero</b><small>grossiste. Vend comme bœuf (a nié)</small></div>
+          <div class="doc bad"><span class="newtag">nouveau</span><span class="kind">facture</span><span class="word">BŒUF</span></div></div>
+        <div class="arrow">→</div>
+        <div class="link cmg"><div class="actor"><div class="where">France</div><b>Comigel</b><small>fabrique des plats cuisinés</small>
+            <div class="eye" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M1.5 12S5.5 5 12 5s10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12z"/><circle cx="12" cy="12" r="3.2"/></svg></div></div>
+          <div class="doc"><span class="kind">fiche produit</span><span class="word">bœuf</span></div></div>
+        <div class="arrow">→</div>
+        <div class="link"><div class="actor"><div class="where">13 pays</div><b>Findus et autres</b><small>lasagnes « pur bœuf »</small></div>
+          <div class="doc"><span class="kind">emballage</span><span class="word">bœuf</span></div></div>
+      </div>
+      <div class="seen">
+        <div class="left">invisible pour Comigel : il ne voit pas ces documents</div>
+        <div class="right"><b>Ce que Comigel voit :</b> seulement la facture de Spanghero, qui dit « bœuf ». Rien d'autre.</div>
+      </div>
+      <div class="s1-foot">
+        <div class="note no"><b>Le point clé :</b> personne n'a modifié le document de l'abattoir. Un <b>nouveau</b> document est apparu, qui disait « bœuf ».</div>
+        <button class="btn" id="eyeBtn" type="button">Voir ce que Comigel voit</button>
+      </div>
+    </section>
+
+    <!-- ===================== STEP 2 ===================== -->
+    <section class="step" data-step="2" data-part="A" data-title="Pourquoi le test du hash ne suffit pas ici"
+      data-caption="Le hash protège un document contre la modification. Mais en 2013, personne n'a modifié : on a créé un nouveau document, avec sa propre empreinte, tout à fait valide.">
+      <div class="note vi def"><b>Le hash</b> = l'empreinte digitale d'un document (calculée avec SHA-256). Un seul mot change → l'empreinte change complètement. Ci-dessous : les vraies empreintes calculées par notre notebook (début…fin).</div>
+      <div class="two">
+        <div class="case">
+          <h3><span class="label">Cas 1</span>Quelqu'un <u>modifie</u> la fiche de l'abattoir</h3>
+          <div class="docrow">
+            <div class="fiche"><div class="fid">REC-001 · SLAUGHTER</div>species : <span class="sp">"HORSE"</span><div class="fp">empreinte : <b>b2d7a81a…72e6</b></div></div>
+            <div class="verdict ok">empreinte enregistrée dans le registre</div>
+          </div>
+          <div class="mid">↓ on remplace « HORSE » par « BEEF » dans la même fiche</div>
+          <div class="docrow">
+            <div class="fiche edited"><div class="fid">REC-001 · SLAUGHTER (modifiée)</div>species : <span class="sp">"BEEF"</span><div class="fp bad">empreinte : <b>b2c60303…bc52</b></div></div>
+            <div class="verdict no"><span class="cross">✗</span> ne correspond plus</div>
+          </div>
+          <div class="concl ok">Le hash le voit tout de suite : alerte.</div>
+        </div>
+        <div class="case">
+          <h3><span class="label">Cas 2 · ce qui s'est passé en 2013</span>Quelqu'un <u>crée un nouveau</u> document</h3>
+          <div class="docrow">
+            <div class="fiche"><div class="fid">REC-001 · SLAUGHTER</div>species : <span class="sp">"HORSE"</span><div class="fp">empreinte : <b>b2d7a81a…72e6</b></div></div>
+            <div class="verdict ok"><span class="check">✓</span> intacte, personne n'y a touché</div>
+          </div>
+          <div class="mid">+ un trader ajoute une nouvelle fiche</div>
+          <div class="docrow">
+            <div class="fiche newdoc"><div class="fid">REC-004 · TRANSFER (nouvelle)</div>species_declared : <span class="sp" style="color:var(--no)">"BEEF"</span><div class="fp">empreinte : <b>1d5ddb0d…ae48</b></div></div>
+            <div class="verdict ok"><span class="check">✓</span> sa propre empreinte, valide</div>
+          </div>
+          <div class="concl no">Rien n'a été modifié → le hash ne voit rien.</div>
+        </div>
+      </div>
+      <div class="note s2-foot"><b>Donc :</b> il faut une autre règle, qui compare le <b>contenu</b> des documents entre eux. C'est l'étape suivante.</div>
+    </section>
+
+    <!-- ===================== STEP 3 ===================== -->
+    <section class="step" data-step="3" data-part="A" data-title="La règle MeatTrace : l'espèce doit suivre le lot"
+      data-caption="Tous les documents d'un lot sont rangés sous le même numéro, dans le même registre partagé. À chaque transfert, l'espèce déclarée doit être celle signée par l'abattoir. Sinon, le lot est bloqué à la réception.">
+      <div class="s3" id="s3">
+        <div>
+          <div class="label" style="margin-bottom:6px">Arrive chez FreshMeals</div>
+          <div class="rec rec-new">
+            <div class="rid">REC-004 · TRANSFER</div>
+            <div class="kv">from : Delta Trading (NL)</div>
+            <div class="kv">to : FreshMeals (FR)</div>
+            <div class="kv">batch_id : <b>RO-2026-0412</b></div>
+            <div class="kv">species_declared : <span class="pill no">BEEF</span></div>
+          </div>
+          <div class="samebatch">même numéro de lot → on ouvre son historique</div>
+        </div>
+        <div>
+          <div class="reg">
+            <div class="reg-head"><span>Registre partagé</span><span class="mono" style="font-size:13px">lot RO-2026-0412</span></div>
+            <div class="reg-row r1"><span class="rid">REC-001 · SLAUGHTER</span> · Carpati Meat (RO)<br>species : <span class="pill vi">HORSE</span> · <b>signé par l'abattoir</b></div>
+            <div class="reg-row"><span class="rid">REC-002 · TRANSFER</span> · Carpati Meat → Delta Trading<br>species_declared : HORSE</div>
+            <div class="reg-row"><span class="rid">REC-003 · DNA_TEST</span> · GenoLab (DE)<br>result : EQUINE 100 %</div>
+            <div class="reg-row slot">REC-004 ? En attente du contrôle…</div>
+            <div class="copies"><b style="color:var(--violet)">4 copies identiques :</b><span>FreshMeals</span><span>Distributeur A</span><span>Distributeur B</span><span>GenoLab</span></div>
+          </div>
+          <div class="lookup">On cherche dans l'historique du lot la fiche d'abattage signée…</div>
+        </div>
+        <div>
+          <div class="cmp">
+            <div class="label">Comparaison</div>
+            <div class="cmp-grid">
+              <div><div class="lab">déclaré (REC-004)</div><div class="val" style="color:var(--no)">BEEF</div></div>
+              <div class="neq">≠</div>
+              <div><div class="lab">signé (REC-001)</div><div class="val">HORSE</div></div>
+            </div>
+          </div>
+          <div class="door">
+            <div class="who">Réception de FreshMeals (FR)</div>
+            <div class="res" id="doorRes">en attente…</div>
+          </div>
+        </div>
+      </div>
+      <ol class="phases" id="phases">
+        <li>REC-004 arrive avec le numéro de lot</li>
+        <li>On ouvre l'historique du lot</li>
+        <li>On trouve « HORSE », signé par l'abattoir</li>
+        <li>On compare BEEF et HORSE</li>
+        <li>Différent → lot bloqué</li>
+      </ol>
+      <div class="cant">
+        <div class="note vi"><b>Effacer « HORSE » ?</b> Impossible : la fiche est dans les 4 copies du registre.</div>
+        <div class="note vi"><b>Couper le lien ?</b> Impossible : même numéro de lot pour tous les documents.</div>
+        <button class="btn" id="replay3" type="button">Rejouer</button>
+      </div>
+    </section>
+
+    <!-- ===================== STEP 4 ===================== -->
+    <section class="step" data-step="4" data-part="A" data-title="Le code, ligne par ligne"
+      data-caption="Trois instructions suffisent : fabriquer la fiche du trader, lire l'espèce signée, comparer. Clique sur « Ligne suivante » pour avancer.">
+      <div class="s4">
+        <div class="code focus" id="code4"></div>
+        <div class="s4-bottom">
+          <div class="explain">
+            <div class="label" id="ex4label"></div>
+            <div id="ex4text"></div>
+            <div class="explain-nav">
+              <button class="btn small" id="prev4" type="button">◀ Ligne précédente</button>
+              <button class="btn small primary" id="next4" type="button">Ligne suivante ▶</button>
+              <span class="muted" style="font-size:14px" id="pos4"></span>
+            </div>
+          </div>
+          <div class="term">
+            <div class="label">En mémoire</div>
+            <div class="mem" id="mem4">
+              <div>resale_transfer = <span class="v">{… "BEEF" …}</span></div>
+              <div>signed_species  = <span class="v">"HORSE"</span></div>
+              <div>status          = <span class="v">"MISMATCH, batch blocked"</span></div>
+            </div>
+            <div class="label">Affichage (sortie)</div>
+            <div class="out" id="out4">REC-004 declares       : BEEF
+Signed history says    : HORSE
+Check                  : <span class="r">MISMATCH, batch blocked</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== STEP 5 ===================== -->
+    <section class="step" data-step="5" data-part="A" data-title="Les 2 questions pièges"
+      data-caption="Notre code vérifie que les documents sont cohérents entre eux. Il ne peut pas savoir si un document dit la vérité : pour cela, il y a les tests ADN et le contrat du consortium.">
+      <div class="s5-bar">
+        <span class="muted">Pour t'entraîner, cache les réponses et réponds à voix haute.</span>
+        <button class="btn small" id="hide5" type="button" aria-pressed="false">Cacher les réponses</button>
+      </div>
+      <div class="traps" id="traps">
+        <div class="trap">
+          <div class="label">Question piège 1</div>
+          <div class="q">« Et si le fraudeur invente un nouveau numéro de lot ? »</div>
+          <div class="flow">
+            <div class="box">Lot <span class="mono">RO-2026-9999</span> (inventé) arrive chez FreshMeals</div>
+            <div class="down">↓</div>
+            <div class="box">On cherche son historique dans le registre partagé</div>
+            <div class="down">↓</div>
+            <div class="box no">Aucune fiche d'abattage signée → pas d'origine</div>
+            <div class="down">↓</div>
+            <div class="box no">FreshMeals refuse le lot</div>
+          </div>
+          <div class="answer">
+            <div class="note vi">Règle : <b>100 % des lots</b> doivent avoir un historique signé qui remonte jusqu'à l'abattoir. Un lot sans origine est refusé.</div>
+            <div class="key">Nouveau numéro = pas d'origine = refusé.</div>
+          </div>
+        </div>
+        <div class="trap">
+          <div class="label">Question piège 2</div>
+          <div class="q">« Et si l'abattoir écrit BEEF dès le départ, ou si on échange la viande dans le camion ? »</div>
+          <div class="flow">
+            <div class="box">Tous les documents disent « BEEF »</div>
+            <div class="down">↓</div>
+            <div class="box ok">Le code compare : BEEF = BEEF → « OK »</div>
+            <div class="down">↓</div>
+            <div class="box no">Le code ne voit rien : les documents sont cohérents… mais faux</div>
+          </div>
+          <div class="answer">
+            <div class="note vi"><b>Réponse :</b> des <b>tests ADN aléatoires</b> (GenoLab) contrôlent la vraie viande. Et celui qui signe est <b>responsable</b> : le contrat du consortium prévoit une pénalité, puis l'exclusion.</div>
+            <div class="key">Le code vérifie la cohérence, pas la vérité.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== STEP 6 ===================== -->
+    <section class="step" data-step="6" data-part="B" data-title="Qui a le droit de faire quoi"
+      data-caption="Les droits dépendent du rôle, pas de la personne. Regarde la colonne rouge : aucun rôle n'a le droit edit_record. Personne ne peut modifier une fiche déjà écrite.">
+      <div class="badges" id="badges"></div>
+      <table class="matrix" id="matrix"></table>
+      <div class="note no s6-foot"><b>edit_record</b> (modifier une fiche) : personne ne l'a. Pour corriger une erreur, on ajoute une nouvelle fiche, on n'efface jamais.</div>
+    </section>
+
+    <!-- ===================== STEP 7 ===================== -->
+    <section class="step" data-step="7" data-part="B" data-title="La fonction can_do = 3 portes"
+      data-caption="Chaque demande passe 3 portes, toujours dans le même ordre. Dès qu'une porte dit non, la fonction s'arrête et donne la raison.">
+      <div class="track" id="track7"></div>
+      <div class="s7-bottom">
+        <div class="code focus" id="code7"></div>
+        <div class="s7-side">
+          <div class="explain">
+            <div class="label" id="ex7label"></div>
+            <div id="ex7text"></div>
+          </div>
+          <div class="explain-nav">
+            <button class="btn small" id="prev7" type="button">◀ Porte précédente</button>
+            <button class="btn small primary" id="next7" type="button">Porte suivante ▶</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== STEP 8 ===================== -->
+    <section class="step" data-step="8" data-part="B" data-title="Simulateur : les 5 tests du notebook"
+      data-caption="Clique sur un test : la demande avance porte par porte. Rouge = refusé, vert = autorisé. En bas à gauche, tu peux aussi inventer ta propre demande.">
+      <div class="track" id="track8"></div>
+      <div class="s8-bottom">
+        <div>
+          <div class="label" style="margin-bottom:4px">Les 5 tests du notebook</div>
+          <div class="tests" id="tests"></div>
+          <div class="free">
+            <div class="label">Essaie toi-même</div>
+            <div class="row">
+              <select id="fUser" aria-label="Utilisateur"></select>
+              <select id="fAction" aria-label="Action"></select>
+              <select id="fRec" aria-label="Fiche"></select>
+              <button class="btn small primary" id="fGo" type="button">Tester</button>
+            </div>
+          </div>
+        </div>
+        <div class="result" id="result">
+          <div class="placeholder">Choisis un test à gauche.<br>Le résultat apparaîtra ici.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== STEP 9 ===================== -->
+    <section class="step" data-step="9" data-part="AB" data-title="À retenir pour l'oral"
+      data-caption="Trois phrases à dire à l'oral. Apprends-les telles quelles : elles résument toute cette page.">
+      <div class="quotes">
+        <div class="quote"><div class="qn">1</div>
+          <p>« Le hash détecte toute <b>modification</b> d'un document : un seul mot change, l'empreinte change complètement. »</p>
+          <button class="btn small" type="button" data-goto="2">Revoir l'étape 2</button></div>
+        <div class="quote"><div class="qn">2</div>
+          <p>« En 2013 le fraudeur a créé un <b>nouveau document</b> : MeatTrace le bloque parce que l'espèce déclarée doit être celle signée par l'abattoir. »</p>
+          <button class="btn small" type="button" data-goto="3">Revoir l'étape 3</button></div>
+        <div class="quote"><div class="qn">3</div>
+          <p>« La fonction <b>can_do</b> applique les règles d'accès : compte actif, droit du rôle, et personne n'approuve son propre travail. Notre code prouve que les documents sont <b>cohérents</b>, pas qu'ils sont <b>vrais</b> : pour ça, il y a les tests ADN. »</p>
+          <button class="btn small" type="button" data-goto="7">Revoir l'étape 7</button></div>
+      </div>
+      <div class="label" style="margin:22px 0 8px">Mini-lexique, si on te pose la question</div>
+      <div class="lex">
+        <div><b>hash</b>l'empreinte digitale d'un document.</div>
+        <div><b>MISMATCH</b>« ne correspond pas » : le lot est bloqué.</div>
+        <div><b>can_do</b>la fonction qui répond oui ou non à une demande, avec la raison.</div>
+        <div><b>REVOKED (révoqué)</b>compte désactivé. Exemple : dan, parti de Delta Trading.</div>
+        <div><b>séparation des tâches</b>personne n'approuve son propre travail.</div>
+        <div><b>cohérent ≠ vrai</b>le code compare les documents ; l'ADN contrôle la viande.</div>
+      </div>
+    </section>
+
+  </div>
+
+  <p class="caption" id="caption"></p>
+  <div class="navrow">
+    <span class="counter" id="counter"></span>
+    <div class="dots" id="dots"></div>
+    <button class="btn" id="prevBtn" type="button">◀ Précédent</button>
+    <button class="btn primary" id="nextBtn" type="button">Étape suivante ▶</button>
+  </div>
+</main>
+
+<script>
+/*CAN_DO_START*/
+// Exact copy of the notebook data and of can_do (Python → JavaScript).
+const users = {
+  ion:    { org: "Carpati Meat (RO)",     role: "abattoir",        active: true },
+  pieter: { org: "Delta Trading (NL)",    role: "trader",          active: true },
+  dan:    { org: "Delta Trading (NL)",    role: "trader",          active: false },
+  claire: { org: "FreshMeals (FR)",       role: "quality_manager", active: true },
+  anna:   { org: "GenoLab (DE)",          role: "lab_inspector",   active: true },
+  marc:   { org: "Food Safety Authority", role: "auditor",         active: true },
+};
+const role_permissions = {
+  abattoir:        new Set(["create_record", "read_own"]),
+  trader:          new Set(["create_record", "read_own"]),
+  quality_manager: new Set(["create_record", "approve_record", "read_batch"]),
+  lab_inspector:   new Set(["create_test", "approve_record", "read_batch"]),
+  auditor:         new Set(["read_audit"]),
+};
+const records = {
+  "REC-001": { event: "SLAUGHTER", created_by: "ion" },
+  "REC-007": { event: "RECEPTION", created_by: "claire" },
+};
+function can_do(user, action, record_id = null) {
+  const account = users[user];
+  if (!account.active) {
+    return [false, "account revoked"];
+  }
+  if (!role_permissions[account.role].has(action)) {
+    return [false, `role '${account.role}' has no '${action}' right`];
+  }
+  if (action === "approve_record" && records[record_id].created_by === user) {
+    return [false, "separation of duties: cannot approve own record"];
+  }
+  return [true, "permission granted"];
+}
+const TESTS = [
+  { user: "anna",   action: "approve_record", rec: "REC-001", risk: "Une partie indépendante (le labo) vérifie la fiche de l'abattoir." },
+  { user: "claire", action: "read_batch",     rec: "REC-001", risk: "L'acheteur vérifie l'origine du lot avant de cuisiner." },
+  { user: "pieter", action: "edit_record",    rec: "REC-001", risk: "Empêche de ré-étiqueter du cheval en bœuf : la fraude de 2013." },
+  { user: "claire", action: "approve_record", rec: "REC-007", risk: "Pas d'auto-certification : personne n'approuve son propre travail." },
+  { user: "dan",    action: "create_record",  rec: null,      risk: "Un ancien employé ne peut plus signer au nom d'un partenaire." },
+];
+/*CAN_DO_END*/
+
+(function () {
+  "use strict";
+  const RM = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+  const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+  /* ---------- timers (cleared on every step change) ---------- */
+  let timers = [];
+  const later = (fn, ms) => { timers.push(setTimeout(fn, RM ? 0 : ms)); };
+  const clearTimers = () => { timers.forEach(clearTimeout); timers = []; };
+
+  /* ---------- French labels ---------- */
+  const ACTIONS = ["create_record", "read_own", "approve_record", "read_batch", "create_test", "read_audit", "edit_record"];
+  const ACTION_FR = {
+    create_record: "créer une fiche", read_own: "lire ses fiches", approve_record: "approuver une fiche",
+    read_batch: "lire tout le lot", create_test: "créer un test", read_audit: "lire le journal d'audit",
+    edit_record: "modifier une fiche",
+  };
+  const ROLE_FR = {
+    abattoir: "abattoir", trader: "négociant", quality_manager: "responsable qualité",
+    lab_inspector: "inspecteur labo", auditor: "auditeur",
+  };
+  function reasonFr(reason) {
+    if (reason === "permission granted") return "Permission accordée.";
+    if (reason === "account revoked") return "Compte révoqué : la personne a quitté l'entreprise.";
+    if (reason.startsWith("separation of duties")) return "Séparation des tâches : on ne peut pas approuver sa propre fiche.";
+    const m = reason.match(/^role '(.+)' has no '(.+)' right$/);
+    if (m) return "Le rôle « " + m[1] + " » n'a pas le droit « " + m[2] + " » (" + ACTION_FR[m[2]] + ").";
+    return reason;
+  }
+  function gateOf(reason) {
+    if (reason === "account revoked") return 1;
+    if (reason.startsWith("role ")) return 2;
+    if (reason.startsWith("separation of duties")) return 3;
+    return 4;
+  }
+  const GENERIC_RISK = {
+    1: "Un compte révoqué ne peut plus rien faire, même avec un rôle valide.",
+    2: "Chaque rôle ne fait que son métier. Personne ne peut modifier une fiche.",
+    3: "Personne ne certifie son propre travail : il faut un regard extérieur.",
+    4: "Compte actif, droit du rôle présent, pas d'auto-approbation : c'est permis.",
+  };
+
+  /* ---------- code panels ---------- */
+  function hlPy(line) {
+    let s = esc(line);
+    s = s.replace(/("[^"]*")/g, '<span class="st">$1</span>');
+    s = s.replace(/\b(def|if|not|in|and|else|return|True|False|None)\b(?![^<]*<\/span>)/g, '<span class="kw">$1</span>');
+    return s;
+  }
+  function buildCode(el, lines) {
+    el.innerHTML = lines.map((l, i) => '<span class="ln" data-l="' + (i + 1) + '"><span class="num">' + (i + 1) + "</span>" + hlPy(l) + "</span>").join("");
+  }
+  function highlight(el, nums, cls) {
+    $$(".ln", el).forEach((ln) => {
+      const on = nums.includes(Number(ln.dataset.l));
+      ln.classList.toggle("hl", on);
+      ln.classList.remove("red", "green");
+      if (on && cls) ln.classList.add(cls);
+    });
+  }
+
+  /* ================= STEP 1 ================= */
+  const chain = $("#chain");
+  function enter1() {
+    const parts = Array.from(chain.children);
+    parts.forEach((p) => p.classList.remove("in"));
+    chain.classList.remove("spot");
+    $("#eyeBtn").textContent = "Voir ce que Comigel voit";
+    parts.forEach((p, i) => later(() => p.classList.add("in"), 120 + i * 130));
+    later(() => setSpot(true), 120 + parts.length * 130 + 700);
+  }
+  function setSpot(on) {
+    chain.classList.toggle("spot", on);
+    $("#eyeBtn").textContent = on ? "Revoir toute la chaîne" : "Voir ce que Comigel voit";
+  }
+  $("#eyeBtn").addEventListener("click", () => setSpot(!chain.classList.contains("spot")));
+
+  /* ================= STEP 3 ================= */
+  const s3 = $("#s3");
+  function enter3() {
+    s3.className = "s3";
+    $$("#phases li").forEach((li) => li.classList.remove("on", "red"));
+    $("#doorRes").textContent = "en attente…";
+    for (let p = 1; p <= 5; p++) {
+      later(() => {
+        s3.classList.add("p" + p);
+        const li = $$("#phases li")[p - 1];
+        li.classList.add("on");
+        if (p === 5) { li.classList.add("red"); $("#doorRes").textContent = "MISMATCH, lot bloqué"; }
+      }, 300 + (p - 1) * 1000);
+    }
+  }
+  $("#replay3").addEventListener("click", () => { clearTimers(); enter3(); });
+
+  /* ================= STEP 4 ================= */
+  const CODE4 = [
+    "resale_transfer = {",
+    "    **transfer_record,",
+    "    \"record_id\": \"REC-004\",",
+    "    \"from\": \"Delta Trading (NL)\",",
+    "    \"to\": \"FreshMeals (FR)\",",
+    "    \"species_declared\": \"BEEF\",",
+    "}",
+    "signed_species = slaughter_record[\"species\"]",
+    "status = \"OK\" if resale_transfer[\"species_declared\"] == signed_species else \"MISMATCH, batch blocked\"",
+    "",
+    "print(\"REC-004 declares       :\", resale_transfer[\"species_declared\"])",
+    "print(\"Signed history says    :\", signed_species)",
+    "print(\"Check                  :\", status)",
+  ];
+  const STEPS4 = [
+    { lines: [1, 2, 3, 4, 5, 6, 7], label: "Instruction 1 · lignes 1 à 7 · la fiche du trader",
+      html: "<p>On fabrique la fiche <b>REC-004</b>, celle que le trader envoie. <code>{**transfer_record, …}</code> veut dire : « copie la fiche de transfert REC-002, puis remplace ces 4 cases ».</p><p>La case qui compte : <code>\"species_declared\": \"BEEF\"</code>. C'est la fraude de 2013 : un <b>nouveau</b> document, pas une modification.</p>" },
+    { lines: [8], label: "Instruction 2 · ligne 8 · ce que l'abattoir a signé",
+      html: "<p>On lit dans l'historique la case « espèce » de la fiche d'abattage REC-001 : <code>slaughter_record[\"species\"]</code>.</p><p>Résultat : <b>\"HORSE\"</b>. On range cette valeur dans une boîte nommée <code>signed_species</code> (« espèce signée »).</p>" },
+    { lines: [9], label: "Instruction 3 · ligne 9 · la règle de comparaison",
+      html: "<p><code>==</code> veut dire « est-ce égal ? ». Si l'espèce déclarée est égale à l'espèce signée → <code>\"OK\"</code>. Sinon (<code>else</code>) → <code>\"MISMATCH, batch blocked\"</code>.</p><p>Ici BEEF n'est pas égal à HORSE, donc <b>status = MISMATCH</b>. <span class=\"muted\">(Si une ligne finit par « \\ », cela veut juste dire : la ligne continue en dessous.)</span></p>" },
+    { lines: [11, 12, 13], label: "Lignes 11 à 13 · on affiche le résultat",
+      html: "<p><code>print</code> = afficher à l'écran. On affiche ce qui est déclaré, ce qui est signé, et la décision.</p><p><b>MISMATCH</b> = « ça ne correspond pas ». Le lot est bloqué à la réception chez FreshMeals.</p>" },
+  ];
+  let k4 = 0;
+  buildCode($("#code4"), CODE4);
+  function show4(k) {
+    k4 = Math.max(0, Math.min(STEPS4.length - 1, k));
+    const st = STEPS4[k4];
+    highlight($("#code4"), st.lines, k4 === 2 ? "red" : null);
+    $("#ex4label").textContent = st.label;
+    $("#ex4text").innerHTML = st.html;
+    $("#pos4").textContent = (k4 + 1) + " / " + STEPS4.length;
+    $("#prev4").disabled = k4 === 0;
+    $("#next4").disabled = k4 === STEPS4.length - 1;
+    $$("#mem4 div").forEach((d, i) => d.classList.toggle("in", i <= k4 && i < 3));
+    $("#out4").classList.toggle("in", k4 === 3);
+  }
+  $("#prev4").addEventListener("click", () => show4(k4 - 1));
+  $("#next4").addEventListener("click", () => show4(k4 + 1));
+
+  /* ================= STEP 5 ================= */
+  $("#hide5").addEventListener("click", (e) => {
+    const hidden = $("#traps").classList.toggle("hide");
+    e.currentTarget.textContent = hidden ? "Montrer les réponses" : "Cacher les réponses";
+    e.currentTarget.setAttribute("aria-pressed", String(hidden));
+  });
+
+  /* ================= STEP 6 ================= */
+  $("#badges").innerHTML = Object.entries(users).map(([name, a]) =>
+    '<div class="badge' + (a.active ? "" : " revoked") + '"><div class="nm">' + name + '</div><div class="org">' + esc(a.org) +
+    '</div><div class="role">' + a.role + '</div><div class="stat">' +
+    (a.active ? '<span class="pill ok">actif</span>' : '<span class="pill no">REVOKED</span> <span style="font-size:12px">a quitté l\'entreprise</span>') +
+    "</div></div>").join("");
+  const holders = {};
+  Object.entries(users).forEach(([n, a]) => { (holders[a.role] = holders[a.role] || []).push(n); });
+  $("#matrix").innerHTML =
+    "<thead><tr><th style='text-align:left'>Rôle <span>(qui l'a)</span></th>" +
+    ACTIONS.map((a) => "<th class='" + (a === "edit_record" ? "edit" : "") + "'><code>" + a + "</code><span>" + ACTION_FR[a] + "</span></th>").join("") +
+    "</tr></thead><tbody>" +
+    Object.keys(role_permissions).map((r) => "<tr><th><code>" + r + "</code> <span>" + holders[r].join(", ") + "</span></th>" +
+      ACTIONS.map((a) => {
+        const y = role_permissions[r].has(a);
+        return "<td class='" + (y ? "y" : "n") + (a === "edit_record" ? " edit" : "") + "'>" + (y ? "✓" : "—") + "</td>";
+      }).join("") + "</tr>").join("") + "</tbody>";
+
+  /* ================= GATE TRACK ================= */
+  const STATIONS = [
+    { k: "Départ", t: "Demande", d: "qui ? quoi ? quelle fiche ?" },
+    { k: "Porte 1", t: "Compte actif ?", deny: "Non → refusé", code: "account revoked" },
+    { k: "Porte 2", t: "Le rôle a ce droit ?", deny: "Non → refusé", code: "role '…' has no '…' right" },
+    { k: "Porte 3", t: "Approuve sa propre fiche ?", deny: "Oui → refusé (seulement pour approve_record)", code: "separation of duties: …" },
+    { k: "Arrivée", t: "Autorisé", d: "permission granted" },
+  ];
+  function buildTrack(el) {
+    el.innerHTML = STATIONS.map((s, i) =>
+      '<div class="station' + (i === 4 ? " end" : "") + '" data-i="' + i + '"><div class="box"><span class="gk">' + s.k + "</span><b>" + s.t + "</b>" +
+      (s.d ? '<span style="font-size:12.5px;color:var(--muted)">' + s.d + "</span>" : "") + "</div>" +
+      (s.deny ? '<div class="deny">' + s.deny + "<code>\"" + esc(s.code) + "\"</code></div>" : "") + "</div>").join("") +
+      '<div class="token"></div>';
+  }
+  function resetTrack(el) {
+    $$(".station", el).forEach((s) => s.classList.remove("cur", "pass", "fail"));
+    const tk = $(".token", el); tk.className = "token";
+  }
+  function moveToken(el, i) {
+    const st = $$(".station", el)[i], box = $(".box", st), tk = $(".token", el);
+    tk.style.left = (st.offsetLeft + box.offsetLeft + box.offsetWidth / 2) + "px";
+  }
+
+  /* ================= STEP 7 ================= */
+  const CODE7 = [
+    "def can_do(user, action, record_id=None):",
+    "    account = users[user]",
+    "    if not account[\"active\"]:",
+    "        return False, \"account revoked\"",
+    "    if action not in role_permissions[account[\"role\"]]:",
+    "        return False, f\"role '{account['role']}' has no '{action}' right\"",
+    "    if action == \"approve_record\" and records[record_id][\"created_by\"] == user:",
+    "        return False, \"separation of duties: cannot approve own record\"",
+    "    return True, \"permission granted\"",
+  ];
+  const STEPS7 = [
+    { lines: [1, 2], label: "Départ · lignes 1 et 2",
+      html: "<p>Une demande arrive avec : <b>qui</b> (<code>user</code>), <b>quoi</b> (<code>action</code>) et parfois <b>quelle fiche</b> (<code>record_id</code>).</p><p><code>account = users[user]</code> : on va chercher le compte de la personne (entreprise, rôle, actif ou non).</p>" },
+    { lines: [3, 4], label: "Porte 1 · lignes 3 et 4",
+      html: "<p><b>Le compte est-il actif ?</b> <code>not account[\"active\"]</code> = « le compte n'est pas actif ».</p><p>Si c'est le cas, <code>return</code> renvoie la réponse et s'arrête : <code>False, \"account revoked\"</code>. Exemple : dan, qui a quitté Delta Trading.</p>" },
+    { lines: [5, 6], label: "Porte 2 · lignes 5 et 6",
+      html: "<p><b>Le rôle a-t-il ce droit ?</b> On regarde la liste des droits du rôle (le tableau de l'étape 6).</p><p>Si l'action n'y est pas : refus. Le <code>f\"…\"</code> est un texte à trous : Python y écrit le vrai rôle et la vraie action.</p>" },
+    { lines: [7, 8], label: "Porte 3 · lignes 7 et 8",
+      html: "<p><b>Approuve-t-il sa propre fiche ?</b> Ne concerne que <code>approve_record</code>.</p><p>Si la fiche a été créée par la même personne (<code>created_by == user</code>) : refus. C'est la <b>séparation des tâches</b> : pas d'auto-certification.</p>" },
+    { lines: [9], label: "Arrivée · ligne 9",
+      html: "<p>Les 3 portes sont passées : <code>return True, \"permission granted\"</code>.</p><p>La fonction renvoie toujours <b>deux choses</b> : oui ou non (<code>True</code> / <code>False</code>), et la raison en texte.</p>" },
+  ];
+  let k7 = 0;
+  buildTrack($("#track7"));
+  buildCode($("#code7"), CODE7);
+  function show7(k) {
+    k7 = Math.max(0, Math.min(4, k));
+    const st = STEPS7[k7], el = $("#track7");
+    resetTrack(el);
+    $$(".station", el).forEach((s, i) => { if (i < k7 && i > 0) s.classList.add("pass"); if (i === k7) s.classList.add(k7 === 4 ? "pass" : "cur"); });
+    highlight($("#code7"), st.lines, k7 === 4 ? "green" : null);
+    $("#ex7label").textContent = st.label;
+    $("#ex7text").innerHTML = st.html;
+    $("#prev7").disabled = k7 === 0;
+    $("#next7").disabled = k7 === 4;
+  }
+  $("#prev7").addEventListener("click", () => show7(k7 - 1));
+  $("#next7").addEventListener("click", () => show7(k7 + 1));
+
+  /* ================= STEP 8 ================= */
+  buildTrack($("#track8"));
+  const pyStr = (v) => (v === null ? "None" : '"' + v + '"');
+  $("#tests").innerHTML = TESTS.map((t, i) => {
+    const [ok] = can_do(t.user, t.action, t.rec);
+    return '<button class="tbtn" type="button" data-t="' + i + '"><span class="i">' + i + '</span><span class="c">' +
+      t.user + " · " + t.action + " · " + (t.rec || "-") + '</span><span class="tag ' + (ok ? "pill ok" : "pill no") + '">' +
+      (ok ? "ALLOWED" : "DENIED") + "</span></button>";
+  }).join("");
+  $$("#tests .tbtn").forEach((b) => b.addEventListener("click", () => runTest(Number(b.dataset.t))));
+
+  const fUser = $("#fUser"), fAction = $("#fAction"), fRec = $("#fRec");
+  fUser.innerHTML = Object.entries(users).map(([n, a]) => '<option value="' + n + '">' + n + " (" + a.role + ")</option>").join("");
+  fAction.innerHTML = ACTIONS.map((a) => '<option value="' + a + '">' + a + "</option>").join("");
+  fRec.innerHTML = Object.keys(records).map((r) => '<option value="' + r + '">' + r + "</option>").join("");
+  function syncRec() {
+    const need = fAction.value === "approve_record";
+    fRec.disabled = !need;
+    fRec.title = need ? "La fiche à approuver" : "La fiche n'est utile que pour approve_record";
+  }
+  fAction.addEventListener("change", syncRec);
+  syncRec();
+  $("#fGo").addEventListener("click", () => {
+    const rec = fAction.value === "approve_record" ? fRec.value : null;
+    $$("#tests .tbtn").forEach((b) => b.classList.remove("sel"));
+    simulate(fUser.value, fAction.value, rec, null, "Ta demande");
+  });
+
+  function runTest(i) {
+    $$("#tests .tbtn").forEach((b) => b.classList.toggle("sel", Number(b.dataset.t) === i));
+    const t = TESTS[i];
+    simulate(t.user, t.action, t.rec, t.risk, "Test " + i, i);
+  }
+
+  function simulate(user, action, rec, risk, title, testIdx) {
+    clearTimers();
+    const el = $("#track8"), tk = $(".token", el), stations = $$(".station", el), res = $("#result");
+    const [allowed, reason] = can_do(user, action, rec);
+    const stop = gateOf(reason);
+    resetTrack(el);
+    res.className = "result";
+    res.innerHTML = '<div class="label">' + esc(title) + '</div><div class="call">can_do(' + pyStr(user) + ", " + pyStr(action) + ", " + pyStr(rec) + ')</div><div class="muted" style="font-size:15px">La demande avance…</div>';
+    tk.textContent = user;
+    tk.style.transition = "none";
+    moveToken(el, 0);
+    void tk.offsetWidth;
+    tk.style.transition = "";
+    tk.classList.add("show");
+    stations[0].classList.add("cur");
+    for (let i = 1; i <= stop; i++) {
+      later(() => {
+        stations[i - 1].classList.remove("cur");
+        if (i - 1 > 0) stations[i - 1].classList.add("pass");
+        moveToken(el, i);
+        if (i === stop) {
+          later(() => finish(), 450);
+        } else {
+          stations[i].classList.add("cur");
+        }
+      }, 300 + (i - 1) * 700);
+    }
+    function finish() {
+      if (allowed) { stations[4].classList.add("pass"); tk.classList.add("green"); }
+      else { stations[stop].classList.add("fail"); tk.classList.add("red"); }
+      res.className = "result " + (allowed ? "ok" : "no");
+      res.innerHTML = '<div class="label">' + esc(title) + '</div><div class="call">can_do(' + pyStr(user) + ", " + pyStr(action) + ", " + pyStr(rec) + ")\n→ (" + (allowed ? "True" : "False") + ', "' + esc(reason) + '")</div>' +
+        '<div class="big">' + (allowed ? "ALLOWED · autorisé" : "DENIED · refusé") + "</div>" +
+        '<div class="reason">"' + esc(reason) + '"</div>' +
+        '<div class="fr">' + esc(reasonFr(reason)) + (allowed ? "" : " Arrêt à la porte " + stop + ".") + "</div>" +
+        '<div class="note ' + (allowed ? "ok" : "no") + ' risk"><b>Risque géré :</b> ' + esc(risk || GENERIC_RISK[stop]) + "</div>";
+      if (testIdx !== undefined && testIdx !== null) $$("#tests .tbtn")[testIdx].classList.add("done");
+    }
+  }
+  function enter8(sub) {
+    const m = sub && sub.match(/^test([0-4])$/);
+    if (m) later(() => runTest(Number(m[1])), 50);
+  }
+
+  /* ================= STEP 9 ================= */
+  $$("[data-goto]").forEach((b) => b.addEventListener("click", () => go(Number(b.dataset.goto), null, true)));
+
+  /* ================= NAVIGATION ================= */
+  const steps = $$(".step");
+  const N = steps.length;
+  let cur = 1;
+  $("#dots").innerHTML = steps.map((_, i) => '<button type="button" aria-label="Aller à l\'étape ' + (i + 1) + '" data-d="' + (i + 1) + '"></button>').join("");
+  $$("#dots button").forEach((b) => b.addEventListener("click", () => go(Number(b.dataset.d), null, true)));
+
+  function go(n, sub, push) {
+    n = Math.max(1, Math.min(N, n || 1));
+    clearTimers();
+    cur = n;
+    steps.forEach((s) => s.classList.toggle("active", Number(s.dataset.step) === n));
+    const s = steps[n - 1];
+    $("#stepTitle").innerHTML = '<span class="n">' + n + ".</span>" + esc(s.dataset.title);
+    $("#caption").textContent = s.dataset.caption;
+    $("#counter").textContent = "Étape " + n + " / " + N;
+    const p = s.dataset.part;
+    $("#partLabel").innerHTML = p === "A" ? "<b>Partie A</b> · La fraude de 2013 et la règle MISMATCH"
+      : p === "B" ? "<b>Partie B</b> · Les droits d'accès (fonction can_do)" : "<b>Résumé</b> · Parties A et B";
+    $$("#dots button").forEach((b, i) => b.classList.toggle("on", i + 1 === n));
+    $("#prevBtn").disabled = n === 1;
+    $("#nextBtn").disabled = n === N;
+    if (push) history.replaceState(null, "", "#" + n);
+    if (n === 1) enter1();
+    if (n === 3) enter3();
+    if (n === 4) { const m = sub && sub.match(/^line([1-4])$/); show4(m ? Number(m[1]) - 1 : 0); }
+    if (n === 7) { const m = sub && sub.match(/^gate([0-4])$/); show7(m ? Number(m[1]) : 0); }
+    if (n === 8) enter8(sub);
+  }
+  function fromHash() {
+    const h = (location.hash || "").replace("#", "");
+    const m = h.match(/^(\d+)(?:-(.+))?$/);
+    go(m ? Number(m[1]) : 1, m ? m[2] : null, false);
+  }
+  $("#prevBtn").addEventListener("click", () => go(cur - 1, null, true));
+  $("#nextBtn").addEventListener("click", () => go(cur + 1, null, true));
+  document.addEventListener("keydown", (e) => {
+    const tag = (e.target && e.target.tagName) || "";
+    if (tag === "SELECT" || tag === "INPUT" || tag === "TEXTAREA") return;
+    if (e.altKey || e.ctrlKey || e.metaKey) return;
+    if (e.key === "ArrowRight") { e.preventDefault(); go(cur + 1, null, true); }
+    if (e.key === "ArrowLeft") { e.preventDefault(); go(cur - 1, null, true); }
+  });
+  window.addEventListener("hashchange", fromHash);
+  window.addEventListener("resize", () => {
+    $$(".token").forEach((tk) => {
+      const el = tk.parentElement, st = $$(".station", el);
+      const i = st.findIndex((s) => s.classList.contains("fail") || s.classList.contains("cur"));
+      if (tk.classList.contains("show")) moveToken(el, i >= 0 ? i : (st[4].classList.contains("pass") ? 4 : 0));
+    });
+  });
+  fromHash();
+})();
+</script>
+</body>
+</html>

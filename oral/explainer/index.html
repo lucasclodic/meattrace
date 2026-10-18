@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MeatTrace : comprendre en images</title>
+<style>
+  :root {
+    --paper: #FAFAF7; --ink: #1E2033; --muted: #5E6275; --rule: #DADCE3; --panel: #F1F2F5;
+    --violet: #5B45C2; --violet-wash: #EFECFA; --ok: #1F7A4D; --no: #B42318;
+    --sans: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--sans); font-size: 18px; line-height: 1.5; }
+  main { max-width: 1200px; margin: 0 auto; padding: 56px 32px; }
+  .kicker { color: var(--muted); font-size: 15px; letter-spacing: 0.02em; }
+  h1 { font-size: 44px; line-height: 1.1; margin: 8px 0 12px; }
+  .lead { color: var(--muted); max-width: 760px; margin: 0 0 40px; }
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  a.card {
+    display: flex; flex-direction: column; gap: 10px; padding: 26px 24px;
+    background: #fff; border: 1.5px solid var(--ink); border-radius: 8px;
+    color: inherit; text-decoration: none; transition: transform 200ms, box-shadow 200ms;
+  }
+  a.card:hover, a.card:focus-visible { transform: translateY(-3px); box-shadow: 0 6px 0 var(--violet); outline: none; }
+  .num { font-size: 15px; font-weight: 700; color: var(--violet); }
+  .card h2 { font-size: 23px; line-height: 1.2; margin: 0; }
+  .card p { margin: 0; color: var(--muted); font-size: 16px; }
+  .card .q { margin-top: auto; padding-top: 10px; border-top: 1px solid var(--rule); font-size: 15px; color: var(--ink); }
+  .tip { margin-top: 36px; padding: 16px 20px; background: var(--violet-wash); border-left: 3px solid var(--violet); font-size: 16px; }
+  @media (max-width: 900px) { .cards { grid-template-columns: 1fr; } }
+  @media (prefers-reduced-motion: reduce) { a.card { transition: none; } }
+</style>
+</head>
+<body>
+<main>
+  <div class="kicker">IS511E Midterm 1 · MeatTrace · préparation de l'oral</div>
+  <h1>Comprendre MeatTrace en images</h1>
+  <p class="lead">Trois pages, à lire dans l'ordre. Chacune avance étape par étape, avec les vraies données de notre notebook. Utilise les boutons ou les flèches du clavier.</p>
+
+  <div class="cards">
+    <a class="card" href="1_registre_signature_consensus.html">
+      <span class="num">1</span>
+      <h2>Comment une fiche entre dans le registre partagé</h2>
+      <p>L'empreinte, la signature, les 4 serveurs et le vote 3 sur 4.</p>
+      <span class="q">Comment chacun connaît-il la bonne empreinte ?</span>
+    </a>
+    <a class="card" href="2_historique_empreintes.html">
+      <span class="num">2</span>
+      <h2>Un historique où l'on ajoute, sans jamais modifier</h2>
+      <p>Les lignes du lot, la chaîne de blocs, et ce qui casse quand on triche.</p>
+      <span class="q">Qu'est-ce qui change quand on ajoute ou quand on modifie ?</span>
+    </a>
+    <a class="card" href="3_fraude_2013_et_droits.html">
+      <span class="num">3</span>
+      <h2>La fraude de 2013 et les droits d'accès</h2>
+      <p>La règle MISMATCH, puis la fonction <code>can_do</code> avec un simulateur.</p>
+      <span class="q">En quoi MeatTrace aurait bloqué la fraude de 2013 ?</span>
+    </a>
+  </div>
+
+  <div class="tip">Ces pages servent à réviser. Elles ne font pas partie du rendu.</div>
+</main>
+</body>
+</html>

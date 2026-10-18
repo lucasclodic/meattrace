@@ -6,5 +6,8 @@ __pycache__/
 # macOS
 .DS_Store
 
+# Local Obsidian settings
+.obsidian/
+
 # Course brief from the professor (available on Teams, not ours to publish)
 IS511E_Midterm1_Project_Overleaf_100.pdf

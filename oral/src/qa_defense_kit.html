@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MeatTrace — Q&amp;A defense kit</title>
+<style>
+:root{--paper:#FAFAF7;--ink:#1E2033;--muted:#5E6275;--rule:#DADCE3;--panel:#F1F2F5;
+--violet:#5B45C2;--violet-ink:#3F2F96;--violet-wash:#EFECFA;
+--mono:"JetBrains Mono",ui-monospace,Menlo,monospace;--sans:"Archivo","Helvetica Neue",Arial,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:14.5px;line-height:1.55}
+main{max-width:820px;margin:0 auto;padding:40px 36px 60px}
+h1{font-size:26px;margin:0 0 14px;color:var(--violet-ink);letter-spacing:-.01em}
+h2{font-size:19px;margin:30px 0 10px;padding-bottom:4px;border-bottom:2px solid var(--violet)}
+h3{font-size:15.5px;margin:22px 0 6px;color:var(--violet-ink)}
+h4{font-size:14.5px;margin:16px 0 4px}
+p{margin:6px 0 10px}
+ul,ol{margin:6px 0 10px;padding-left:24px}
+li{margin:2px 0}
+blockquote{margin:8px 0 14px;padding:8px 14px;background:var(--violet-wash);border-left:4px solid var(--violet)}
+blockquote p{margin:4px 0}
+hr{border:0;border-top:1px solid var(--rule);margin:26px 0}
+code{font-family:var(--mono);font-size:.86em;background:var(--panel);padding:1px 5px}
+pre{background:var(--panel);padding:10px 12px;overflow-x:auto}
+pre code{padding:0;background:none}
+table{border-collapse:collapse;width:100%;margin:10px 0 16px;font-size:13px}
+th,td{border:1px solid var(--rule);padding:5px 8px;text-align:left;vertical-align:top}
+th{background:var(--panel)}
+a{color:var(--violet)}
+@page{size:A4;margin:14mm 12mm}
+@media print{body{background:#fff;font-size:12.5px}main{max-width:none;padding:0}
+h2,h3{break-after:avoid}blockquote,tr,pre{break-inside:avoid}}
+</style>
+</head>
+<body>
+<main>
+<h1>MeatTrace — Q&amp;A defense kit</h1>
+<p>IS511E Midterm 1 · Lucas Clodic, Elisa Ouillet, Julia Kozhina</p>
+<p><strong>Who answers first</strong> (the others can add a sentence):</p>
+<ul>
+<li><strong>Elisa</strong>: problem and business plan (slides 1–5)</li>
+<li><strong>Julia</strong>: costs, architecture, governance (slides 6–9)</li>
+<li><strong>Lucas</strong>: Python and roadmap (slides 10–12)</li>
+</ul>
+<p><strong>Golden rule for every answer:</strong> answer in one sentence, give one reason, point to the slide. If you don't know, say what we would check during the pilot.</p>
+<hr />
+<h2>1. The 6 questions the professor announced (brief, section 8.1)</h2>
+<h3>Q1. Why is blockchain appropriate in your case? Could a secure database be enough?</h3>
+<p><strong>First: Julia · Slide 7</strong></p>
+<blockquote>
+<p>A secure database is enough when one trusted party runs the whole process. Here, six or more independent firms in three or more countries, some of them competitors, have to share one history. In 2013 they all blamed each other, so nobody accepts that a rival controls the records. That's why we chose a permissioned consortium. If we can't find three co-funders, we would recommend the secure database instead (slide 6).</p>
+</blockquote>
+<h3>Q2. What information is public, shared with partners, or confidential?</h3>
+<p><strong>First: Julia · Slides 8–9</strong></p>
+<blockquote>
+<p>Nothing is public: it's a permissioned network. Partners see batch data according to their role: batch ID, species, weight, handovers and DNA test result. Prices, contracts, supplier lists and full lab reports stay confidential, off-chain in each company's own systems. Only their hash goes on the ledger.</p>
+</blockquote>
+<h3>Q3. Who signs, approves and validates transactions? How are these duties separated?</h3>
+<p><strong>First: Julia, Lucas adds the Python · Slides 9 and 11</strong></p>
+<blockquote>
+<p>The firm that hands over the batch signs the record: the abattoir, the trader or FreshMeals at reception. The lab signs DNA results. An independent party approves: the DNA lab, or FreshMeals' quality manager, but never for a record they created themselves. Four validator nodes (FreshMeals, 2 retailers, the lab) then agree on each block. Our Python test shows it: Claire is denied when she tries to approve her own reception.</p>
+</blockquote>
+<h3>Q4. What happens if the original real-world information is false but its signature is valid?</h3>
+<p><strong>First: Julia, Lucas adds the limit · Slides 8 and 10</strong></p>
+<blockquote>
+<p>The ledger can't see inside the meat. A signature proves who said it and that it was not changed afterwards, not that it's true. Three things catch it:</p>
+<ol>
+<li>the receiver must confirm species and weight;</li>
+<li>random DNA tests on at least 10 % of batches;</li>
+<li>the false statement is signed, so the liar is identified and liable under the consortium contract (penalty, then exclusion).</li>
+</ol>
+<p>In 2013 this was the missing piece: nobody could prove at which link the label changed.</p>
+</blockquote>
+<h3>Q5. What is the most uncertain cost assumption? How does it affect your decision?</h3>
+<p><strong>First: Julia · Slide 6</strong></p>
+<blockquote>
+<p>The most uncertain assumption is the number of paying members. With four founders, FreshMeals pays €76k over 3 years, less than the €116k of its own database. If FreshMeals had to pay alone, it would be €305k and the database would win. So the first thing we would secure in the pilot is signed commitments from the two retailers and the lab. Our day rates and hosting prices are also estimates; we would replace them with real quotes during the pilot.</p>
+</blockquote>
+<h3>Q6. Which measurable result would convince a partner to join a pilot?</h3>
+<p><strong>First: Elisa, Lucas adds the roadmap · Slides 5 and 12</strong></p>
+<blockquote>
+<p>Any pilot batch traced from the ready meal back to its abattoir in under one hour, with 100 % of handovers signed. Today it takes days: Walmart needed almost 7 days to trace mangoes before its blockchain pilot, 2.2 seconds after. One number, easy to test in 6 months on one product line (beef lasagne).</p>
+</blockquote>
+<hr />
+<h2>2. The 6 technical questions (brief, section 3.2)</h2>
+<h3>T1. What data is stored in one transaction? Give at least three fields.</h3>
+<p><strong>First: Julia, or Lucas with the code · Slides 8 and 10</strong></p>
+<blockquote>
+<p>A slaughter record contains <code>record_id</code>, <code>event</code>, <code>batch_id</code>, <code>species</code>, <code>weight_kg</code>, <code>site</code> and <code>date</code>. A transfer adds <code>from</code>, <code>to</code> and <code>species_declared</code>. A DNA test record contains <code>lab</code>, <code>result</code> and <code>report_sha256</code>, which is the fingerprint of the full PDF report kept off-chain.</p>
+</blockquote>
+<h3>T2. Which information remains confidential or outside the shared ledger?</h3>
+<p><strong>First: Julia · Slides 8–9</strong></p>
+<blockquote>
+<p>These stay off-chain, in each firm's own systems:</p>
+<ul>
+<li>prices and contract terms;</li>
+<li>the list of a supplier's other customers;</li>
+<li>full lab reports (only their hash is on the ledger);</li>
+<li>employees' personal data.</li>
+</ul>
+<p>On the ledger we keep only what is needed to trace a batch.</p>
+</blockquote>
+<h3>T3. Who submits, approves and validates records? Are these different responsibilities?</h3>
+<p><strong>First: Julia · Slide 9</strong></p>
+<blockquote>
+<p>Yes, they are three different duties. One organization can hold two of them (FreshMeals both receives and approves), but never on the same record, and no member can accept a block alone:</p>
+<ul>
+<li><strong>Submit:</strong> the firm handing over the batch (abattoir, trader, FreshMeals at reception) or the lab for tests.</li>
+<li><strong>Approve:</strong> an independent party (the lab or FreshMeals' quality manager), never the creator of the record.</li>
+<li><strong>Validate blocks:</strong> four nodes (FreshMeals, retailer A, retailer B, the DNA lab), with 3 of 4 votes needed. The food authority observes but does not vote.</li>
+</ul>
+</blockquote>
+<h3>T4. How will the system detect unauthorized changes to an approved record?</h3>
+<p><strong>First: Lucas · Slides 8 and 10</strong></p>
+<blockquote>
+<p>Every validator stores the SHA-256 fingerprint of the approved record. If someone changes "HORSE" to "BEEF", the recomputed fingerprint no longer matches: our test shows <code>b2d7a81a…</code> becomes <code>b2c60303…</code>. Because the block stores that fingerprint and the next block stores the block's hash, the change also breaks the chain (block 41 changes from <code>9c2833fa…</code> to <code>b992d559…</code>). On top of that, no role has an "edit" right: a mistake is corrected by a new, signed record, never by editing an old one. And for the real 2013 scenario (a <em>new</em> document saying "beef"), a business rule compares the declared species with the signed history: our test prints <code>MISMATCH, batch blocked</code>.</p>
+</blockquote>
+<h3>T5. What happens if a partner signs an incorrect statement about a real-world event?</h3>
+<p><strong>First: Julia · Slide 8</strong></p>
+<blockquote>
+<p>Same answer as Q4: integrity is not truth. The wrong statement stays in the history, signed by its author, so we know exactly who said what and when. It is caught by the receiver's check or a random DNA test, then corrected with a new record, and the signer faces contract penalties or exclusion.</p>
+</blockquote>
+<h3>T6. Why does your choice of network and consensus fit the number of participants and their trust relationships?</h3>
+<p><strong>First: Julia · Slides 7 and 9</strong></p>
+<blockquote>
+<p>About ten known companies take part: 6 suppliers, FreshMeals, 2 retailers, one lab, plus the authority as observer. They are identified and bound by contract, but they don't fully trust each other.</p>
+<ul>
+<li>A <strong>public</strong> network would expose batches and partners to the world.</li>
+<li><strong>PoW or PoS</strong> are designed for anonymous participants, and cost energy or require a token.</li>
+<li>With <strong>4 known validators and a 3-of-4 vote</strong> (BFT style), blocks are confirmed in seconds and one faulty or dishonest validator can neither block nor fake a block.</li>
+</ul>
+</blockquote>
+<hr />
+<h2>3. Likely trap and follow-up questions</h2>
+<h3>F1. Why not use an existing EU system like TRACES, or one central EU database?</h3>
+<p><strong>Julia</strong></p>
+<blockquote>
+<p>For official health certificates, a central system run by the European Commission works, because the Commission is a neutral, trusted operator. But as far as we know, TRACES mainly handles official certificates (imports, live animals). It does not record every private handover of a meat batch between traders inside the EU, and the 2013 meat travelled with ordinary commercial documents. MeatTrace could connect to official systems later.</p>
+<p>⚠️ Our knowledge of the exact scope of TRACES is not verified; don't go into details.</p>
+</blockquote>
+<h3>F2. Suppliers don't run validator nodes. Don't the buyers control the ledger?</h3>
+<p><strong>Julia</strong></p>
+<blockquote>
+<p>The four validators are three independent buyers, two of them competing retailers, plus an independent lab. No single one of them can add or change a block, because it takes 3 of 4. Suppliers keep a signed receipt of every record they submit, so they can always prove what they declared. The authority watches everything as an observer node. In phase 3, a supplier association can get its own node. We started without supplier nodes because small abattoirs don't have the IT resources, not to exclude them.</p>
+</blockquote>
+<h3>F3. What happens if 2 validators collude?</h3>
+<p><strong>Julia</strong></p>
+<blockquote>
+<p>Two validators alone cannot add a fake block: they need 3 votes out of 4. They could block the network by refusing to sign; that's the honest limit of a 4-node network, which tolerates only 1 faulty member. Governance handles it: the board can exclude a member, and we plan to add nodes later. With 7 nodes, 2 faulty members are tolerated.</p>
+</blockquote>
+<h3>F4. Why 3 out of 4, and not a simple majority of 2 out of 4?</h3>
+<p><strong>Julia</strong></p>
+<blockquote>
+<p>With 2 of 4, two conflicting blocks could each get 2 votes, and two colluding members could approve a fake block. With 3 of 4, any two groups of 3 voters share at least 2 members, and at least one of them is honest, so two conflicting blocks can never both be accepted. It's the classic BFT rule: 4 nodes tolerate 1 faulty node.</p>
+</blockquote>
+<h3>F5. Where do your cost numbers come from?</h3>
+<p><strong>Julia</strong></p>
+<blockquote>
+<p>They are team estimates, clearly marked as assumptions (appendix B):</p>
+<ul>
+<li>a developer day at €500;</li>
+<li>about 80 days for the database and 180 days for the ledger and portal;</li>
+<li>€6k a year of cloud hosting for the database, and €5k a year per node.</li>
+</ul>
+<p>We didn't get real quotes; that would be done during the pilot. What matters for the decision is the comparison and the sensitivity: with fewer than 3 co-funders, the database wins.</p>
+</blockquote>
+<h3>F6. Is the 2013 case still relevant today?</h3>
+<p><strong>Elisa</strong></p>
+<blockquote>
+<p>Yes. Food fraud is still about falsified documents: in a 2022 EU operation (OLAF report 2023), 46 % of 320 imported honey samples were found adulterated, some with forged traceability information. The law still only requires each firm to identify its suppliers and customers ("one step back, one step forward"), so nobody sees the whole chain. Controls did improve after 2013: the European Commission reported far fewer positive horse-DNA tests in 2014.</p>
+<p>⚠️ Check the 2014 figure before quoting it (about 0.6 %).</p>
+</blockquote>
+<h3>F7. What is the difference between hashing and encryption?</h3>
+<p><strong>Lucas</strong></p>
+<blockquote>
+<p>Hashing is one-way: it turns data into a fixed fingerprint. You can't get the data back, and there is no key. We use it for integrity: has anything changed? Encryption is two-way: data is locked with a key and can be unlocked with the right key. It is used for confidentiality, for example to protect off-chain lab reports and network traffic.</p>
+</blockquote>
+<h3>F8. What is a Merkle root? Did you use one?</h3>
+<p><strong>Lucas</strong></p>
+<blockquote>
+<p>A Merkle root is a single hash made by hashing transaction hashes two by two up to the top. A partner can then check one transaction without downloading the whole block. Our prototype simply lists the three transaction hashes in the block, which is a simplification. The principle is the same: change one transaction and the block hash changes. A production platform like Hyperledger Fabric handles this for us.</p>
+</blockquote>
+<h3>F9. Why not Proof of Work or Proof of Stake?</h3>
+<p><strong>Julia</strong></p>
+<blockquote>
+<p>PoW makes anonymous miners solve a costly puzzle (energy). PoS asks validators to lock tokens, so it needs a cryptocurrency. Both exist because, in public networks, nobody knows who the participants are. Our validators are known companies, bound by a contract and identified by certificates, so a simple vote (3 of 4) is enough, faster and free.</p>
+</blockquote>
+<h3>F10. What about GDPR and personal data?</h3>
+<p><strong>Julia</strong></p>
+<blockquote>
+<p>The ledger holds company data, not personal data: batch IDs, species, weights, company names, hashes. Employees are identified in each company's own login system. The company's certificate signs the records, and we don't write people's names on the chain. That matters because a blockchain cannot delete data, and GDPR gives a right to erasure. Keeping personal data off-chain avoids the conflict.</p>
+</blockquote>
+<h3>F11. TradeLens failed. Why wouldn't you?</h3>
+<p><strong>Lucas</strong></p>
+<blockquote>
+<p>TradeLens announced its closure in late 2022 (offline in early 2023) despite more than 300 members, for lack of industry collaboration: it was largely led by Maersk and IBM, and many competitors didn't want to join. We reduce that risk in four ways:</p>
+<ol>
+<li><strong>neutral governance:</strong> 4 founders with one vote each, and no single owner;</li>
+<li><strong>free for suppliers;</strong></li>
+<li><strong>a small start:</strong> one product line, 6 months;</li>
+<li><strong>a real business need</strong>, pushed by retailers and EU traceability rules.</li>
+</ol>
+<p>But we could fail the same way. That's why we have a pilot and a database fallback.</p>
+</blockquote>
+<h3>F12. What does your Python prototype NOT prove?</h3>
+<p><strong>Lucas</strong></p>
+<blockquote>
+<p>It proves two pieces of logic:</p>
+<ul>
+<li><strong>tamper detection:</strong> a changed record gives a different hash and breaks the block;</li>
+<li><strong>permission rules:</strong> 2 actions allowed and 3 denied, with separation of duties and revocation.</li>
+</ul>
+<p>It does <strong>not</strong> provide real security: anyone running the notebook can edit a Python dictionary. It also does not implement real digital signatures, a network of nodes, consensus, real identities, or proof that the meat is really horse or beef. All of that needs production engineering (slide 12, "Still to build").</p>
+</blockquote>
+<h3>Bonus questions if there is time</h3>
+<ul>
+<li>
+<p><strong>Why not just anchor hashes on a public blockchain?</strong> (Julia)</p>
+<blockquote>
+<p>Good idea as an add-on: publishing one daily hash of our ledger on a public chain costs almost nothing and gives independent proof. But it doesn't replace access rights and shared governance between partners.</p>
+</blockquote>
+</li>
+<li>
+<p><strong>Why would competing retailers share a network?</strong> (Elisa)</p>
+<blockquote>
+<p>They share only proof of origin, not prices or volumes. They have the same interest: no scandal in their meat aisle.</p>
+</blockquote>
+</li>
+<li>
+<p><strong>What if a supplier refuses to join?</strong> (Elisa)</p>
+<blockquote>
+<p>For the pilot product line, FreshMeals buys only from suppliers on the network. Being "verified" becomes a sales argument for honest suppliers.</p>
+</blockquote>
+</li>
+<li>
+<p><strong>What if a validator's private key is stolen?</strong> (Julia)</p>
+<blockquote>
+<p>The board revokes its certificate. The other 3 validators still protect the ledger, and keys are stored in secure hardware.</p>
+</blockquote>
+</li>
+</ul>
+<hr />
+<h2>4. Concept cheat sheet (applied to MeatTrace)</h2>
+<table>
+<thead>
+<tr>
+<th>Concept</th>
+<th>In one or two sentences, for MeatTrace</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Ledger</strong></td>
+<td>The shared, append-only history of every batch event. Every validator keeps an identical copy, so nobody owns "the" truth alone.</td>
+</tr>
+<tr>
+<td><strong>Transaction</strong></td>
+<td>One business event about a batch: slaughter, transfer, DNA test or reception. It is signed by the organization that performs it.</td>
+</tr>
+<tr>
+<td><strong>Block</strong></td>
+<td>A group of validated transactions with a header: block number, timestamp, previous hash, transaction hashes. Our block 41 contains T1, T2 and T3.</td>
+</tr>
+<tr>
+<td><strong>Previous hash</strong></td>
+<td>Each block stores the hash of the block before it (block 41 stores <code>29726fad…</code>). Changing an old block breaks every later link.</td>
+</tr>
+<tr>
+<td><strong>SHA-256</strong></td>
+<td>A function that turns any data into a 64-character fingerprint. One changed letter (HORSE to BEEF) gives a completely different fingerprint. It is one-way.</td>
+</tr>
+<tr>
+<td><strong>Digital signature</strong></td>
+<td>The sender signs the record's hash with its <strong>private key</strong> (kept secret); anyone checks it with its <strong>public key</strong>. It proves who issued the record and that it was not changed, not that it's true.</td>
+</tr>
+<tr>
+<td><strong>Consensus</strong></td>
+<td>How validators agree on the accepted order of blocks. <strong>PoW:</strong> miners solve a costly puzzle (Bitcoin). <strong>PoS:</strong> validators lock tokens. <strong>Voting/BFT:</strong> known members vote, which is our choice (3 of 4).</td>
+</tr>
+<tr>
+<td><strong>Public / private / permissioned</strong></td>
+<td><strong>Public:</strong> anyone can join and read (Bitcoin). <strong>Private:</strong> one organization controls it. <strong>Permissioned consortium:</strong> several known organizations govern it together, which is ours.</td>
+</tr>
+<tr>
+<td><strong>RBAC</strong></td>
+<td>Role-based access control: rights come from the role (abattoir, trader, quality manager, lab, auditor), not from the person. Our <code>can_do()</code> checks the role on every request.</td>
+</tr>
+<tr>
+<td><strong>Separation of duties</strong></td>
+<td>The person who creates a record cannot approve it. In the test, Claire is denied approval of her own reception REC-007.</td>
+</tr>
+<tr>
+<td><strong>Revocation</strong></td>
+<td>When someone leaves or a partner is excluded, access stops. Dan left Delta Trading, so <code>active = False</code> and his request is denied. The board can revoke a company's certificate.</td>
+</tr>
+<tr>
+<td><strong>Integrity vs agreement vs truth</strong></td>
+<td>The hash protects integrity (not changed), consensus gives agreement (same history for all), and only DNA tests and inspections give truth about the meat.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>5. Numbers to know by heart</h2>
+<table>
+<thead>
+<tr>
+<th>Figure</th>
+<th>What it is</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>≈ 750 t</strong></td>
+<td>Horse meat sold as beef by Spanghero, over about 6 months</td>
+<td>French government / anti-fraud office (DGCCRF), via AFP [2]</td>
+</tr>
+<tr>
+<td><strong>≈ 4.5 million</strong></td>
+<td>Products made with it</td>
+<td>[2]</td>
+</tr>
+<tr>
+<td><strong>28 companies, 13 countries</strong></td>
+<td>Reach of the scandal</td>
+<td>Al Jazeera [1]</td>
+</tr>
+<tr>
+<td><strong>4.66 %</strong> (193 of 4,144)</td>
+<td>EU official tests on beef products positive for horse DNA, 2013</td>
+<td>European Commission [3]</td>
+</tr>
+<tr>
+<td><strong>46 %</strong> of 320</td>
+<td>Imported honey samples found adulterated, 2022 operation (OLAF report 2023)</td>
+<td>OLAF [4]</td>
+</tr>
+<tr>
+<td><strong>Art. 18, Reg. 178/2002</strong></td>
+<td>Identify suppliers and customers (the "one step back, one step forward" principle, not a quote)</td>
+<td>EU law [5]</td>
+</tr>
+<tr>
+<td><strong>~7 days → 2.2 s</strong></td>
+<td>Walmart mango trace, before and after blockchain</td>
+<td>LF Decentralized Trust [6]</td>
+</tr>
+<tr>
+<td><strong>2022, 300+ members</strong></td>
+<td>TradeLens closure announced, lack of industry collaboration</td>
+<td>Container Magazine [7]</td>
+</tr>
+<tr>
+<td>Carrefour</td>
+<td>Blockchain-tracked chicken and pomelos "sold better", <strong>no figure published</strong></td>
+<td>ESM Magazine [8]</td>
+</tr>
+<tr>
+<td><strong>€120 M, 6 suppliers, 3 countries, ≈ 1,500 batches a year</strong></td>
+<td>FreshMeals profile</td>
+<td>assumption (fictional company)</td>
+</tr>
+<tr>
+<td><strong>€50k + 3 × €22k = €116k</strong></td>
+<td>Secure database, 3 years</td>
+<td>assumption</td>
+</tr>
+<tr>
+<td><strong>€140k + 3 × €55k = €305k</strong></td>
+<td>Consortium, whole network, 3 years</td>
+<td>assumption</td>
+</tr>
+<tr>
+<td><strong>€76k</strong> (€76,250)</td>
+<td>FreshMeals' share, 1 of 4 founders</td>
+<td>assumption</td>
+</tr>
+<tr>
+<td><strong>≈ €25k</strong></td>
+<td>Per member per year (305 ÷ 4 ÷ 3)</td>
+<td>assumption</td>
+</tr>
+<tr>
+<td><strong>€189k</strong></td>
+<td>Extra cost of the network over the database</td>
+<td>assumption</td>
+</tr>
+<tr>
+<td><strong>≈ €2 M</strong></td>
+<td>One full product-line recall (€189k is less than 10 % of it)</td>
+<td>assumption</td>
+</tr>
+<tr>
+<td><strong>€500/day; 80 days; 180 days</strong></td>
+<td>Day rate; database build; ledger and portal build</td>
+<td>assumption</td>
+</tr>
+<tr>
+<td><strong>€6k/yr; 4 × €5k/yr</strong></td>
+<td>Hosting: database; network nodes</td>
+<td>assumption</td>
+</tr>
+<tr>
+<td><strong>&lt; 1 hour; 100 %; ≥ 10 %</strong></td>
+<td>KPI targets: trace time; signed handovers; DNA sample</td>
+<td>targets (DNA rate is an assumption)</td>
+</tr>
+<tr>
+<td><strong>4 validators, 3 of 4</strong></td>
+<td>Consensus rule, tolerates 1 faulty node</td>
+<td>our design</td>
+</tr>
+<tr>
+<td><strong>6 users, 5 roles; 2 allowed, 3 denied</strong></td>
+<td>Python test B</td>
+<td>our prototype</td>
+</tr>
+<tr>
+<td><code>b2d7a81a…</code> → <code>b2c60303…</code></td>
+<td>Record hash, HORSE vs BEEF</td>
+<td>our prototype</td>
+</tr>
+<tr>
+<td><code>9c2833fa…</code> → <code>b992d559…</code></td>
+<td>Block 41 hash, before and after relabelling</td>
+<td>our prototype</td>
+</tr>
+<tr>
+<td><strong>Oct 2026 / Jan–Jun 2027 / Jul 2027–2028 / 2028+</strong></td>
+<td>Proof of concept / pilot / deployment / improvement</td>
+<td>roadmap</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Slide issues found, and status after the audit</h2>
+<ol>
+<li><strong>Slide 9 vs the code</strong>: fixed. <code>read_own</code> added for abattoir and trader in the script, the notebook and slide 11.</li>
+<li><strong>Signatures</strong>: the notebook now has an optional RSA signature cell (session 3 style). The "3 of 4 signed" line on slide 8 is marked <em>illustrative</em>.</li>
+<li><strong>Slide 2, Spanghero</strong>: fixed, the slide now says "(it denied)". Say "according to French investigators" out loud.</li>
+<li><strong>Slide 7, private blockchain cost "close to the consortium"</strong>: still a qualitative judgment (same technology, one owner). Say so if asked.</li>
+<li><strong>Slides 3 and 5, "today: several days"</strong>: an order of magnitude based on the Walmart example, not a meat-specific study.</li>
+<li><strong>Slide 1, date</strong>: fixed to 20 October 2026 (confirmed 18/10).</li>
+</ol>
+</main>
+</body>
+</html>

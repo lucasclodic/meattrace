@@ -286,8 +286,9 @@
 
   /* ---------- v3: simpler, student-made look ---------- */
   .pg { font-size: 13px; color: var(--muted); }
-  .foot .fn { max-width: 1050px; line-height: 1.4; }
-  sup.ast { font-size: 0.75em; color: var(--ink); font-weight: 600; margin-left: 1px; }
+  .foot .fn { max-width: 1050px; line-height: 1.45; border-top: 1px solid var(--rule); padding-top: 5px; }
+  .foot .fn:empty { border-top: none; }
+  sup.ast { font-size: 0.68em; color: var(--violet-ink); font-weight: 600; margin-left: 2px; }
   th { border: 1px solid #C9CBD3; background: #F1F2F5; color: var(--ink); font-stretch: 100%; padding: 6px 9px; }
   td { border: 1px solid #C9CBD3; padding: 6px 9px; }
   tr.chosen td { background: var(--violet-wash); }
@@ -305,6 +306,7 @@
   .colab { font-family: var(--mono); font-size: 12.5px; line-height: 1.5; display: flex; flex-direction: column; gap: 4px; }
   .cl { display: flex; gap: 8px; background: #fff; border: 1px solid #E0E0E0; border-radius: 4px; padding: 7px 10px; }
   .cl .ec { flex: none; width: 30px; color: #9AA0A6; }
+  img.shot { display: block; height: auto; }
   .cl pre, pre.out { margin: 0; padding: 0; border: none; background: none; font: inherit; white-space: pre; }
   pre.out { padding: 2px 10px 8px 48px; }
   .kw { color: #AF00DB; } .cst { color: #0000FF; } .str { color: #A31515; } .cm { color: #008000; }
@@ -321,7 +323,7 @@
     <h1 class="name">MeatTrace</h1>
     <p class="tag" style="max-width:780px;">A shared, tamper-evident record so that meat cannot change its label between suppliers</p>
     <div class="team" style="margin-top:50px;">Lucas Clodic<br>Elisa Ouillet<br>Julia Kozhina</div>
-    <p class="muted small" style="margin-top:26px;">Sector: food supply chain, processed meat in Europe<br>Rabat Business School, 22 October 2026</p>
+    <p class="muted small" style="margin-top:26px;">Sector: food supply chain, processed meat in Europe<br>Rabat Business School, 20 October 2026</p>
   </div>
 </section>
 
@@ -331,13 +333,13 @@
   <h2>In 2013, about 750 tonnes of horse meat were sold as beef across Europe, and nobody could quickly see where the label changed</h2>
 
   <div class="chain" style="margin: 6px 0 8px;">
-    <div class="node"><b>2 abattoirs</b>Romania<br><span class="muted">say it was “clearly labelled as horse”</span><sup class="ast">*</sup></div>
+    <div class="node"><b>2 abattoirs</b>Romania<br><span class="muted">say it was “clearly labelled as horse”</span><sup class="ast">&#8288;(1)</sup></div>
     <div class="link"></div>
     <div class="node"><b>Trader</b>registered in Cyprus</div>
     <div class="link"></div>
     <div class="node"><b>Warehouse</b>Netherlands</div>
     <div class="link"></div>
-    <div class="node fraud"><b>Spanghero</b>France, wholesaler<br><span class="flag">sold it as beef</span> <span class="muted xs">(it denied)</span><sup class="ast">*</sup></div>
+    <div class="node fraud"><b>Spanghero</b>France, wholesaler<br><span class="flag">sold it as beef</span> <span class="muted xs">(it denied)</span><sup class="ast">&#8288;(1)</sup></div>
     <div class="link"></div>
     <div class="node"><b>Comigel</b>France, ready meals</div>
     <div class="link"></div>
@@ -348,24 +350,24 @@
     <div>
       <table>
         <tr><th>What happened</th><th class="num">Figure</th></tr>
-        <tr><td>Horse meat sold as beef, over about six months (French government)<sup class="ast">*</sup></td><td class="num"><b>≈ 750 t</b></td></tr>
-        <tr><td>Ready-meal products made with it (French anti-fraud office)<sup class="ast">*</sup></td><td class="num"><b>≈ 4.5 million</b></td></tr>
-        <tr><td>Companies and countries reached<sup class="ast">*</sup></td><td class="num"><b>28 in 13</b></td></tr>
-        <tr><td>EU official tests on beef products positive for horse DNA (193 of 4,144)<sup class="ast">**</sup></td><td class="num"><b>4.66 %</b></td></tr>
+        <tr><td>Horse meat sold as beef, over about six months (French government)<sup class="ast">&#8288;(1)</sup></td><td class="num"><b>≈ 750 t</b></td></tr>
+        <tr><td>Ready-meal products made with it (French anti-fraud office)<sup class="ast">&#8288;(1)</sup></td><td class="num"><b>≈ 4.5 million</b></td></tr>
+        <tr><td>Companies and countries reached<sup class="ast">&#8288;(1)</sup></td><td class="num"><b>28 in 13</b></td></tr>
+        <tr><td>EU official tests on beef products positive for horse DNA (193 of 4,144)<sup class="ast">&#8288;(2)</sup></td><td class="num"><b>4.66 %</b></td></tr>
       </table>
     </div>
     <div style="display:flex; flex-direction:column; gap:14px;">
       <div class="panel">
         <h3>It is still happening</h3>
-        In a 2022 EU operation, <b>46 %</b> of 320 imported honey samples were found adulterated, some with forged traceability information.<sup class="ast">***</sup>
+        In a 2022 EU operation, <b>46 %</b> of 320 imported honey samples were found adulterated, some with forged traceability information.<sup class="ast">&#8288;(3)</sup>
       </div>
       <div class="panel">
         <h3>The law asks for traceability, link by link</h3>
-        EU Regulation 178/2002, art. 18: each firm must be able to identify its suppliers and its customers, the “one step back, one step forward” principle.<sup class="ast">****</sup> Nobody is required to see the whole chain.
+        EU Regulation 178/2002, art. 18: each firm must be able to identify its suppliers and its customers, the “one step back, one step forward” principle.<sup class="ast">&#8288;(4)</sup> Nobody is required to see the whole chain.
       </div>
     </div>
   </div>
-  <div class="foot"><span class="fn">* AFP via IOL, “Horsemeat: French company blamed”, 14/02/2013; Al Jazeera, “France says horse meat tip-offs ignored”, 15/02/2013. &nbsp;** European Commission, horse meat test results, 2013. &nbsp;*** OLAF report 2023, “No money for fake honey”. &nbsp;**** EU Regulation 178/2002, article 18.</span><span class="pg">2</span></div>
+  <div class="foot"><span class="fn">(1) AFP via IOL, “Horsemeat: French company blamed”, 14/02/2013; Al Jazeera, “France says horse meat tip-offs ignored”, 15/02/2013.<br>(2) European Commission, horse meat test results, 2013.<br>(3) OLAF report 2023, “No money for fake honey”.<br>(4) EU Regulation 178/2002, article 18.</span><span class="pg">2</span></div>
 </section>
 
 <!-- ======================= 3. STAKEHOLDERS & CURRENT PROCESS ======================= -->
@@ -400,7 +402,7 @@
       <h3>What goes wrong</h3>
       <ul class="small">
         <li>A document can be edited or replaced without a trace</li>
-        <li>Tracing takes days: Walmart needed almost 7 days to trace mangoes<sup class="ast">*</sup></li>
+        <li>Tracing takes days: Walmart needed almost 7 days to trace mangoes<sup class="ast">&#8288;(1)</sup></li>
         <li>No shared version of the facts, so disputes drag on</li>
         <li>DNA tests are rare and not linked to the batch history</li>
       </ul>
@@ -410,7 +412,7 @@
       Trace any beef batch back to its abattoir in <b>under 1 hour</b> (today: days), with <b>100 %</b> of handovers signed.
     </div>
   </div>
-  <div class="foot"><span class="fn">* LF Decentralized Trust (Hyperledger), Walmart case study. FreshMeals is the client we imagined; stakeholders follow the 2013 chain.</span><span class="pg">3</span></div>
+  <div class="foot"><span class="fn">(1) LF Decentralized Trust (Hyperledger), Walmart case study.<br>FreshMeals is the client we imagined; stakeholders follow the 2013 chain.</span><span class="pg">3</span></div>
 </section>
 
 <!-- ======================= 4. SOLUTION & VALUE ======================= -->
@@ -506,12 +508,12 @@
         <ul class="small">
           <li>A recall is limited to the guilty batches, not the whole product line. One full recall ≈ €2 M</li>
           <li>Trace requests answered in minutes instead of days of staff time</li>
-          <li>Proof of origin sells: Carrefour said its blockchain-tracked chicken and pomelos sold better (no figures published)<sup class="ast">*</sup></li>
+          <li>Proof of origin sells: Carrefour said its blockchain-tracked chicken and pomelos sold better (no figures published)<sup class="ast">&#8288;(1)</sup></li>
         </ul>
       </div>
     </div>
   </div>
-  <div class="foot"><span class="fn">* ESM Magazine, “Carrefour says blockchain tracking boosting sales of some products”, 2019.<br>Resources: development partner, hosting of 4 nodes, security, training, support, governance board. Figures are our own estimates.</span><span class="pg">5</span></div>
+  <div class="foot"><span class="fn">(1) ESM Magazine, “Carrefour says blockchain tracking boosting sales of some products”, 2019.<br>Resources: development partner, hosting of 4 nodes, security, training, support, governance board. Figures are our own estimates.</span><span class="pg">5</span></div>
 </section>
 
 <!-- ======================= 6. THREE-YEAR COSTS ======================= -->
@@ -731,25 +733,11 @@
   <div class="track"><span>Problem</span><span>Business plan</span><span>Architecture</span><span>Governance</span><span class="on">Prototype</span><span>Roadmap</span></div>
   <h2>Python test A: changing horse to beef gives a completely different fingerprint</h2>
 
-  <div class="cols" style="grid-template-columns: 700px 1fr; gap: 28px;">
+  <div class="cols" style="grid-template-columns: 750px 1fr; gap: 26px;">
     <div class="colab">
-      <div class="cl"><span class="ec">[3]</span><pre><span class="kw">def</span> record_hash(record):
-    text = json.dumps(record, sort_keys=<span class="cst">True</span>)          <span class="cm"># stable text</span>
-    <span class="kw">return</span> hashlib.sha256(text.encode()).hexdigest()   <span class="cm"># SHA-256 fingerprint</span></pre></div>
-      <div class="cl"><span class="ec">[4]</span><pre>relabelled_record = {**slaughter_record, <span class="str">"species"</span>: <span class="str">"BEEF"</span>}   <span class="cm"># new dict</span>
-relabelled_hash = record_hash(relabelled_record)
-print(<span class="str">"Approved hash  :"</span>, approved_hash)
-print(<span class="str">"Relabelled hash:"</span>, relabelled_hash)
-print(<span class="str">"Same record?   :"</span>, approved_hash == relabelled_hash)</pre></div>
-      <pre class="out">Approved hash  : b2d7a81a41a3ae8e3847b21c821538803f7268b85e502cb86736d78f6d2272e6
-Relabelled hash: b2c60303ead9a020cc82bbf4de7292c4885478ab67f2ec54c967d8992228bc52
-Same record?   : False</pre>
-      <div class="cl"><span class="ec">[7]</span><pre><span class="cm"># the 2013 case: a NEW transfer document says "BEEF"</span>
-signed_species = slaughter_record[<span class="str">"species"</span>]
-status = <span class="str">"OK"</span> <span class="kw">if</span> resale_transfer[<span class="str">"species_declared"</span>] == signed_species \
-         <span class="kw">else</span> <span class="str">"MISMATCH, batch blocked"</span>
-print(<span class="str">"Check                  :"</span>, status)</pre></div>
-      <pre class="out">Check                  : MISMATCH, batch blocked</pre>
+      <img class="shot" src="img/s10_record_hash.png" width="547" alt="record_hash function: json.dumps with sort_keys, then SHA-256">
+      <img class="shot" src="img/s10_relabel.png" width="658" alt="Relabelling HORSE to BEEF gives a different hash; Same record? False">
+      <img class="shot" src="img/s10_mismatch_short.png" width="722" alt="Declared species BEEF versus signed HORSE: MISMATCH, batch blocked">
     </div>
     <div>
       <h3>What it means for the business</h3>
@@ -761,7 +749,7 @@ print(<span class="str">"Check                  :"</span>, status)</pre></div>
       </ul>
     </div>
   </div>
-  <div class="foot"><span class="fn">Code and outputs from our notebook IS511E_Midterm1_MeatTrace.ipynb (cells 3, 4 and 7, shortened).</span><span class="pg">10</span></div>
+  <div class="foot"><span class="fn">Screenshots of code and outputs from our Colab notebook IS511E_Midterm1_MeatTrace.ipynb (third block: the 2013 scenario, shortened).</span><span class="pg">10</span></div>
 </section>
 
 <!-- ======================= 11. PYTHON ACCESS RIGHTS ======================= -->
@@ -769,25 +757,11 @@ print(<span class="str">"Check                  :"</span>, status)</pre></div>
   <div class="track"><span>Problem</span><span>Business plan</span><span>Architecture</span><span>Governance</span><span class="on">Prototype</span><span>Roadmap</span></div>
   <h2>Python test B: one function checks every request, with 2 actions allowed and 3 denied</h2>
 
-  <div class="cols" style="grid-template-columns: 640px 1fr; gap: 26px;">
-    <div class="colab" style="font-size:12px;">
-      <div class="cl"><span class="ec">[9]</span><pre>role_permissions = {
-    <span class="str">"abattoir"</span>:        {<span class="str">"create_record"</span>, <span class="str">"read_own"</span>},
-    <span class="str">"trader"</span>:          {<span class="str">"create_record"</span>, <span class="str">"read_own"</span>},
-    <span class="str">"quality_manager"</span>: {<span class="str">"create_record"</span>, <span class="str">"approve_record"</span>, <span class="str">"read_batch"</span>},
-    <span class="str">"lab_inspector"</span>:   {<span class="str">"create_test"</span>, <span class="str">"approve_record"</span>, <span class="str">"read_batch"</span>},
-    <span class="str">"auditor"</span>:         {<span class="str">"read_audit"</span>},
-}   <span class="cm"># no role has "edit_record"</span></pre></div>
-      <div class="cl"><span class="ec">[10]</span><pre><span class="kw">def</span> can_do(user, action, record_id=<span class="cst">None</span>):
-    account = users[user]
-    <span class="kw">if not</span> account[<span class="str">"active"</span>]:
-        <span class="kw">return</span> <span class="cst">False</span>, <span class="str">"account revoked"</span>
-    <span class="kw">if</span> action <span class="kw">not in</span> role_permissions[account[<span class="str">"role"</span>]]:
-        <span class="kw">return</span> <span class="cst">False</span>, <span class="str">f"role '{account['role']}' has no '{action}' right"</span>
-    <span class="kw">if</span> action == <span class="str">"approve_record"</span> <span class="kw">and</span> \
-            records[record_id][<span class="str">"created_by"</span>] == user:
-        <span class="kw">return</span> <span class="cst">False</span>, <span class="str">"separation of duties: cannot approve own record"</span>
-    <span class="kw">return</span> <span class="cst">True</span>, <span class="str">"permission granted"</span></pre></div>
+  <div class="cols" style="grid-template-columns: 672px 1fr; gap: 24px;">
+    <div class="colab">
+      <img class="shot" src="img/s11_role_permissions.png" width="512" alt="role_permissions dictionary: no role has edit_record">
+      <img class="shot" src="img/s11_can_do.png" width="554" alt="can_do function: revocation, role check, separation of duties">
+      <img class="shot" src="img/s11_results.png" width="634" alt="Results table: 2 ALLOWED, 3 DENIED with reasons">
     </div>
     <div>
       <table style="font-size:13.5px;">
@@ -798,10 +772,10 @@ print(<span class="str">"Check                  :"</span>, status)</pre></div>
         <tr><td>Denied</td><td>claire approves her own reception REC-007 (separation of duties)</td><td>No self-certification</td></tr>
         <tr><td>Denied</td><td>dan, who left the trading firm, tries to create a record (account revoked)</td><td>An ex-employee cannot sign for a partner</td></tr>
       </table>
-      <p class="xs muted" style="margin-top:10px;">Results of cell 11 of our notebook: 6 users, 5 roles. In a real network this check would run on every node, not in a notebook.</p>
+      <p class="xs muted" style="margin-top:10px;">Same 5 tests as the output on the left: 6 users, 5 roles, and no role has an <code>edit_record</code> right. In a real network this check would run on every node, not in a notebook.</p>
     </div>
   </div>
-  <div class="foot"><span class="fn">Code from our notebook IS511E_Midterm1_MeatTrace.ipynb (cells 9 and 10, cell 9 shortened).</span><span class="pg">11</span></div>
+  <div class="foot"><span class="fn">Screenshots of code and outputs from our Colab notebook IS511E_Midterm1_MeatTrace.ipynb.</span><span class="pg">11</span></div>
 </section>
 
 <!-- ======================= 12. RISKS, ROADMAP, RECOMMENDATION ======================= -->
@@ -826,7 +800,7 @@ print(<span class="str">"Check                  :"</span>, status)</pre></div>
       <tr><td>Confidential data becomes visible</td><td>Role rights, least privilege, prices off-chain</td></tr>
       <tr><td>Members disagree</td><td>Written charter, 3-of-4 vote, DNA result settles disputes</td></tr>
       <tr><td>Costs exceed the plan</td><td>Pilot first; secure database as fallback</td></tr>
-      <tr><td>Partners do not join</td><td>Free for suppliers, simple portal. TradeLens (300+ members) announced its closure in 2022 for lack of industry collaboration<sup class="ast">*</sup></td></tr>
+      <tr><td>Partners do not join</td><td>Free for suppliers, simple portal. TradeLens (300+ members) announced its closure in 2022 for lack of industry collaboration<sup class="ast">&#8288;(1)</sup></td></tr>
     </table>
     <div class="note" style="font-size:15.5px; padding:14px 18px;">
       <h3 style="margin-bottom:6px;">Our recommendation</h3>
@@ -837,7 +811,7 @@ print(<span class="str">"Check                  :"</span>, status)</pre></div>
       <p style="margin:0;"><b>Still to build:</b> real identities and certificates, network nodes, web portal, security audit.</p>
     </div>
   </div>
-  <div class="foot"><span class="fn">* Container Magazine, “Maersk and IBM to discontinue TradeLens following lack of industry collaboration”, 30/11/2022. Costs per stage are our own estimates (appendix B).</span><span class="pg">12</span></div>
+  <div class="foot"><span class="fn">(1) Container Magazine, “Maersk and IBM to discontinue TradeLens following lack of industry collaboration”, 30/11/2022.<br>Costs per stage are our own estimates (appendix B).</span><span class="pg">12</span></div>
 </section>
 
 <!-- ======================= APPENDIX A: REFERENCES ======================= -->

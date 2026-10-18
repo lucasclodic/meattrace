@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2. Un historique où l'on ajoute, sans jamais modifier · MeatTrace</title>
+<style>
+:root{
+  --paper:#FAFAF7; --ink:#1E2033; --muted:#5E6275; --rule:#DADCE3; --panel:#F1F2F5;
+  --violet:#5B45C2; --violet-wash:#EFECFA; --ok:#1F7A4D; --ok-wash:#E4F1E9; --no:#B42318; --no-wash:#FBEAE8;
+  --sans:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  --t:.45s;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:18px;line-height:1.4}
+.wrap{max-width:1248px;margin:0 auto;padding:12px 24px 16px}
+.toplink{font-size:15px;color:var(--violet);text-decoration:none}
+.toplink:hover{text-decoration:underline}
+h1{font-size:26px;margin:2px 0 10px;letter-spacing:-.01em}
+b,strong{font-weight:700}
+.mono{font-family:var(--mono)}
+
+/* Stage */
+.stage{position:relative;height:560px;background:#fff;border:1px solid var(--rule);border-radius:8px;overflow:hidden}
+.scene{position:absolute;inset:0;padding:18px 24px;opacity:0;visibility:hidden;transition:opacity var(--t),visibility 0s linear var(--t)}
+.scene.on{opacity:1;visibility:visible;transition:opacity var(--t),visibility 0s}
+
+/* Bottom bar */
+.bottom{display:flex;gap:28px;justify-content:space-between;align-items:flex-start;margin-top:14px}
+.caption{flex:1;min-height:58px}
+.cap-title{font-weight:700;font-size:19px}
+.cap-text{font-size:17px;color:var(--ink);margin-top:2px}
+.nav{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.counter{font-size:16px;color:var(--muted);margin-right:6px;white-space:nowrap}
+.btn{font:inherit;font-size:16px;padding:9px 16px;border:1.5px solid var(--ink);border-radius:8px;background:#fff;color:var(--ink);cursor:pointer;transition:background .2s,opacity .2s}
+.btn:hover:not(:disabled){background:var(--panel)}
+.btn.primary{background:var(--violet);border-color:var(--violet);color:#fff}
+.btn.primary:hover:not(:disabled){background:#4a37a8}
+.btn:disabled{opacity:.35;cursor:default}
+.btn:focus-visible,.hash:focus-visible{outline:3px solid var(--violet-wash);outline-offset:2px}
+.btn.danger{border-color:var(--no);color:var(--no)}
+.btn.danger:hover:not(:disabled){background:var(--no-wash)}
+
+/* Hash chip */
+.hash{font-family:var(--mono);font-size:14.5px;background:none;border:0;padding:1px 4px;margin:0 -4px;border-radius:4px;color:inherit;cursor:pointer;border-bottom:1px dotted var(--muted);line-height:1.3}
+.hash:hover{background:var(--panel)}
+#pop{position:absolute;z-index:50;max-width:380px;background:#fff;border:1.5px solid var(--ink);border-radius:8px;padding:10px 12px;box-shadow:0 6px 24px rgba(30,32,51,.12);font-size:14px}
+#pop .pl{font-weight:700;margin-bottom:4px}
+#pop .ph{font-family:var(--mono);font-size:13.5px;word-break:break-all;background:var(--panel);padding:6px 8px;border-radius:6px}
+#pop .ps{color:var(--muted);font-size:12.5px;margin-top:6px}
+
+/* Badges */
+.badge{display:none;font-size:12.5px;font-weight:600;padding:2px 8px;border-radius:999px;margin-left:8px;vertical-align:2px;white-space:nowrap}
+.badge.same{background:var(--ok-wash);color:var(--ok)}
+.badge.new{background:var(--violet-wash);color:var(--violet)}
+.badge.gone{background:var(--panel);color:var(--ink);border:1px solid var(--rule)}
+.badge.illus{display:inline-block;background:#fff;color:var(--muted);border:1px dashed var(--muted)}
+
+/* Seal */
+.seal{display:flex;align-items:center;gap:6px;font-size:14px;color:var(--ok);margin-top:5px}
+.seal svg{width:20px;height:20px;flex-shrink:0}
+.seal.bad{color:var(--no)}
+
+/* ---------- Journal scene ---------- */
+.jgrid{display:grid;grid-template-columns:1fr 360px;gap:26px;height:100%}
+.journal{position:relative;padding-left:44px}
+.jhead{height:30px;display:flex;align-items:center;justify-content:space-between;font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:var(--violet);font-weight:700;border-bottom:1.5px solid var(--violet)}
+.jhead span:last-child{text-transform:none;letter-spacing:0;font-weight:500;color:var(--muted);font-size:14px}
+.cards{display:flex;flex-direction:column}
+.card{height:104px;border:1.5px solid var(--ink);border-radius:8px;background:#fff;margin-top:12px;display:grid;grid-template-columns:50px 1fr 262px;align-items:center;padding:0 14px;overflow:hidden;opacity:1;transform:none;
+  transition:height var(--t),margin var(--t),opacity var(--t),transform var(--t),border-color var(--t),background var(--t),color var(--t),border-width var(--t)}
+.card.hidden{height:0;margin-top:0;opacity:0;border-width:0;transform:translateY(-8px)}
+.card.delay{transition-delay:.7s}
+.card .tag{width:38px;height:38px;border-radius:50%;border:1.5px solid currentColor;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:700;font-size:14px;transition:width var(--t),height var(--t)}
+.card .ttl{font-weight:700;font-size:17px}
+.card .who{font-size:14px;color:var(--muted)}
+.card .what{font-size:15.5px;margin-top:3px}
+.card .proof{border-left:1px solid var(--rule);padding-left:14px;align-self:stretch;display:flex;flex-direction:column;justify-content:center}
+.plabel{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.card.new{border-color:var(--violet);box-shadow:0 0 0 3px var(--violet-wash)}
+.card.new .badge.new,.card.same .badge.same,.card.sup .badge.gone{display:inline-block}
+.card .supnote{display:none;color:var(--muted)}
+.card.sup{background:var(--panel);color:var(--muted);border-color:var(--rule)}
+.card.sup .supnote{display:inline}
+.card.sup .seal{color:var(--muted)}
+.card.mini{height:46px}
+.card.mini .who,.card.mini .what,.card.mini .seal,.card.mini .plabel{display:none}
+.card.mini .tag{width:30px;height:30px;font-size:12.5px}
+.card.corr .tag{color:var(--violet)}
+.card .nohash{font-size:14px;color:var(--muted);font-style:italic}
+.empty{position:absolute;left:44px;right:0;top:54px;height:150px;border:1.5px dashed var(--rule);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--muted);font-size:17px;text-align:center;transition:opacity var(--t)}
+.empty.off{opacity:0}
+#corrArrow{position:absolute;left:0;top:0;width:44px;height:100%;overflow:visible;pointer-events:none;opacity:0;transition:opacity var(--t)}
+#corrArrow.on{opacity:1}
+
+.side{display:flex;flex-direction:column;gap:14px}
+.box{border-radius:8px;padding:13px 16px}
+.box h3{margin:0 0 8px;font-size:13.5px;letter-spacing:.06em;text-transform:uppercase}
+.rules{background:var(--violet-wash)}
+.rules h3{color:var(--violet)}
+.rules ul{list-style:none;margin:0;padding:0;font-size:16px}
+.rules li{display:flex;gap:10px;align-items:baseline;margin:4px 0}
+.rules .i{font-weight:700;width:16px;flex-shrink:0;text-align:center}
+.i.ok{color:var(--ok)} .i.no{color:var(--no)}
+.copies4{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.copies4 span{font-size:12.5px;background:#fff;border:1px solid var(--violet);color:var(--violet);border-radius:6px;padding:2px 7px}
+.rules .small{font-size:13.5px;color:var(--muted);margin-top:8px}
+.see{border:1.5px solid var(--rule)}
+.see h3{color:var(--muted)}
+.see p{margin:0;font-size:16.5px}
+.see .nw{white-space:nowrap;font-size:15px}
+
+/* ---------- Compare scene ---------- */
+.flow{display:grid;grid-template-columns:250px 1fr 250px 1fr 250px;align-items:center;height:116px}
+.fbox{border:1.5px solid var(--ink);border-radius:8px;padding:10px 14px;height:96px;display:flex;flex-direction:column;justify-content:center;background:#fff}
+.fbox .fl{font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.fbox .fv{font-size:15.5px;margin-top:3px}
+.farrow{display:flex;flex-direction:column;align-items:center;padding:0 8px;text-align:center;font-size:13.5px;color:var(--muted)}
+.farrow svg{width:100%;height:16px}
+.farrow b{color:var(--ink);font-size:14.5px}
+table.cmp{width:100%;border-collapse:separate;border-spacing:0;margin-top:16px;font-size:16px}
+table.cmp th,table.cmp td{padding:9px 14px;text-align:left;vertical-align:top;border-bottom:1px solid var(--rule)}
+table.cmp thead th{font-size:16.5px;background:var(--panel);border-bottom:1.5px solid var(--ink)}
+table.cmp thead th:first-child{background:transparent}
+table.cmp tbody th{width:190px;font-weight:700;color:var(--ink)}
+table.cmp td{width:40%}
+table.cmp tr:last-child th,table.cmp tr:last-child td{border-bottom:0}
+.key{font-weight:700}
+
+/* ---------- Chain scene ---------- */
+.chain{position:relative;display:flex;justify-content:space-between;align-items:flex-start;height:380px;margin-top:20px}
+.block{border:1.5px solid var(--violet);border-radius:8px;background:#fff;overflow:hidden;position:relative;z-index:1}
+.block .bh{background:var(--violet-wash);color:var(--violet);font-weight:700;padding:8px 14px;font-size:17px;display:flex;justify-content:space-between;align-items:baseline}
+.block .bh small{font-weight:500;font-size:13.5px;color:var(--muted)}
+.brow{padding:8px 14px;border-top:1px solid var(--rule)}
+.brow .plabel{margin-bottom:1px}
+.brow.hl{background:#fff}
+.brow.dim{color:var(--muted);font-size:15px;font-style:italic}
+.lines .ln{display:flex;justify-content:space-between;gap:10px;font-size:15px;padding:3px 0}
+.block.ghost{border-style:dashed;opacity:.9}
+.block.ghost .bh{background:var(--panel);color:var(--muted)}
+#b40{width:250px}
+#b41{width:430px}
+#b42{width:250px}
+#chainSvg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2;overflow:visible}
+.linklbl{position:absolute;z-index:3;background:var(--ok-wash);color:var(--ok);font-weight:700;font-size:13.5px;padding:2px 8px;border-radius:999px;white-space:nowrap;transform:translate(-50%,-150%)}
+.strip{display:flex;gap:18px;align-items:center;margin-top:16px;background:var(--violet-wash);border-radius:8px;padding:12px 16px;font-size:16px}
+.vdots{display:flex;gap:6px;flex-shrink:0}
+.vdots span{font-size:13px;border:1px solid var(--violet);color:var(--violet);background:#fff;border-radius:6px;padding:2px 7px}
+
+/* ---------- Fraud scene ---------- */
+.fctl{display:flex;align-items:center;gap:12px;height:44px}
+.pills{display:flex;gap:6px;margin-left:auto}
+.pill{font-size:13.5px;padding:4px 10px;border-radius:999px;border:1px solid var(--rule);color:var(--muted);background:#fff;transition:all var(--t)}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:12px}
+.panel{border:1.5px solid var(--ink);border-radius:8px;padding:12px 16px;background:#fff;transition:border-color var(--t),background var(--t)}
+.panel + .panel{margin-top:14px}
+.panel h4{margin:0 0 6px;font-size:16px;display:flex;justify-content:space-between;align-items:baseline}
+.panel h4 small{font-weight:500;color:var(--muted);font-size:13.5px}
+.frow{display:grid;grid-template-columns:150px 1fr;gap:10px;align-items:center;padding:5px 0;border-top:1px solid var(--rule);font-size:15.5px;min-height:38px}
+.frow:first-of-type{border-top:0}
+.frow .k{font-size:13px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.chg{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.chg .old{transition:color var(--t)}
+.chg .arr,.chg .new{opacity:0;transition:opacity var(--t)}
+.chg .new{color:var(--no);font-weight:700}
+.chg .new .hash{color:var(--no)}
+.sw{display:inline-grid;align-items:center}
+.sw > *{grid-area:1/1;transition:opacity var(--t)}
+.sw > .b{opacity:0}
+.v-ok{color:var(--ok);font-weight:700}
+.v-no{color:var(--no);font-weight:700}
+.pyline{font-family:var(--mono);font-size:12.5px;color:var(--muted)}
+.copies{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cp{border:1.5px solid var(--violet);border-radius:8px;overflow:hidden;transition:border-color var(--t),background var(--t)}
+.cp .ch{background:var(--violet-wash);color:var(--violet);font-weight:700;font-size:14.5px;padding:5px 10px;transition:background var(--t),color var(--t)}
+.cp .cb{padding:6px 10px;font-size:14.5px}
+.cp .cb div{display:flex;justify-content:space-between;gap:6px;align-items:center;min-height:24px}
+.cp .hash{font-size:13px}
+.banner{margin-top:12px;border-radius:8px;padding:12px 16px;background:var(--no-wash);border:1.5px solid var(--no);opacity:0;transform:translateY(6px);transition:opacity var(--t),transform var(--t)}
+.banner b{color:var(--no);font-size:17.5px}
+.banner p{margin:3px 0 0;font-size:15px}
+.hint{font-size:15px;color:var(--muted)}
+.causes{margin-top:14px;background:var(--violet-wash);border-radius:8px;padding:10px 14px;font-size:15px}
+/* stage classes */
+#scene-fraud.s1 .pill.p1,#scene-fraud.s2 .pill.p2,#scene-fraud.s3 .pill.p3,#scene-fraud.s4 .pill.p4{border-color:var(--no);color:var(--no);background:var(--no-wash)}
+#scene-fraud.s1 #pT1{border-color:var(--no)}
+#scene-fraud.s1 .c1 .old{color:var(--muted);text-decoration:line-through}
+#scene-fraud.s1 .c1 .arr,#scene-fraud.s1 .c1 .new{opacity:1}
+#scene-fraud.s2 .sw.s2 > .a{opacity:0}
+#scene-fraud.s2 .sw.s2 > .b{opacity:1}
+#scene-fraud.s3 #pB41{border-color:var(--no)}
+#scene-fraud.s3 .c3 .old{color:var(--muted);text-decoration:line-through}
+#scene-fraud.s3 .c3 .arr,#scene-fraud.s3 .c3 .new{opacity:1}
+#scene-fraud.s3 .sw.s3 > .a{opacity:0}
+#scene-fraud.s3 .sw.s3 > .b{opacity:1}
+#scene-fraud.s4 .sw.s4 > .a{opacity:0}
+#scene-fraud.s4 .sw.s4 > .b{opacity:1}
+#scene-fraud.s4 .cp.cheat{border-color:var(--no);background:var(--no-wash)}
+#scene-fraud.s4 .cp.cheat .ch{background:var(--no);color:#fff}
+#scene-fraud.s4 .cp:not(.cheat){border-color:var(--ok)}
+#scene-fraud.s4 .cp:not(.cheat) .ch{background:var(--ok-wash);color:var(--ok)}
+#scene-fraud.s4 .banner{opacity:1;transform:none}
+#scene-fraud.s4 .hint{visibility:hidden}
+.chg .new .hash,.sw > .b .hash{pointer-events:none}
+#scene-fraud.s1 .c1 .new .hash,#scene-fraud.s3 .c3 .new .hash,#scene-fraud.s4 .sw.s4 > .b .hash{pointer-events:auto}
+
+/* ---------- Code scene ---------- */
+.cgrid{display:grid;grid-template-columns:620px 1fr;gap:22px}
+pre.code{margin:0;background:var(--panel);border-radius:8px;padding:12px 14px;font-family:var(--mono);font-size:13.5px;line-height:1.55;overflow:hidden;border:1px solid var(--rule)}
+.code .cm{color:var(--muted)}
+.code .st{color:var(--violet)}
+.roles{font-size:15px;margin:0;padding:0;list-style:none}
+.roles li{display:grid;grid-template-columns:150px 1fr;gap:8px;padding:4px 0;border-bottom:1px solid var(--rule)}
+.roles li:last-child{border-bottom:0}
+.roles .r{font-family:var(--mono);font-size:13.5px;color:var(--violet)}
+.nobox{margin-top:10px;background:var(--no-wash);border:1.5px solid var(--no);border-radius:8px;padding:10px 14px;font-size:16px}
+.nobox .mono{color:var(--no);font-weight:700}
+table.tests{width:100%;border-collapse:collapse;margin-top:16px;font-size:15.5px}
+table.tests th{font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);text-align:left;padding:5px 10px;border-bottom:1.5px solid var(--ink)}
+table.tests td{padding:7px 10px;border-bottom:1px solid var(--rule)}
+table.tests .mono{font-size:13.5px}
+.res{font-weight:700;padding:2px 8px;border-radius:6px;font-size:13.5px}
+.res.ok{color:var(--ok);background:var(--ok-wash)}
+.res.no{color:#fff;background:var(--no)}
+tr.denied td{background:var(--no-wash)}
+tr.denied td:first-child{border-left:3px solid var(--no)}
+
+/* ---------- Recap scene ---------- */
+.rgrid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.rbox{border-radius:8px;padding:18px 22px;min-height:222px}
+.rbox.ok{background:var(--ok-wash);border:1.5px solid var(--ok)}
+.rbox.no{background:var(--no-wash);border:1.5px solid var(--no)}
+.rbox .big{font-size:24px;font-weight:800;letter-spacing:.01em}
+.rbox.ok .big{color:var(--ok)} .rbox.no .big{color:var(--no)}
+.rbox p{font-size:18px;margin:8px 0 0}
+.rbox ol{margin:10px 0 0;padding-left:22px;font-size:17px}
+.rbox ol li{margin:3px 0}
+.extra{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:18px;font-size:16px}
+.extra > div{border:1.5px solid var(--rule);border-radius:8px;padding:12px 16px}
+.extra .mono{font-size:14px}
+.quote{margin-top:22px;border:1.5px solid var(--violet);border-left:6px solid var(--violet);background:var(--violet-wash);border-radius:8px;padding:16px 22px}
+.quote .ql{font-size:13.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--violet);font-weight:700}
+.quote p{font-size:21px;margin:6px 0 0;line-height:1.45}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{transition:none !important;animation:none !important}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="toplink" href="index.html">← Sommaire</a>
+  <h1>2. Un historique où l'on ajoute, sans jamais modifier</h1>
+
+  <div class="stage" id="stage">
+
+    <!-- ===== Scene: journal (steps 1-4, 6) ===== -->
+    <section class="scene" id="scene-journal" aria-label="Journal de bord du lot">
+      <div class="jgrid">
+        <div class="journal" id="journal">
+          <svg id="corrArrow" aria-hidden="true"></svg>
+          <div class="jhead"><span>Journal de bord · lot RO-2026-0412</span><span>registre partagé</span></div>
+          <div class="empty" id="empty">
+            <div><b>Page vide.</b> Aucune ligne pour l'instant.</div>
+            <div>Chaque acteur va ajouter la sienne, l'une après l'autre.</div>
+          </div>
+          <div class="cards">
+            <article class="card hidden" id="c1">
+              <div class="tag">T1</div>
+              <div class="main">
+                <div class="ttl">Abattage<span class="badge same">inchangé ✓</span><span class="badge new">nouvelle ligne</span><span class="badge gone">toujours visible</span></div>
+                <div class="who">par Carpati Meat · abattoir, Roumanie</div>
+                <div class="what">espèce : <b>HORSE</b> (cheval) · 2&nbsp;400&nbsp;kg · 05/10/2026<span class="supnote"> · corrigée par T5</span></div>
+              </div>
+              <div class="proof">
+                <div class="plabel">Empreinte</div>
+                <div><button class="hash" type="button" data-k="t1"></button></div>
+                <div class="seal" data-seal="Carpati Meat"></div>
+              </div>
+            </article>
+            <article class="card hidden" id="c2">
+              <div class="tag">T2</div>
+              <div class="main">
+                <div class="ttl">Transfert<span class="badge same">inchangé ✓</span><span class="badge new">nouvelle ligne</span></div>
+                <div class="who">par Delta Trading · négociant, Pays-Bas</div>
+                <div class="what">espèce déclarée : <b>HORSE</b> · 2&nbsp;400&nbsp;kg</div>
+              </div>
+              <div class="proof">
+                <div class="plabel">Empreinte</div>
+                <div><button class="hash" type="button" data-k="t2"></button></div>
+                <div class="seal" data-seal="Delta Trading"></div>
+              </div>
+            </article>
+            <article class="card hidden" id="c3">
+              <div class="tag">T3</div>
+              <div class="main">
+                <div class="ttl">Test ADN<span class="badge same">inchangé ✓</span><span class="badge new">nouvelle ligne</span></div>
+                <div class="who">par GenoLab · laboratoire ADN, Allemagne</div>
+                <div class="what">résultat : <b>EQUINE</b> (cheval) 100&nbsp;%</div>
+              </div>
+              <div class="proof">
+                <div class="plabel">Empreinte</div>
+                <div><button class="hash" type="button" data-k="t3"></button></div>
+                <div class="seal" data-seal="GenoLab"></div>
+              </div>
+            </article>
+            <article class="card hidden" id="c4">
+              <div class="tag">T4</div>
+              <div class="main">
+                <div class="ttl">Réception<span class="badge illus">illustratif</span><span class="badge new">nouvelle ligne</span></div>
+                <div class="who">par FreshMeals · le client</div>
+                <div class="what">contrôle à la réception : <b>conforme</b></div>
+              </div>
+              <div class="proof">
+                <div class="plabel">Empreinte</div>
+                <div class="nohash">exemple, pas de valeur réelle</div>
+                <div class="seal" data-seal="FreshMeals"></div>
+              </div>
+            </article>
+            <article class="card corr hidden" id="c5">
+              <div class="tag">T5</div>
+              <div class="main">
+                <div class="ttl">Correction<span class="badge illus">illustratif</span><span class="badge new">nouvelle ligne</span></div>
+                <div class="who">par Carpati Meat · l'auteur de T1</div>
+                <div class="what">↑ corrige T1 : poids <b>2&nbsp;200&nbsp;kg</b> (au lieu de 2&nbsp;400)</div>
+              </div>
+              <div class="proof">
+                <div class="plabel">Empreinte</div>
+                <div class="nohash">sa propre empreinte, toute neuve</div>
+                <div class="seal" data-seal="Carpati Meat"></div>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <aside class="side">
+          <div class="box rules">
+            <h3>Les règles du journal de bord</h3>
+            <ul>
+              <li><span class="i ok">✓</span><span>On <b>ajoute</b> une ligne.</span></li>
+              <li><span class="i no">✗</span><span>On ne <b>modifie</b> jamais une ligne, même la sienne.</span></li>
+              <li><span class="i no">✗</span><span>On n'<b>efface</b> jamais rien.</span></li>
+            </ul>
+            <div class="small">4 validateurs gardent chacun une copie identique de ce journal :</div>
+            <div class="copies4"><span>FreshMeals</span><span>Distributeur A</span><span>Distributeur B</span><span>GenoLab</span></div>
+          </div>
+          <div class="box see">
+            <h3>Ce qu'il faut voir</h3>
+            <p id="seeText"></p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ===== Scene: compare (step 5) ===== -->
+    <section class="scene" id="scene-compare" aria-label="Empreinte et signature">
+      <div class="flow">
+        <div class="fbox">
+          <div class="fl">Contenu de T1</div>
+          <div class="fv">HORSE · 2&nbsp;400&nbsp;kg<br>05/10/2026 · Carpati Meat</div>
+        </div>
+        <div class="farrow">
+          <b>calcul SHA-256</b>
+          <svg viewBox="0 0 100 16" preserveAspectRatio="none" aria-hidden="true"><path d="M2 8H92" stroke="#1E2033" stroke-width="1.5" vector-effect="non-scaling-stroke"/><path d="M90 3L98 8L90 13" fill="none" stroke="#1E2033" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg>
+          <span>public : tout le monde peut le faire</span>
+        </div>
+        <div class="fbox">
+          <div class="fl">Empreinte</div>
+          <div class="fv"><button class="hash" type="button" data-k="t1"></button></div>
+          <div class="fv" style="font-size:13.5px;color:var(--muted)">64 caractères</div>
+        </div>
+        <div class="farrow">
+          <b>+ clé privée de Carpati Meat</b>
+          <svg viewBox="0 0 100 16" preserveAspectRatio="none" aria-hidden="true"><path d="M2 8H92" stroke="#1E2033" stroke-width="1.5" vector-effect="non-scaling-stroke"/><path d="M90 3L98 8L90 13" fill="none" stroke="#1E2033" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg>
+          <span>secrète : lui seul l'a</span>
+        </div>
+        <div class="fbox">
+          <div class="fl">Signature</div>
+          <div class="seal" data-seal="Carpati Meat" style="font-size:15.5px"></div>
+          <div class="fv" style="font-size:13.5px;color:var(--muted)">l'empreinte, scellée par l'auteur</div>
+        </div>
+      </div>
+      <table class="cmp">
+        <thead><tr><th></th><th>Empreinte (SHA-256)</th><th>Signature</th></tr></thead>
+        <tbody>
+          <tr><th>C'est quoi ?</th>
+            <td>Un résumé de 64 caractères, calculé à partir du contenu. Une seule lettre changée donne un résumé totalement différent.</td>
+            <td>L'empreinte, scellée avec la <span class="key">clé privée</span> de l'auteur. Clé privée : un code secret que lui seul possède.</td></tr>
+          <tr><th>Qui peut la calculer ?</th>
+            <td><span class="key">Tout le monde.</span> Même contenu, même calcul, même résultat.</td>
+            <td><span class="key">Seulement l'auteur.</span> Mais tout le monde peut la vérifier, avec sa clé publique (la version partagée de sa clé).</td></tr>
+          <tr><th>Ce qu'elle prouve</th>
+            <td>Que le <span class="key">contenu n'a pas changé</span>.</td>
+            <td><span class="key">Qui a écrit</span> la ligne. L'auteur ne peut pas dire « ce n'est pas moi ».</td></tr>
+          <tr><th>Image simple</th>
+            <td>L'empreinte digitale du texte.</td>
+            <td>Le sceau de cire personnel de l'auteur.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ===== Scene: chain (step 7) ===== -->
+    <section class="scene" id="scene-chain" aria-label="Les blocs et la chaîne">
+      <div class="chain" id="chain">
+        <svg id="chainSvg" aria-hidden="true"></svg>
+        <div class="block" id="b40">
+          <div class="bh">Bloc 40 <small>bloc d'avant</small></div>
+          <div class="brow" id="b40hash"><div class="plabel">Empreinte de ce bloc</div><button class="hash" type="button" data-k="b40"></button></div>
+          <div class="brow dim">… des lignes d'autres lots …</div>
+        </div>
+        <div class="block" id="b41">
+          <div class="bh">Bloc 41 <small>06/10/2026 · 09:14 UTC</small></div>
+          <div class="brow" id="b41prev"><div class="plabel">Empreinte du bloc précédent (previous_hash)</div><button class="hash" type="button" data-k="b40"></button></div>
+          <div class="brow lines">
+            <div class="plabel">Les lignes du bloc (leurs empreintes)</div>
+            <div class="ln"><span>T1 · Abattage</span><button class="hash" type="button" data-k="t1"></button></div>
+            <div class="ln"><span>T2 · Transfert</span><button class="hash" type="button" data-k="t2"></button></div>
+            <div class="ln"><span>T3 · Test ADN</span><button class="hash" type="button" data-k="t3"></button></div>
+          </div>
+          <div class="brow" id="b41hash"><div class="plabel">Empreinte de ce bloc (calculée sur tout le bloc)</div><button class="hash" type="button" data-k="b41"></button></div>
+        </div>
+        <div class="block ghost" id="b42">
+          <div class="bh">Bloc 42 <small>suivant · illustratif</small></div>
+          <div class="brow" id="b42prev"><div class="plabel">Empreinte du bloc précédent</div><button class="hash" type="button" data-k="b41"></button></div>
+          <div class="brow dim">… de nouvelles lignes …</div>
+        </div>
+      </div>
+      <div class="strip">
+        <div>Un bloc est accepté quand <b>3 des 4 validateurs</b> le signent. Chacun garde une copie identique de la chaîne. Si une seule ligne change, l'empreinte du bloc change, et le lien casse (étape suivante).</div>
+        <div class="vdots"><span>FreshMeals</span><span>Distributeur A</span><span>Distributeur B</span><span>GenoLab</span></div>
+      </div>
+    </section>
+
+    <!-- ===== Scene: fraud (step 8) ===== -->
+    <section class="scene" id="scene-fraud" aria-label="Simulation de triche">
+      <div class="fctl">
+        <button class="btn danger" type="button" id="cheatBtn">Tricher : changer HORSE en BEEF dans T1</button>
+        <button class="btn" type="button" id="resetBtn">Réinitialiser</button>
+        <div class="pills">
+          <span class="pill p1">① empreinte</span><span class="pill p2">② signature</span><span class="pill p3">③ bloc</span><span class="pill p4">④ les 4 copies</span>
+        </div>
+      </div>
+      <div class="fgrid">
+        <div>
+          <div class="panel" id="pT1">
+            <h4>Ligne T1 · Abattage <small>copie de Distributeur B (exemple)</small></h4>
+            <div class="frow"><span class="k">Espèce</span>
+              <span class="chg c1"><b class="old">HORSE</b><span class="arr">→</span><b class="new">BEEF</b></span></div>
+            <div class="frow"><span class="k">Empreinte</span>
+              <span class="chg c1"><span class="old"><button class="hash" type="button" data-k="t1"></button></span><span class="arr">→</span><span class="new"><button class="hash" type="button" data-k="t1beef"></button></span></span></div>
+            <div class="frow"><span class="k">Signature</span>
+              <span class="sw s2">
+                <span class="a seal" data-seal="Carpati Meat" style="margin:0"></span>
+                <span class="b seal bad" style="margin:0"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.5 3.2A9 9 0 0 0 10.5 20.8" fill="#FBEAE8" stroke="#B42318" stroke-width="1.6"/><path d="M13.5 3.2A9 9 0 0 1 13.5 20.8" fill="#FBEAE8" stroke="#B42318" stroke-width="1.6"/><path d="M12 2.5l-1.6 4.5 2.6 3-2.4 3.6 2.2 3.4-.8 4.5" fill="none" stroke="#B42318" stroke-width="1.4" stroke-linejoin="round"/></svg><span>la signature ne correspond plus</span></span>
+              </span></div>
+          </div>
+          <div class="panel" id="pB41">
+            <h4>Bloc 41 <small>contient T1, T2, T3</small></h4>
+            <div class="frow"><span class="k">Empreinte</span>
+              <span class="chg c3"><span class="old"><button class="hash" type="button" data-k="b41"></button></span><span class="arr">→</span><span class="new"><button class="hash" type="button" data-k="b41beef"></button></span></span></div>
+            <div class="frow"><span class="k">Encore valide ?</span>
+              <span class="sw s3"><span class="a v-ok">Vrai ✓</span><span class="b"><span class="v-no">Faux ✗</span> <span class="pyline">Python : Block still valid? : False</span></span></span></div>
+            <div class="frow"><span class="k">Bloc 42</span>
+              <span class="sw s3"><span class="a">attend 9c2833fa… <span class="v-ok">correspond ✓</span></span><span class="b">attend 9c2833fa… <span class="v-no">ne correspond plus ✗</span></span></span></div>
+          </div>
+          <div class="causes"><b>La chaîne des causes :</b> contenu changé → empreinte changée → signature qui ne colle plus → empreinte du bloc changée → lien cassé avec le bloc 42.</div>
+        </div>
+        <div>
+          <div class="panel" style="border-color:var(--violet)">
+            <h4>Les 4 copies du registre <small><span class="sw s4"><span class="a">toutes identiques</span><span class="b">on les compare</span></span></small></h4>
+            <div class="copies">
+              <div class="cp"><div class="ch">FreshMeals</div><div class="cb"><div><span>T1 : espèce</span><b>HORSE</b></div><div><span>bloc 41</span><button class="hash" type="button" data-k="b41"></button></div></div></div>
+              <div class="cp"><div class="ch">Distributeur A</div><div class="cb"><div><span>T1 : espèce</span><b>HORSE</b></div><div><span>bloc 41</span><button class="hash" type="button" data-k="b41"></button></div></div></div>
+              <div class="cp cheat"><div class="ch"><span class="sw s4"><span class="a">Distributeur B</span><span class="b">Distributeur B · trafiquée</span></span></div><div class="cb">
+                <div><span>T1 : espèce</span><span class="sw s4"><b class="a">HORSE</b><b class="b v-no">BEEF</b></span></div>
+                <div><span>bloc 41</span><span class="sw s4"><span class="a"><button class="hash" type="button" data-k="b41"></button></span><span class="b" style="color:var(--no)"><button class="hash" type="button" data-k="b41beef"></button></span></span></div></div></div>
+              <div class="cp"><div class="ch">GenoLab</div><div class="cb"><div><span>T1 : espèce</span><b>HORSE</b></div><div><span>bloc 41</span><button class="hash" type="button" data-k="b41"></button></div></div></div>
+            </div>
+            <div class="banner">
+              <b>3 copies sur 4 disent HORSE : fraude visible.</b>
+              <p>La copie trafiquée n'obtiendra jamais 3 signatures sur 4. Elle est rejetée.</p>
+            </div>
+          </div>
+          <p class="hint" style="margin:10px 2px 0">Astuce : clique sur une empreinte pour voir ses 64 caractères.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Scene: code (step 9) ===== -->
+    <section class="scene" id="scene-code" aria-label="Le lien avec le code">
+      <div class="cgrid">
+        <div>
+<pre class="code"><span class="cm"># Les droits de chaque rôle (notre prototype Python)</span>
+role_permissions = {
+    <span class="st">"abattoir"</span>:        {"create_record", "read_own"},
+    <span class="st">"trader"</span>:          {"create_record", "read_own"},
+    <span class="st">"quality_manager"</span>: {"create_record", "approve_record", "read_batch"},
+    <span class="st">"lab_inspector"</span>:   {"create_test", "approve_record", "read_batch"},
+    <span class="st">"auditor"</span>:         {"read_audit"},
+}
+<span class="cm"># "edit_record" (modifier une ligne) n'apparaît nulle part.</span></pre>
+          <div class="nobox"><b>Aucun rôle n'a le droit <span class="mono">edit_record</span>.</b> On peut créer, approuver ou lire. Modifier une ligne : jamais, pour personne.</div>
+        </div>
+        <div>
+          <ul class="roles">
+            <li><span class="r">abattoir</span><span>crée une ligne, lit les siennes</span></li>
+            <li><span class="r">trader</span><span>le négociant : crée une ligne, lit les siennes</span></li>
+            <li><span class="r">quality_manager</span><span>responsable qualité : crée, approuve, lit le lot</span></li>
+            <li><span class="r">lab_inspector</span><span>inspecteur du labo : crée un test, approuve, lit le lot</span></li>
+            <li><span class="r">auditor</span><span>auditeur : lit l'historique</span></li>
+          </ul>
+        </div>
+      </div>
+      <table class="tests">
+        <thead><tr><th>Qui</th><th>Rôle</th><th>Essaie de…</th><th>Ligne</th><th>Résultat</th><th>Pourquoi</th></tr></thead>
+        <tbody>
+          <tr><td>anna</td><td>inspectrice labo</td><td>approuver <span class="mono">(approve_record)</span></td><td class="mono">REC-001</td><td><span class="res ok">AUTORISÉ</span></td><td>elle a ce droit</td></tr>
+          <tr><td>claire</td><td>responsable qualité</td><td>lire le lot <span class="mono">(read_batch)</span></td><td class="mono">REC-001</td><td><span class="res ok">AUTORISÉ</span></td><td>elle a ce droit</td></tr>
+          <tr class="denied"><td><b>pieter</b></td><td><b>négociant</b></td><td><b>modifier</b> <span class="mono">(edit_record)</span></td><td class="mono"><b>REC-001</b></td><td><span class="res no">REFUSÉ</span></td><td>le rôle 'trader' n'a pas le droit 'edit_record'</td></tr>
+        </tbody>
+      </table>
+      <p class="hint" style="margin:8px 2px 0">REC-001 = la ligne T1 de l'abattoir (HORSE, 2&nbsp;400&nbsp;kg). Refuser cette modification, c'est bloquer la fraude de 2013.</p>
+    </section>
+
+    <!-- ===== Scene: recap (step 10) ===== -->
+    <section class="scene" id="scene-recap" aria-label="À retenir">
+      <div class="rgrid">
+        <div class="rbox ok">
+          <div class="big">✓ AJOUTER une ligne</div>
+          <p>→ une nouvelle empreinte et une nouvelle signature, <b>pour cette ligne seulement</b>.</p>
+          <p>→ rien ne change pour les anciennes lignes : mêmes empreintes, mêmes signatures.</p>
+        </div>
+        <div class="rbox no">
+          <div class="big">✗ MODIFIER une ligne</div>
+          <ol>
+            <li>son empreinte change complètement ;</li>
+            <li>la signature de l'auteur ne colle plus ;</li>
+            <li>l'empreinte du bloc change, le bloc suivant ne colle plus ;</li>
+            <li>les 3 autres copies ont l'original.</li>
+          </ol>
+          <p><b>→ fraude détectée.</b></p>
+        </div>
+      </div>
+      <div class="quote">
+        <div class="ql">La phrase pour l'oral</div>
+        <p>« Dans le registre, on n'efface et on ne modifie jamais rien : chaque acteur ajoute sa propre ligne signée pour le même lot. Une erreur se corrige par une nouvelle ligne, et l'ancienne reste visible. »</p>
+      </div>
+      <div class="extra">
+        <div><b>Une erreur ?</b> On ajoute une ligne de correction qui renvoie à l'ancienne. On voit qui a corrigé, et quand.</div>
+        <div><b>Dans le code :</b> aucun rôle n'a le droit <span class="mono">edit_record</span>. pieter (négociant) qui modifie REC-001 : refusé.</div>
+      </div>
+    </section>
+  </div>
+
+  <div class="bottom">
+    <div class="caption" aria-live="polite">
+      <div class="cap-title" id="capTitle"></div>
+      <div class="cap-text" id="capText"></div>
+    </div>
+    <div class="nav">
+      <span class="counter" id="counter"></span>
+      <button class="btn" type="button" id="prevBtn">◀ Précédent</button>
+      <button class="btn primary" type="button" id="nextBtn">Étape suivante ▶</button>
+    </div>
+  </div>
+</div>
+
+<div id="pop" role="dialog" hidden><div class="pl"></div><div class="ph"></div><div class="ps">Empreinte complète : 64 caractères. Clique ailleurs pour fermer.</div></div>
+
+<script>
+(function(){
+  "use strict";
+  var H = {
+    t1:     ["Empreinte de T1 (HORSE, version d'origine)", "b2d7a81a41a3ae8e3847b21c821538803f7268b85e502cb86736d78f6d2272e6"],
+    t1beef: ["Empreinte de T1 trafiquée (BEEF)",            "b2c60303ead9a020cc82bbf4de7292c4885478ab67f2ec54c967d8992228bc52"],
+    t2:     ["Empreinte de T2 (transfert, Delta Trading)",  "e8ecd7fed07e7885a854863dd1902b638ec2ff893f4c4b7243230ab996ea60b7"],
+    t3:     ["Empreinte de T3 (test ADN, GenoLab)",         "0a98d81b19ff396b8ab67722908ffb60d1f728ffa496352ad5ebd2de0ea505a1"],
+    b40:    ["Empreinte du bloc 40",                        "29726fadb781f5e3f582c80bf3b7a9853f120274ae4056194bbdfb2de52b42de"],
+    b41:    ["Empreinte du bloc 41 (d'origine)",            "9c2833fa8fa111e44e17a33253067832dd7d4a09f36cf2a39348b233a0a3b30c"],
+    b41beef:["Empreinte du bloc 41 après la triche",        "b992d559746882244f36a7f6ddf7c8041ba154a66ef5ee704112f7726862934f"]
+  };
+  var SEAL = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="#E4F1E9" stroke="currentColor" stroke-width="1.6"/><path d="M8 12.5l2.6 2.6L16 9.6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  var STEPS = [
+    {scene:"journal", cards:{},
+      title:"Le journal de bord du lot RO-2026-0412",
+      text:"Le registre est un journal de bord : on écrit page après page, et les pages déjà écrites ne bougent plus.",
+      see:"Le lot RO-2026-0412 a son propre journal. Il est vide. Chaque acteur de la chaîne va y écrire sa ligne, l'une après l'autre."},
+    {scene:"journal", cards:{c1:"new"},
+      title:"T1 : l'abattoir ajoute sa ligne",
+      text:"Carpati Meat écrit : 2 400 kg de cheval (HORSE), abattus le 5 octobre 2026. La ligne reçoit son empreinte et la signature de l'abattoir.",
+      see:"La ligne reçoit deux preuves. L'empreinte : un résumé du contenu. La signature : le sceau de l'auteur, ici Carpati Meat."},
+    {scene:"journal", cards:{c1:"same", c2:"new"},
+      title:"T2 : le négociant ajoute sa propre ligne",
+      text:"Delta Trading ne touche pas à T1. Il ajoute T2 pour le même lot. T1 garde exactement la même empreinte et la même signature.",
+      see:"Regarde T1 : son empreinte <span class=\"mono nw\">b2d7a81a…72e6</span> n'a pas bougé. La nouvelle ligne T2 a sa propre empreinte et sa propre signature."},
+    {scene:"journal", cards:{c1:"same", c2:"same", c3:"new", c4:"new delay"},
+      title:"T3 : le labo ajoute le test ADN",
+      text:"GenoLab écrit : EQUINE (cheval) 100 %. Puis FreshMeals ajoute la réception (exemple illustratif). Chacun signe sa ligne.",
+      see:"Quatre acteurs, quatre lignes, quatre signatures. Personne n'a réécrit la ligne d'un autre. T1 et T2 sont toujours inchangées."},
+    {scene:"compare",
+      title:"Empreinte ou signature : quelle différence ?",
+      text:"L'empreinte prouve que le contenu n'a pas changé. La signature prouve qui l'a écrit."},
+    {scene:"journal", cards:{c1:"sup", c2:"mini", c3:"mini", c4:"mini", c5:"new"}, arrow:true,
+      title:"Une erreur ? On corrige en ajoutant",
+      text:"Exemple illustratif : l'abattoir s'est trompé de poids. Il ajoute T5, une ligne de correction qui renvoie à T1. On voit qui a corrigé, et quand.",
+      see:"T1 n'est ni effacée ni réécrite : elle reste visible, en gris. La correction T5 est une nouvelle ligne, signée par son auteur."},
+    {scene:"chain",
+      title:"Les lignes sont rangées dans des blocs, reliés en chaîne",
+      text:"Chaque bloc garde l'empreinte du bloc précédent (previous_hash). Le bloc 41 contient 29726fad…, exactement l'empreinte du bloc 40 : la chaîne tient."},
+    {scene:"fraud",
+      title:"Et si quelqu'un triche ?",
+      text:"Clique sur « Tricher » : on remplace HORSE par BEEF dans T1, comme en 2013. Regarde ce qui casse, étape par étape."},
+    {scene:"code",
+      title:"Le lien avec le code Python",
+      text:"Dans notre prototype, aucun rôle n'a le droit de modifier une ligne. Quand pieter, négociant, essaie de modifier REC-001 (la ligne T1) : refusé."},
+    {scene:"recap",
+      title:"À retenir",
+      text:"Ajouter, oui. Modifier, jamais. Et si quelqu'un modifie quand même, tout le monde le voit."}
+  ];
+  var FRAUD_CAPS = [
+    null,
+    "① T1 dit maintenant BEEF. Son empreinte change complètement : b2d7a81a…72e6 devient b2c60303…bc52.",
+    "② La signature de l'abattoir scellait l'ancienne empreinte. Elle ne correspond plus à la nouvelle.",
+    "③ L'empreinte du bloc 41 change aussi : 9c2833fa… devient b992d559…. Bloc encore valide ? Faux. Le bloc 42 ne s'y accroche plus.",
+    "④ Les 3 autres copies ont toujours l'original. 3 copies sur 4 disent HORSE : la fraude est visible."
+  ];
+
+  var $ = function(id){ return document.getElementById(id); };
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var step = 1, timers = [], fraudStage = 0;
+
+  /* Fill hashes and seals */
+  function short(h){ return h.slice(0,8) + "…" + h.slice(-4); }
+  Array.prototype.forEach.call(document.querySelectorAll(".hash"), function(b){
+    var d = H[b.getAttribute("data-k")];
+    b.textContent = short(d[1]);
+    b.title = d[1];
+    b.setAttribute("aria-label", d[0] + " : " + d[1]);
+  });
+  Array.prototype.forEach.call(document.querySelectorAll("[data-seal]"), function(s){
+    s.innerHTML = SEAL + "<span>signé par " + s.getAttribute("data-seal") + "</span>";
+  });
+
+  /* Popover with full hash */
+  var pop = $("pop");
+  document.addEventListener("click", function(e){
+    var b = e.target.closest ? e.target.closest(".hash") : null;
+    if (!b){ if (!pop.contains(e.target)) pop.hidden = true; return; }
+    var d = H[b.getAttribute("data-k")];
+    pop.querySelector(".pl").textContent = d[0];
+    pop.querySelector(".ph").textContent = d[1];
+    pop.hidden = false;
+    var r = b.getBoundingClientRect();
+    var left = Math.min(r.left + window.scrollX, window.scrollX + document.documentElement.clientWidth - pop.offsetWidth - 12);
+    pop.style.left = Math.max(8, left) + "px";
+    pop.style.top = (r.bottom + window.scrollY + 6) + "px";
+  });
+
+  /* Journal cards */
+  function applyCards(cfg){
+    ["c1","c2","c3","c4","c5"].forEach(function(id){
+      var el = $(id), st = cfg[id];
+      el.className = "card" + (id === "c5" ? " corr" : "") + (st ? " " + st : " hidden");
+    });
+    $("empty").classList.toggle("off", Object.keys(cfg).length > 0);
+  }
+
+  function drawCorrArrow(show){
+    var svg = $("corrArrow");
+    if (!show){ svg.classList.remove("on"); return; }
+    var j = $("journal").getBoundingClientRect();
+    var a = $("c1").getBoundingClientRect(), b = $("c5").getBoundingClientRect();
+    var y1 = a.top - j.top + a.height/2, y2 = b.top - j.top + b.height/2;
+    svg.setAttribute("viewBox", "0 0 44 " + j.height);
+    svg.style.height = j.height + "px";
+    svg.innerHTML =
+      '<path d="M42 ' + y2 + ' H22 Q12 ' + y2 + ' 12 ' + (y2-10) + ' V' + (y1+10) + ' Q12 ' + y1 + ' 22 ' + y1 + ' H38" fill="none" stroke="#5B45C2" stroke-width="2"/>' +
+      '<path d="M34 ' + (y1-5) + ' L41 ' + y1 + ' L34 ' + (y1+5) + '" fill="none" stroke="#5B45C2" stroke-width="2" stroke-linejoin="round"/>' +
+      '<text x="7" y="' + ((y1+y2)/2) + '" transform="rotate(-90 7 ' + ((y1+y2)/2) + ')" text-anchor="middle" font-size="12" font-family="Archivo,Helvetica Neue,Arial,sans-serif" fill="#5B45C2" font-weight="700">renvoie à T1</text>';
+    svg.classList.add("on");
+  }
+
+  /* Chain links */
+  function link(fromEl, toEl, box, svg, label){
+    var f = fromEl.getBoundingClientRect(), t = toEl.getBoundingClientRect();
+    var x1 = f.left - box.left, y1 = f.top - box.top + f.height/2;
+    var x2 = t.right - box.left, y2 = t.top - box.top + t.height/2;
+    var mx = (x1 + x2) / 2;
+    svg.insertAdjacentHTML("beforeend",
+      '<path d="M' + x1 + ' ' + y1 + ' C' + mx + ' ' + y1 + ' ' + mx + ' ' + y2 + ' ' + (x2+6) + ' ' + y2 + '" fill="none" stroke="#1F7A4D" stroke-width="2.2"/>' +
+      '<path d="M' + (x2+13) + ' ' + (y2-5) + ' L' + (x2+5) + ' ' + y2 + ' L' + (x2+13) + ' ' + (y2+5) + '" fill="none" stroke="#1F7A4D" stroke-width="2.2" stroke-linejoin="round"/>');
+    var l = document.createElement("div");
+    l.className = "linklbl"; l.textContent = label;
+    l.style.left = mx + "px"; l.style.top = ((y1 + y2) / 2) + "px";
+    $("chain").appendChild(l);
+  }
+  function drawChain(){
+    var chain = $("chain"), svg = $("chainSvg"), box = chain.getBoundingClientRect();
+    svg.innerHTML = "";
+    var b42 = $("b42");
+    b42.style.marginTop = "0px";
+    b42.style.marginTop = Math.max(0, ($("b41hash").offsetTop + $("b41hash").offsetHeight/2) - ($("b42prev").offsetTop + $("b42prev").offsetHeight/2)) + "px";
+    Array.prototype.forEach.call(chain.querySelectorAll(".linklbl"), function(n){ n.remove(); });
+    link($("b41prev"), $("b40hash"), box, svg, "identiques ✓");
+    link($("b42prev"), $("b41hash"), box, svg, "identiques ✓");
+  }
+
+  /* Fraud simulation */
+  function setFraud(n){
+    fraudStage = n;
+    var sc = $("scene-fraud");
+    for (var i = 1; i <= 4; i++) sc.classList.toggle("s" + i, i <= n);
+    if (n > 0) $("capText").textContent = FRAUD_CAPS[n];
+    $("cheatBtn").disabled = n > 0;
+  }
+  function resetFraud(){
+    timers.forEach(clearTimeout); timers = [];
+    setFraud(0);
+    if (step === 8) $("capText").textContent = STEPS[7].text;
+  }
+  function cheat(){
+    resetFraud();
+    var gap = reduce ? 900 : 1700;
+    [1,2,3,4].forEach(function(n, i){
+      timers.push(setTimeout(function(){ setFraud(n); }, i * gap));
+    });
+  }
+  $("cheatBtn").addEventListener("click", cheat);
+  $("resetBtn").addEventListener("click", resetFraud);
+
+  /* Navigation */
+  function go(n, opts){
+    opts = opts || {};
+    step = Math.max(1, Math.min(STEPS.length, n));
+    var s = STEPS[step - 1];
+    pop.hidden = true;
+    Array.prototype.forEach.call(document.querySelectorAll(".scene"), function(el){
+      el.classList.toggle("on", el.id === "scene-" + s.scene);
+    });
+    $("capTitle").textContent = s.title;
+    $("capText").textContent = s.text;
+    $("counter").textContent = "Étape " + step + " / " + STEPS.length;
+    $("prevBtn").disabled = step === 1;
+    $("nextBtn").disabled = step === STEPS.length;
+    resetFraud();
+    if (s.scene === "journal"){
+      applyCards(s.cards);
+      $("seeText").innerHTML = s.see;
+      drawCorrArrow(false);
+      if (s.arrow) timers.push(setTimeout(function(){ drawCorrArrow(true); }, reduce ? 0 : 520));
+    }
+    if (s.scene === "chain") drawChain();
+    if (step === 8 && opts.fraud){
+      timers.forEach(clearTimeout); timers = [];
+      setFraud(4);
+      $("capText").textContent = FRAUD_CAPS[4];
+    }
+    var h = "#" + step + (step === 8 && opts.fraud ? "-fraud" : "");
+    if (location.hash !== h) history.replaceState(null, "", h);
+  }
+  function fromHash(){
+    var m = /^#(\d+)(-fraud)?$/.exec(location.hash);
+    go(m ? parseInt(m[1], 10) : 1, {fraud: !!(m && m[2])});
+  }
+  $("prevBtn").addEventListener("click", function(){ go(step - 1); });
+  $("nextBtn").addEventListener("click", function(){ go(step + 1); });
+  document.addEventListener("keydown", function(e){
+    if (e.key === "ArrowRight"){ go(step + 1); e.preventDefault(); }
+    else if (e.key === "ArrowLeft"){ go(step - 1); e.preventDefault(); }
+    else if (e.key === "Escape"){ pop.hidden = true; }
+  });
+  window.addEventListener("hashchange", fromHash);
+  window.addEventListener("resize", function(){
+    var s = STEPS[step - 1];
+    if (s.scene === "chain") drawChain();
+    if (s.arrow) drawCorrArrow(true);
+  });
+  fromHash();
+})();
+</script>
+</body>
+</html>

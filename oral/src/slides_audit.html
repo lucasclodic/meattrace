@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Audit des slides MeatTrace, vues par le prof (16/10/2026)</title>
+<style>
+:root{--paper:#FAFAF7;--ink:#1E2033;--muted:#5E6275;--rule:#DADCE3;--panel:#F1F2F5;
+--violet:#5B45C2;--violet-ink:#3F2F96;--violet-wash:#EFECFA;
+--mono:"JetBrains Mono",ui-monospace,Menlo,monospace;--sans:"Archivo","Helvetica Neue",Arial,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:14.5px;line-height:1.55}
+main{max-width:820px;margin:0 auto;padding:40px 36px 60px}
+h1{font-size:26px;margin:0 0 14px;color:var(--violet-ink);letter-spacing:-.01em}
+h2{font-size:19px;margin:30px 0 10px;padding-bottom:4px;border-bottom:2px solid var(--violet)}
+h3{font-size:15.5px;margin:22px 0 6px;color:var(--violet-ink)}
+h4{font-size:14.5px;margin:16px 0 4px}
+p{margin:6px 0 10px}
+ul,ol{margin:6px 0 10px;padding-left:24px}
+li{margin:2px 0}
+blockquote{margin:8px 0 14px;padding:8px 14px;background:var(--violet-wash);border-left:4px solid var(--violet)}
+blockquote p{margin:4px 0}
+hr{border:0;border-top:1px solid var(--rule);margin:26px 0}
+code{font-family:var(--mono);font-size:.86em;background:var(--panel);padding:1px 5px}
+pre{background:var(--panel);padding:10px 12px;overflow-x:auto}
+pre code{padding:0;background:none}
+table{border-collapse:collapse;width:100%;margin:10px 0 16px;font-size:13px}
+th,td{border:1px solid var(--rule);padding:5px 8px;text-align:left;vertical-align:top}
+th{background:var(--panel)}
+a{color:var(--violet)}
+@page{size:A4;margin:14mm 12mm}
+@media print{body{background:#fff;font-size:12.5px}main{max-width:none;padding:0}
+h2,h3{break-after:avoid}blockquote,tr,pre{break-inside:avoid}}
+</style>
+</head>
+<body>
+<main>
+<h1>Audit des slides MeatTrace, vues par le prof (16/10/2026)</h1>
+<blockquote>
+<p><strong>Statut au 16/10/2026, après l'audit</strong> : corrections appliquées dans les slides, le code, le notebook, le script et le kit Q&amp;A : M1, M2, M3, M4, M5, S1, S2, S3, S4, S6, S7, S9, S10, N5, N7.
+S8 réglé le 18/10 (oral le 20 octobre). Restent à décider : N1, N3, N4, N6, N8, N9.</p>
+</blockquote>
+<p>Fichiers audités :</p>
+<ul>
+<li><code>slides/meattrace_slides.html</code> et son PDF (14 pages)</li>
+<li><code>prototype/meattrace_demo.py</code> et <code>demo_output.txt</code></li>
+<li>le sujet <code>IS511E_Midterm1_Project_Overleaf_100.pdf</code> et <code>consignes_teams.md</code></li>
+</ul>
+<p>Les textes de remplacement sont en anglais, prêts à coller dans le HTML.</p>
+<h2>Verdict</h2>
+<p><strong>Note estimée : 84/100</strong> (fourchette 80–88). Le deck couvre presque tout le sujet, les chiffres sont cohérents et les sources tiennent. On perd des points sur quatre choses :</p>
+<ul>
+<li>une phrase fausse sur la séparation des rôles (slide 9) ;</li>
+<li>un scénario de fraude que le prototype ne couvre pas exactement (slide 10) ;</li>
+<li>le consensus, qui n'est pas nommé ;</li>
+<li>quelques formulations de sources trop fortes.</li>
+</ul>
+<p>Le notebook exécutable, exigé pour les questions, n'existe pas encore.</p>
+<hr />
+<h2>1. Ce que le sujet demande : présent ou non ?</h2>
+<table>
+<thead>
+<tr>
+<th>Exigence du sujet</th>
+<th>État</th>
+<th>Slide</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1.2 Q1 : organisation, secteur et processus actuel</td>
+<td>✅ Présent</td>
+<td>3, 4</td>
+</tr>
+<tr>
+<td>1.2 Q2 : au moins 3 parties prenantes et leurs intérêts</td>
+<td>✅ Présent (6)</td>
+<td>3</td>
+</tr>
+<tr>
+<td>1.2 Q3 : problème concret et mesurable</td>
+<td>✅ Présent</td>
+<td>2, 3</td>
+</tr>
+<tr>
+<td>1.2 Q4 : gestion actuelle (papier, e-mail, ERP)</td>
+<td>✅ Présent</td>
+<td>3</td>
+</tr>
+<tr>
+<td>1.2 Q5 : au moins 2 sources avec URL fonctionnelle</td>
+<td>⚠️ Partiel : 8 sources, mais URL en texte, pas cliquables, et sans <code>https://</code></td>
+<td>Annexe A</td>
+</tr>
+<tr>
+<td>1.2 Q6 : objectif mesurable</td>
+<td>✅ Présent (&lt; 1 h, 100 % signés)</td>
+<td>3</td>
+</tr>
+<tr>
+<td>2 : utilisateurs, et qui paie</td>
+<td>✅ Présent</td>
+<td>4, 5</td>
+</tr>
+<tr>
+<td>2 : proposition de valeur, et pourquoi les partenaires adoptent</td>
+<td>✅ Présent</td>
+<td>4</td>
+</tr>
+<tr>
+<td>2 : marché et adoption (qui rejoint en premier, combien d'organisations)</td>
+<td>✅ Présent (Y1/Y2/Y3)</td>
+<td>5</td>
+</tr>
+<tr>
+<td>2 : modèle de financement</td>
+<td>✅ Présent</td>
+<td>5</td>
+</tr>
+<tr>
+<td>2 : ressources</td>
+<td>⚠️ Partiel : seulement dans le pied de page</td>
+<td>5</td>
+</tr>
+<tr>
+<td>2 : coûts (mise en place, annuels, frais de réseau)</td>
+<td>✅ Présent</td>
+<td>6, annexe B</td>
+</tr>
+<tr>
+<td>2 : bénéfices</td>
+<td>⚠️ Partiel : le rappel produit à 2 M€ est une hypothèse sans repère</td>
+<td>5</td>
+</tr>
+<tr>
+<td>2 : 2 ou 3 KPI</td>
+<td>✅ Présent (3)</td>
+<td>5</td>
+</tr>
+<tr>
+<td>2.1 : comparaison sur 3 ans, base de données incluse, devise, hypothèses</td>
+<td>✅ Présent</td>
+<td>6, annexe B</td>
+</tr>
+<tr>
+<td>2.1 : bénéfice qui justifie le surcoût de la blockchain</td>
+<td>✅ Présent</td>
+<td>6 (pied de page), 12</td>
+</tr>
+<tr>
+<td>3 S1 : registre actuel, et pourquoi un registre partagé</td>
+<td>✅ Présent</td>
+<td>3, 7</td>
+</tr>
+<tr>
+<td>3 S2 : 3 transactions, 1 bloc, lien vers le hash précédent</td>
+<td>✅ Présent</td>
+<td>8</td>
+</tr>
+<tr>
+<td>3 S3 : champs hashés, qui signe, ce que prouve la signature</td>
+<td>✅ Présent</td>
+<td>8</td>
+</tr>
+<tr>
+<td>3 S4 : <strong>qui fixe l'ordre accepté</strong> des enregistrements</td>
+<td>⚠️ Partiel : on parle du vote, pas de l'ordre ni du proposeur, et le mécanisme n'est pas nommé</td>
+<td>9</td>
+</tr>
+<tr>
+<td>3 S5 : public, privé, consortium ou base de données</td>
+<td>✅ Présent</td>
+<td>7</td>
+</tr>
+<tr>
+<td>3.1 : workflow Create → Authorize → Verify → Agree → Audit</td>
+<td>❌ Absent tel quel (slide 4 a un autre processus en 4 étapes)</td>
+<td>8 conseillé</td>
+</tr>
+<tr>
+<td>3.2 Q1 : au moins 3 champs par transaction</td>
+<td>✅ Présent</td>
+<td>8</td>
+</tr>
+<tr>
+<td>3.2 Q2 : ce qui reste confidentiel ou hors chaîne</td>
+<td>✅ Présent</td>
+<td>8, 9</td>
+</tr>
+<tr>
+<td>3.2 Q3 : qui soumet, approuve et valide</td>
+<td>⚠️ Présent, mais la phrase de conclusion est fausse (voir M1)</td>
+<td>9</td>
+</tr>
+<tr>
+<td>3.2 Q4 : détection d'une modification non autorisée</td>
+<td>✅ Présent</td>
+<td>8, 10</td>
+</tr>
+<tr>
+<td>3.2 Q5 : partenaire qui signe une fausse déclaration</td>
+<td>✅ Présent</td>
+<td>8</td>
+</tr>
+<tr>
+<td>3.2 Q6 : pourquoi ce réseau et ce consensus</td>
+<td>✅ Présent</td>
+<td>7, 9</td>
+</tr>
+<tr>
+<td>4 : matrice des droits</td>
+<td>✅ Présent</td>
+<td>9</td>
+</tr>
+<tr>
+<td>4.1 : identité, autorisation, séparation des tâches, confidentialité, révocation, gouvernance</td>
+<td>✅ Présent (6 sur 6)</td>
+<td>9</td>
+</tr>
+<tr>
+<td>4.2 : comparaison des architectures et décision</td>
+<td>✅ Présent</td>
+<td>7</td>
+</tr>
+<tr>
+<td>5.1 : dictionnaire, texte stable, SHA-256, modification, explication</td>
+<td>✅ Présent</td>
+<td>10</td>
+</tr>
+<tr>
+<td>5.2 : au moins 4 utilisateurs, 3 rôles, une fonction, 1 autorisé et 2 refusés, risque business</td>
+<td>✅ Présent (6 utilisateurs, 5 rôles, 2 autorisés, 3 refusés)</td>
+<td>11</td>
+</tr>
+<tr>
+<td>5.3 : code court, tableau de résultats, interprétation</td>
+<td>✅ Présent</td>
+<td>10, 11</td>
+</tr>
+<tr>
+<td>5.3 et 7.2 : <strong>notebook exécutable prêt pour les questions</strong></td>
+<td>❌ Absent (seulement un script <code>.py</code>)</td>
+<td>—</td>
+</tr>
+<tr>
+<td>6 : étapes de mise en œuvre</td>
+<td>✅ Présent (4)</td>
+<td>12</td>
+</tr>
+<tr>
+<td>6 : <strong>coûts</strong> par étape</td>
+<td>⚠️ Partiel : seul le total est donné</td>
+<td>12</td>
+</tr>
+<tr>
+<td>6.1 : les 5 risques et leurs parades</td>
+<td>✅ Présent (5 sur 5)</td>
+<td>12</td>
+</tr>
+<tr>
+<td>Recommandation : quoi, pour qui, coût, valeur, limites</td>
+<td>✅ Présent</td>
+<td>12</td>
+</tr>
+<tr>
+<td>Recommandation : <strong>premier objectif mesurable du pilote</strong></td>
+<td>⚠️ Seulement dans le pied de page</td>
+<td>12</td>
+</tr>
+<tr>
+<td>Recommandation : ce que montre le prototype et ce qui reste à construire</td>
+<td>✅ Présent</td>
+<td>12</td>
+</tr>
+<tr>
+<td>7.1 : structure en 12 slides</td>
+<td>✅ Présent, les 12 slides correspondent</td>
+<td>1–12</td>
+</tr>
+<tr>
+<td>7.1 : annexe de 3 pages maximum</td>
+<td>✅ Présent (2 pages)</td>
+<td>A, B</td>
+</tr>
+<tr>
+<td>7.2 : noms complets sur la slide 1</td>
+<td>✅ Présent</td>
+<td>1</td>
+</tr>
+<tr>
+<td>7.2 : hypothèses signalées</td>
+<td>✅ Présent</td>
+<td>4, 5, 6</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>2. Barème estimé (section 8 du sujet)</h2>
+<table>
+<thead>
+<tr>
+<th>Critère</th>
+<th>Points</th>
+<th>Estimation</th>
+<th>Ce qui ferait monter la note</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Problème et preuves</td>
+<td>15</td>
+<td><strong>13</strong></td>
+<td>URL cliquables. Attribuer clairement les affirmations (abattoirs, Spanghero). Corriger les formulations OLAF et art. 18 (S4–S6).</td>
+</tr>
+<tr>
+<td>Business plan et faisabilité</td>
+<td>15</td>
+<td><strong>12</strong></td>
+<td>Coûts par étape sur la slide 12 (S2). Un repère sourcé pour le coût d'un rappel produit (N1). Ressources sorties du pied de page.</td>
+</tr>
+<tr>
+<td>Raisonnement blockchain</td>
+<td>25</td>
+<td><strong>21</strong></td>
+<td>Corriger la slide 9 (M1). Nommer le consensus et expliquer l'ordre des blocs (M3). Ajouter le workflow 3.1 (S1). Couvrir le vrai scénario de fraude (M2).</td>
+</tr>
+<tr>
+<td>Droits d'accès et gouvernance</td>
+<td>15</td>
+<td><strong>13</strong></td>
+<td>Aligner la matrice et le code (S3). Ajouter le rôle d'opérateur ou de conseil du consortium (N4).</td>
+</tr>
+<tr>
+<td>Prototype Python</td>
+<td>15</td>
+<td><strong>13</strong></td>
+<td>Notebook exécutable (M5). Règle « espèce déclarée = espèce signée » (M2). Optionnel : signature RSA comme en séance 3.</td>
+</tr>
+<tr>
+<td>Présentation et questions</td>
+<td>15</td>
+<td><strong>12</strong></td>
+<td>Les slides 9 et 12 sont denses à l'oral. Préparer les questions pièges listées en section 5.</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td><strong>100</strong></td>
+<td><strong>≈ 84</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>3. Cohérence des chiffres</h2>
+<p>Les calculs sont tous justes :</p>
+<ul>
+<li>193 / 4 144 = 4,66 %</li>
+<li>305 / 4 / 3 = 25,4 k€ par membre et par an</li>
+<li>140 / 4 = 35 k€ ; 55 / 4 = 13,75 k€ ; 35 + 3 × 13,75 = 76,25 k€</li>
+<li>305 − 116 = 189 k€, soit 9,45 % de 2 M€</li>
+<li>Les sommes de l'annexe B tombent juste (50 / 22 / 140 / 55), comme les jours (12 000 / 500 = 24 ; 25 000 / 500 = 50).</li>
+</ul>
+<p>Les hash affichés correspondent tous à <code>demo_output.txt</code>, préfixes et suffixes compris :</p>
+<ul>
+<li>slide 1 : <code>b2d7a81a…72e6</code>, <code>b2c60303…bc52</code> ;</li>
+<li>slide 8 : blocs 40 et 41, T1 à T3 et hash du bloc ;</li>
+<li>slide 10 : hash complets et hash du bloc après modification.</li>
+</ul>
+<p>Les 6 utilisateurs et 5 rôles de la slide 11 sont bien ceux du code.</p>
+<p><strong>Écarts relevés :</strong></p>
+<table>
+<thead>
+<tr>
+<th>Où</th>
+<th>Écart</th>
+<th>Gravité</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Slide 9 contre le code</td>
+<td>La matrice donne à l'abattoir « Read : own batches » et au négociant « Read : batches it held », mais le code ne leur donne aucun droit de lecture</td>
+<td>Should-fix (S3)</td>
+</tr>
+<tr>
+<td>Slide 9, note</td>
+<td>« held by different organizations » est faux. Dans la matrice, FreshMeals crée, approuve et valide, et le labo aussi</td>
+<td><strong>Must-fix (M1)</strong></td>
+</tr>
+<tr>
+<td>Slide 9 contre slide 12</td>
+<td>La slide 9 dit « Suppliers can run a node in phase 3 », mais l'étape 3 de la slide 12 n'en parle pas</td>
+<td>Should-fix (S7)</td>
+</tr>
+<tr>
+<td>Slide 8, bloc 41</td>
+<td>Horodatage affiché <code>2026-10-06T09:14Z</code> contre <code>…09:14:00Z</code> dans le code. La ligne « validators 3 of 4 signed » ne fait pas partie du hash calculé : elle est illustrative</td>
+<td>Nice-to-have (N5)</td>
+</tr>
+<tr>
+<td>Slide 8, T3</td>
+<td><code>report_sha256</code> hashe un dictionnaire qui contient le <em>nom</em> du fichier, pas son contenu</td>
+<td>Nice-to-have (N6, à corriger dans le notebook)</td>
+</tr>
+<tr>
+<td>Slide 1</td>
+<td>Date « 22 October 2026 » non confirmée</td>
+<td>Should-fix (S8)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>4. Vérification des faits</h2>
+<table>
+<thead>
+<tr>
+<th>Affirmation sur les slides</th>
+<th>Vérification</th>
+<th>Verdict</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>≈ 750 t sur environ 6 mois, selon le gouvernement français</td>
+<td>AFP via IOL, 14/02/2013 : « knowingly sold around 750 tonnes… over six months »</td>
+<td>✅ Ajouter que Spanghero a <strong>nié</strong> (N7)</td>
+</tr>
+<tr>
+<td>≈ 4,5 millions de produits</td>
+<td>Conclusions de la DGCCRF reprises par l'AFP : 4,5 millions de produits vendus par Comigel à 28 entreprises dans 13 pays</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>28 entreprises, 13 pays</td>
+<td>Al Jazeera, 15/02/2013</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Chaîne Roumanie → Chypre → Pays-Bas → Spanghero → Comigel → Findus</td>
+<td>Al Jazeera</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>« clearly labelled as horse »</td>
+<td>Al Jazeera : ce sont les abattoirs eux-mêmes qui le disent</td>
+<td>⚠️ À attribuer : « say they… » (S4)</td>
+</tr>
+<tr>
+<td>4,66 % = 193 / 4 144</td>
+<td>Page de la Commission européenne (DG SANTE)</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>« In a 2023 EU action, 46 % of 320 imported honey samples were suspected of fraud »</td>
+<td>OLAF : « analysis of 320 samples… 46 % was adulterated », opération <strong>2022</strong> « From the Hives », publiée dans le rapport OLAF 2023, avec « forging of traceability information »</td>
+<td>⚠️ Année et formulation à corriger (S5)</td>
+</tr>
+<tr>
+<td>Walmart : environ 7 jours → 2,2 s</td>
+<td>Étude de cas LF Decentralized Trust</td>
+<td>✅ C'était une démonstration de 2016</td>
+</tr>
+<tr>
+<td>TradeLens « closed in 2022 despite 300+ members »</td>
+<td>Fermeture <strong>annoncée</strong> fin novembre 2022, arrêt fin du 1er trimestre 2023, plus de 300 membres</td>
+<td>⚠️ Écrire « announced its closure in 2022 » (S6)</td>
+</tr>
+<tr>
+<td>« Carrefour reported better sales for blockchain-tracked products »</td>
+<td>ESM, 04/06/2019 : pomelos « sold faster », « positive impact on the chicken ». <strong>Aucun chiffre</strong></td>
+<td>⚠️ Trop général, à préciser (S6)</td>
+</tr>
+<tr>
+<td>Art. 18 entre guillemets : « one step back, one step forward »</td>
+<td>Le texte de l'art. 18 dit « identify any person from whom they have been supplied » et « identify the other businesses to which their products have been supplied ». <strong>La formule n'est pas dans le texte</strong> : c'est le nom courant du principe</td>
+<td>⚠️ Ne pas la présenter comme une citation (S5)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>5. Raisonnement technique : ce que le prof peut attaquer</h2>
+<ol>
+<li><strong>Slide 9, « held by different organizations »</strong> : faux, voir M1. Le prof peut le démonter en lisant votre propre matrice.</li>
+<li><strong>Le scénario de 2013 ne revient pas à modifier l'enregistrement de l'abattoir</strong> (slide 10). Spanghero n'aurait pas réécrit le registre de l'abattoir. Il aurait créé un <strong>nouveau</strong> transfert déclarant « BEEF ». Le test de hash ne détecte pas ça. C'est une règle métier qui le détecte : l'espèce déclarée doit être égale à l'espèce signée dans l'historique. À dire sur la slide et à coder dans le notebook (M2).</li>
+<li><strong>Consensus non nommé, ordre non expliqué</strong> (slide 9) : 3 sur 4 est correct pour une tolérance aux pannes byzantines (n = 3f + 1, f = 1, quorum 2f + 1 = 3). Mais il faut dire qui propose le bloc et comment l'ordre est fixé (M3). Question probable : « avec 2 validateurs en panne ? » Réponse : plus de bloc tant qu'ils ne sont pas revenus. Les données ne sont ni perdues ni falsifiées, c'est un choix de sécurité plutôt que de disponibilité.</li>
+<li><strong>Signatures</strong> : les slides 4 et 8 affirment que tout est signé, mais le prototype ne signe rien. Le sujet ne l'exige pas pour le Python, mais le prof peut demander « où est la signature dans votre code ? ». Réponse : démontrée en séance 3 avec <code>rsa</code>, à ajouter en extension dans le notebook (N2).</li>
+<li><strong>Public blockchain rejetée</strong> (slide 7) : on peut objecter qu'il suffirait d'ancrer seulement les hash sur une chaîne publique (solution hybride). Préparer la réponse : coût et frais variables, aucune gouvernance des droits, ça ne règle pas qui a le droit d'écrire. Possible en phase 4 pour un audit public (N3).</li>
+<li><strong>Point bien traité</strong> : intégrité, accord et vérité sont distingués (slides 8 et 10), exactement le message du sujet.</li>
+</ol>
+<hr />
+<h2>6. Rendu</h2>
+<ul>
+<li>Nom de fichier : le message Teams l'emporte sur le PDF du sujet → <code>IS511E_Midterm1_Lucas_Clodic.pdf</code> ✅. Elisa et Julia doivent déposer <strong>la même copie</strong> sous <code>IS511E_Midterm1_Elisa_Ouillet.pdf</code> et <code>IS511E_Midterm1_Julia_Kozhina.pdf</code>.</li>
+<li>Noms complets des 3 membres sur la slide 1 ✅</li>
+<li>14 pages = 12 slides + 2 pages d'annexe, sous la limite de 3 ✅</li>
+<li>Polices intégrées au PDF (Archivo, JetBrains Mono) ✅</li>
+<li>Références non cliquables dans le PDF ⚠️ (S9)</li>
+</ul>
+<hr />
+<h2>7. Corrections, par priorité</h2>
+<h3>MUST-FIX</h3>
+<p><strong>M1, slide 9, note sous la matrice (énoncé faux)</strong>
+Remplacer :
+<code>Submit, approve and validate are separate duties held by different organizations.</code>
+par :
+<code>Separate duties: nobody approves their own record, the approver is never the submitter, and no single member can accept a block alone (3 of 4 votes).</code></p>
+<p><strong>M2, slide 10, 1re puce de « What it means for the business »</strong> (le vrai scénario de 2013)
+Remplacer :
+<code>Every validator stores the approved fingerprint. A relabelled batch no longer matches, so the next partner or an auditor sees it at once.</code>
+par :
+<code>Every validator stores the approved fingerprint: editing the abattoir's record no longer matches. In 2013 the fraud was a new document saying "beef"; MeatTrace flags it because the declared species must equal the signed history.</code>
+Dans le notebook (pour les questions), ajouter le test : un transfert déclarant <code>species_declared = "BEEF"</code> sur un lot signé « HORSE » doit afficher <code>MISMATCH</code>.</p>
+<p><strong>M3, slide 9, panneau Consensus</strong> (nommer le mécanisme et expliquer l'ordre)
+Remplacer le paragraphe par :
+<code>Validators take turns proposing the next block. It is accepted, and its place in the order fixed, when 3 of 4 sign it (Byzantine-fault-tolerant voting, as in PBFT). So one faulty or dishonest member can neither block nor fake a block. Members are known and bound by contract: no mining (PoW) or staking (PoS) needed.</code></p>
+<p><strong>M4, slides 2 et 5, formulations de sources trop fortes</strong></p>
+<ul>
+<li>Slide 2, nœud abattoirs : <code>“clearly labelled as horse”</code> → <code>say it was “clearly labelled as horse”</code></li>
+<li>Slide 2, encadré honey : <code>In a 2023 EU action, &lt;b&gt;46 %&lt;/b&gt; of 320 imported honey samples were suspected of fraud, often with falsified traceability documents.</code> → <code>In a 2022 EU operation, &lt;b&gt;46 %&lt;/b&gt; of 320 imported honey samples were found adulterated, some with forged traceability information.</code></li>
+<li>Slide 2, encadré art. 18 : <code>each firm must know its supplier and its customer (“one step back, one step forward”).</code> → <code>each firm must be able to identify its suppliers and its customers, the “one step back, one step forward” principle.</code></li>
+<li>Slide 5, Carrefour : <code>Proof of origin sells: Carrefour reported better sales for blockchain-tracked products</code> → <code>Proof of origin sells: Carrefour said its blockchain-tracked chicken and pomelos sold better (no figures published)</code></li>
+</ul>
+<p><strong>M5, notebook exécutable</strong> (sujet 5.3 et 7.2, hors slides mais exigé pour les questions)
+Convertir <code>prototype/meattrace_demo.py</code> en <code>.ipynb</code>, exécuté, avec les <strong>mêmes valeurs</strong> pour que les hash des slides 1, 8 et 10 restent identiques. Y ajouter le test M2.</p>
+<h3>SHOULD-FIX</h3>
+<p><strong>S1, slide 8, workflow 3.1 du sujet</strong> (absent)
+Ajouter en bas de la colonne de gauche, sous « Off-chain » :
+<code>Workflow: Create (abattoir records the batch) → Authorize (role check) → Verify (hash + signature) → Agree (3 of 4 validators) → Audit (shared history).</code></p>
+<p><strong>S2, slide 12, coûts par étape</strong> (exigés par la section 6)
+Remplacer les textes des étapes 2 à 4 par :</p>
+<ul>
+<li><code>FreshMeals, 3 suppliers, DNA lab, one product: beef lasagne. ≈ €70k of the €140k setup (assumption).</code></li>
+<li><code>All 6 suppliers, 2 retailers, authority as observer. Remaining ≈ €70k setup, then €55k a year.</code></li>
+<li><code>Quarterly KPI review. Extend to chicken and pork, admit new buyers. €55k a year, shared.</code></li>
+</ul>
+<p><strong>S3, slide 9 contre le code, droits de lecture</strong>
+Dans le code (et dans l'extrait de la slide 11), ajouter <code>"read_own"</code> aux rôles abattoir et trader :</p>
+<pre><code class="language-python">&quot;abattoir&quot;: {&quot;create_record&quot;, &quot;read_own&quot;},
+&quot;trader&quot;:   {&quot;create_record&quot;, &quot;read_own&quot;},
+</code></pre>
+<p>Les résultats des 5 tests ne changent pas.</p>
+<p><strong>S4, slide 2, nœud Spanghero</strong>
+<code>sold it as beef</code> → <code>sold it as beef (it denied)</code></p>
+<p><strong>S5</strong> est couvert par M4 (honey et art. 18).</p>
+<p><strong>S6, slide 12, TradeLens</strong>
+<code>TradeLens closed in 2022 despite 300+ members, for lack of industry collaboration</code> → <code>TradeLens (300+ members) announced its closure in 2022 for lack of industry collaboration</code></p>
+<p><strong>S7, slide 12, étape 3</strong>
+Ajouter <code>Suppliers may run their own node.</code> ou supprimer cette phrase sur la slide 9.</p>
+<p><strong>S8, slide 1, date</strong> : confirmer le 22 octobre 2026, sinon corriger.</p>
+<p><strong>S9, annexe A, URL cliquables</strong>
+Entourer chaque URL d'un lien complet, par exemple :
+<code>&lt;a href="https://www.aljazeera.com/news/2013/2/15/france-says-horse-meat-tip-offs-ignored"&gt;aljazeera.com/news/…&lt;/a&gt;</code>
+Chrome garde les liens dans le PDF.</p>
+<p><strong>S10, slide 12, objectif du pilote dans la recommandation</strong>
+Ajouter dans le cadre « Our recommendation », avant « Still to build » :
+<code>&lt;p&gt;&lt;b&gt;First pilot target:&lt;/b&gt; 100 % of pilot batches traced to the abattoir in under one hour.&lt;/p&gt;</code></p>
+<h3>NICE-TO-HAVE</h3>
+<ul>
+<li><strong>N1, slide 5, repère pour le coût d'un rappel</strong> : <code>One full recall ≈ €2 M (assumption)</code> → <code>One full recall ≈ €2 M (assumption; industry surveys cite ≈ $10 M in direct costs on average)</code>. Source secondaire : Food Safety Magazine, chiffre FMI/GMA. Original non retrouvé, à citer avec prudence.</li>
+<li><strong>N2, notebook</strong> : extension signature RSA (bibliothèque <code>rsa</code>, séance 3). Signer T1, vérifier, puis montrer que la vérification échoue après modification.</li>
+<li><strong>N3, slide 7</strong> : sous le tableau, une ligne : <code>A hybrid (consortium + hashes anchored on a public chain) is possible later for public audits.</code></li>
+<li><strong>N4, slide 9</strong> : ajouter le rôle « Consortium board » (Create : accounts only, Approve : no, Read : audit metadata, Validate : no), comme dans l'exemple du sujet.</li>
+<li><strong>N5, slide 8</strong> : horodatage <code>2026-10-06T09:14:00Z</code> exact, et <code>validators 3 of 4 signed</code> en gris avec « (illustrative) ».</li>
+<li><strong>N6, notebook</strong> : calculer <code>report_sha256</code> sur le contenu du rapport, pas sur son nom.</li>
+<li><strong>N7, slide 11, anglais</strong> : <code>dan, has left the trader, creates a record</code> → <code>dan, who left the trading firm, tries to create a record</code></li>
+<li><strong>N8, lisibilité</strong> : les slides 9 et 12 sont denses (texte à 14 px). À l'oral, ne lire que la matrice et la recommandation.</li>
+<li><strong>N9, contexte RBS</strong> : un équivalent en dirhams des coûts de la slide 6, si le taux est vérifié (environ 10,8 MAD/€, à confirmer).</li>
+</ul>
+</main>
+</body>
+</html>
