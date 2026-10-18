@@ -30,7 +30,7 @@ th{background:var(--panel)}
 a{color:var(--violet)}
 @page{size:A4;margin:14mm 12mm}
 @media print{body{background:#fff;font-size:12.5px}main{max-width:none;padding:0}
-h2,h3{break-after:avoid}blockquote,tr,pre{break-inside:avoid}}
+h2,h3,h3+p{break-after:avoid}blockquote,tr,pre{break-inside:avoid}}
 </style>
 </head>
 <body>
@@ -194,18 +194,17 @@ One: the sender records the species, the weight and the batch number, and signs 
 Two: the receiver confirms. What arrived must match what was signed. If not, the batch is blocked.
 Three: an independent lab tests a sample, and the DNA result is linked to the batch.
 Four: anyone with the right access can trace the batch, from the meal back to the abattoir, in minutes.
-Partners have reasons to join: retailers get proof of origin, and honest suppliers get a free portal and proof that they did nothing wrong.</p>
+FreshMeals gets evidence of supplier origin and traceability to show its buyers. Retailers can identify affected lots and recall products quickly. Honest suppliers get a free portal and proof of what they declared.</p>
 </blockquote>
 <p><strong>Key message:</strong> every partner signs what it hands over, on one shared record.
 <strong>Transition:</strong> "Now, who pays for this?"</p>
 <h3>Slide 5 — Business model and KPIs (Elisa, 55 s)</h3>
 <blockquote>
-<p>Four founding members pay: FreshMeals, two retailers and the DNA lab. They share all costs equally, about 25 thousand euros each per year. This is our estimate.
-Suppliers and the authority pay nothing. This is a choice: in this kind of network, getting people to join matters more than fees.
-We follow three KPIs. A KPI is a number that shows if the project works. Trace-back time: from several days to less than one hour. Signed history: from zero to 100 percent of batches. DNA tests: at least 10 percent of batches.
-The biggest benefit: if there is a problem, the recall stays limited to the guilty batches, not the whole product line.</p>
+<p>FreshMeals and two retailers fund MeatTrace. FreshMeals wants evidence of supplier origin and traceability. Retailers sell to consumers, so they need to identify affected lots and organize targeted recalls quickly.
+We assume three equal shares, with both retailers committing funding from the pilot. Suppliers join for free. The lab is paid for its tests and remains an independent validator.
+Our three targets are: trace any batch in under one hour, sign every handover, and link DNA tests to at least 10 percent of batches. These are targets, and our costs are estimates.</p>
 </blockquote>
-<p><strong>Key message:</strong> buyers fund it, suppliers join for free, and three numbers show if it works.
+<p><strong>Key message:</strong> FreshMeals and retailers fund better traceability because it reduces their risks and helps them react faster. Traceability alone does not guarantee product quality.
 <strong>Transition:</strong> "Julia will now show you what it really costs, and why we chose a consortium."</p>
 <hr />
 <h2>Part 2 — Julia (slides 6 to 9, about 4:45)</h2>
@@ -214,10 +213,10 @@ The biggest benefit: if there is a problem, the recall stays limited to the guil
 </blockquote>
 <h3>Slide 6 — Three-year costs (Julia, 60 s)</h3>
 <blockquote>
-<p>Thank you, Elisa. Here are the costs over three years. The formula is: setup cost, plus three times the yearly cost. All figures are in euros, and they are our estimates. The details are in appendix B.
-<em>[point to the bars]</em> A secure database run by FreshMeals costs 116 thousand euros. The consortium costs 305 thousand euros for the whole network. So yes, the blockchain is more expensive: about 189 thousand euros more.
-But look at the last bar. If four members share the cost, FreshMeals pays only 76 thousand euros. That is less than its own database.
-Our most uncertain assumption is the number of paying members. If FreshMeals has to pay alone, the database wins. We say it clearly.</p>
+<p>Thank you, Elisa. These are our estimates in euros. Three-year cost means setup plus three years of operation.
+<em>[point to the bars]</em> The database costs 116 thousand euros. The consortium costs 305 thousand in total. FreshMeals and the two retailers split it equally: about 102 thousand each, including setup. That is less for FreshMeals than its own database.
+The lab remains the fourth validator. DNA analysis fees need a separate quote for either solution.
+Our key assumption is that both retailers commit funding from the pilot. With only two funders, FreshMeals pays about 153 thousand, so we would choose the database. Appendix B explains our estimates.</p>
 </blockquote>
 <p><strong>Key message:</strong> more expensive in total, cheaper for each member when it is shared.
 <strong>Transition:</strong> "So, blockchain or database? Here is our decision."</p>
@@ -281,8 +280,8 @@ In a real system, this check runs on every node, not in a notebook.</p>
 <blockquote>
 <p>We see four stages. <em>[point to the steps]</em> One: the proof of concept, done this month. Two: a six-month pilot in 2027, with FreshMeals, 3 suppliers and the lab, on one product: beef lasagne. Three: all suppliers and the two retailers join. Four: we check the KPIs every quarter, and we add chicken and pork.
 The biggest risk is that partners do not join. TradeLens, a shipping blockchain by Maersk and IBM with more than 300 members, announced its closure in 2022 for this reason. That is why suppliers join for free, with a simple portal. Against false data, we use random DNA tests.
-Our recommendation: build MeatTrace as a permissioned consortium. 305 thousand euros over three years, 76 thousand for FreshMeals.
-Its limit: it cannot see inside the meat, so DNA tests stay essential. And if we don't find three co-funders, we choose the secure database.
+Our recommendation: build MeatTrace as a permissioned consortium. 305 thousand euros over three years, about 102 thousand for FreshMeals.
+Its limit: it cannot see inside the meat, so DNA tests stay essential. Without funding commitments from both retailers, we choose the secure database.
 Our first pilot target: 100 percent of pilot batches traced to the abattoir in under one hour.</p>
 </blockquote>
 <p><strong>Key message:</strong> start small, measure one number, and scale only if it works.

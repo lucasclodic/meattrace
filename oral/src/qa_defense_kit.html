@@ -30,7 +30,7 @@ th{background:var(--panel)}
 a{color:var(--violet)}
 @page{size:A4;margin:14mm 12mm}
 @media print{body{background:#fff;font-size:12.5px}main{max-width:none;padding:0}
-h2,h3{break-after:avoid}blockquote,tr,pre{break-inside:avoid}}
+h2,h3,h3+p,li>p:has(>strong){break-after:avoid}blockquote,tr,pre{break-inside:avoid}}
 </style>
 </head>
 <body>
@@ -49,7 +49,7 @@ h2,h3{break-after:avoid}blockquote,tr,pre{break-inside:avoid}}
 <h3>Q1. Why is blockchain appropriate in your case? Could a secure database be enough?</h3>
 <p><strong>First: Julia · Slide 7</strong></p>
 <blockquote>
-<p>A secure database is enough when one trusted party runs the whole process. Here, six or more independent firms in three or more countries, some of them competitors, have to share one history. In 2013 they all blamed each other, so nobody accepts that a rival controls the records. That's why we chose a permissioned consortium. If we can't find three co-funders, we would recommend the secure database instead (slide 6).</p>
+<p>A secure database is enough when one trusted party runs the whole process. Here, six or more independent firms in three or more countries, some of them competitors, have to share one history. In 2013 they all blamed each other, so nobody accepts that a rival controls the records. That's why we chose a permissioned consortium. Without funding commitments from both retailers, we would recommend the secure database instead (slide 6).</p>
 </blockquote>
 <h3>Q2. What information is public, shared with partners, or confidential?</h3>
 <p><strong>First: Julia · Slides 8–9</strong></p>
@@ -75,7 +75,7 @@ h2,h3{break-after:avoid}blockquote,tr,pre{break-inside:avoid}}
 <h3>Q5. What is the most uncertain cost assumption? How does it affect your decision?</h3>
 <p><strong>First: Julia · Slide 6</strong></p>
 <blockquote>
-<p>The most uncertain assumption is the number of paying members. With four founders, FreshMeals pays €76k over 3 years, less than the €116k of its own database. If FreshMeals had to pay alone, it would be €305k and the database would win. So the first thing we would secure in the pilot is signed commitments from the two retailers and the lab. Our day rates and hosting prices are also estimates; we would replace them with real quotes during the pilot.</p>
+<p>The most uncertain assumption is that both retailers commit funding from the pilot. FreshMeals and the two retailers share the €305k IT budget equally. FreshMeals pays about €102k over 3 years, compared with €116k for its own database. With only two funders its share rises to €152.5k, so the database wins. We would secure signed funding commitments from both retailers before the pilot. The lab remains an independent validator and is paid for tests. Its node hosting is included in the IT budget, while DNA analysis fees need a separate quote. Our day rates and hosting prices are also estimates to replace with real quotes.</p>
 </blockquote>
 <h3>Q6. Which measurable result would convince a partner to join a pilot?</h3>
 <p><strong>First: Elisa, Lucas adds the roadmap · Slides 5 and 12</strong></p>
@@ -163,7 +163,7 @@ h2,h3{break-after:avoid}blockquote,tr,pre{break-inside:avoid}}
 <li>about 80 days for the database and 180 days for the ledger and portal;</li>
 <li>€6k a year of cloud hosting for the database, and €5k a year per node.</li>
 </ul>
-<p>We didn't get real quotes; that would be done during the pilot. What matters for the decision is the comparison and the sensitivity: with fewer than 3 co-funders, the database wins.</p>
+<p>We didn't get real quotes; that would be done during the pilot. What matters for the decision is the comparison and the sensitivity: with fewer than 3 funders in total, FreshMeals' share exceeds the cost of its own database. DNA analysis fees require a separate quote and apply to either architecture.</p>
 </blockquote>
 <h3>F6. Is the 2013 case still relevant today?</h3>
 <p><strong>Elisa</strong></p>
@@ -215,6 +215,12 @@ h2,h3{break-after:avoid}blockquote,tr,pre{break-inside:avoid}}
 </blockquote>
 <h3>Bonus questions if there is time</h3>
 <ul>
+<li>
+<p><strong>Why do FreshMeals and the retailers fund MeatTrace, while the lab does not?</strong> (Elisa)</p>
+<blockquote>
+<p>FreshMeals wants evidence of supplier origin and traceability to show its buyers. Retailers sell to consumers and need to identify affected lots and organize recalls quickly. These companies fund the service because better traceability reduces their risks. The lab provides paid DNA tests and remains an independent validator. Funding and validation are separate roles. Traceability alone does not guarantee product quality.</p>
+</blockquote>
+</li>
 <li>
 <p><strong>Why not just anchor hashes on a public blockchain?</strong> (Julia)</p>
 <blockquote>
@@ -372,13 +378,13 @@ h2,h3{break-after:avoid}blockquote,tr,pre{break-inside:avoid}}
 <td>assumption</td>
 </tr>
 <tr>
-<td><strong>€76k</strong> (€76,250)</td>
-<td>FreshMeals' share, 1 of 4 founders</td>
+<td><strong>≈ €102k</strong> (€101,667)</td>
+<td>FreshMeals' share, 1 of 3 equal funders</td>
 <td>assumption</td>
 </tr>
 <tr>
-<td><strong>≈ €25k</strong></td>
-<td>Per member per year (305 ÷ 4 ÷ 3)</td>
+<td><strong>≈ €46.7k setup + €18.3k/year</strong></td>
+<td>Per funder: 140 ÷ 3 setup, then 55 ÷ 3 each year (amounts in €k)</td>
 <td>assumption</td>
 </tr>
 <tr>
