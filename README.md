@@ -10,7 +10,7 @@ MeatTrace is a blockchain traceability solution for the meat supply chain, built
 
 | Folder | Content |
 |---|---|
-| `slides/` | Slide deck (HTML + PDF export). Latest version: `slides/v3/` |
+| `slides/` | Slide deck (HTML + PDF export). Latest PDF: [version 4](slides/v4/IS511E_Midterm1_MeatTrace_v4.pdf) |
 | `prototype/` | Python demo: SHA-256 hashing, tamper detection, role-based access control |
 | `notebook/` | Executed Jupyter notebook with the full prototype |
 | `oral/` | Speaker script, Q&A defense kit, slides audit |
