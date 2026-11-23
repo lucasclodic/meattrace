@@ -1,0 +1,34 @@
+{
+  "origin": {"id":"RO-2026-0412","site":"Carpati Meat (RO)","declared":"BEEF","record":"REC-001"},
+  "line":"FreshMeals beef lasagne",
+  "edges":[
+    ["RO-2026-0412","TRIM-17"],["TRIM-17","MIX-17"],["ALT-081","MIX-17"],
+    ["MIX-17","LAS-01"],["MIX-17","LAS-02"],
+    ["ALT-081","LAS-03"],["ALT-082","LAS-04"],["ALT-083","LAS-05"],
+    ["ALT-084","LAS-06"],["ALT-085","LAS-07"],["ALT-086","LAS-08"]
+  ],
+  "lots":[
+    {"id":"LAS-01","packs":1200,"onsite":400,"shipments":[{"id":"SHP-101","recipient":"Retailer A / North DC","packs":800}]},
+    {"id":"LAS-02","packs":1800,"onsite":800,"shipments":[{"id":"SHP-102","recipient":"Retailer B / West DC","packs":1000}]},
+    {"id":"LAS-03","packs":1500,"onsite":500,"shipments":[{"id":"SHP-103","recipient":"Retailer A / North DC","packs":1000}]},
+    {"id":"LAS-04","packs":1500,"onsite":650,"shipments":[{"id":"SHP-104","recipient":"Retailer B / West DC","packs":850}]},
+    {"id":"LAS-05","packs":1500,"onsite":600,"shipments":[{"id":"SHP-105","recipient":"Retailer A / North DC","packs":900}]},
+    {"id":"LAS-06","packs":1500,"onsite":550,"shipments":[{"id":"SHP-106","recipient":"Retailer B / West DC","packs":950}]},
+    {"id":"LAS-07","packs":1500,"onsite":400,"shipments":[{"id":"SHP-107","recipient":"Retailer A / North DC","packs":1100}]},
+    {"id":"LAS-08","packs":1500,"onsite":450,"shipments":[{"id":"SHP-108","recipient":"Retailer B / West DC","packs":1050}]}
+  ],
+  "scenarios":[
+    {"id":"mismatch","name":"Lab mismatch","description":"An independent lab reports horse on a sample from a lot declared as beef.",
+     "lab":{"id":"LAB-204","sample":"DNA-204","lot":"RO-2026-0412","species":"HORSE","source":"GenoLab (DE)","chainOfCustody":true},
+     "note":"The beef label and lab species reading disagree."},
+    {"id":"gap","name":"Missing handover","description":"The mismatch still stands. The production record for LAS-02 has a missing input link.",
+     "lab":{"id":"LAB-204","sample":"DNA-204","lot":"RO-2026-0412","species":"HORSE","source":"GenoLab (DE)","chainOfCustody":true},
+     "omit":["MIX-17","LAS-02"],"note":"Incoming lot references were omitted from the packing sheet."},
+    {"id":"match","name":"Lab match","description":"The linked lab sample matches the beef declaration. QA still owns the release decision.",
+     "lab":{"id":"LAB-205","sample":"DNA-205","lot":"RO-2026-0412","species":"BEEF","source":"GenoLab (DE)","chainOfCustody":true},
+     "note":"All paperwork is present and the order arrived on time."},
+    {"id":"unlinked","name":"Unlinked sample","description":"The lab result reports horse, but its sample cannot be linked to the selected batch.",
+     "lab":{"id":"LAB-206","sample":"DNA-206","lot":"RO-UNMATCHED","species":"HORSE","source":"GenoLab (DE)","chainOfCustody":false},
+     "note":"We have a test PDF but cannot pair it with a sample identifier."}
+  ]
+}

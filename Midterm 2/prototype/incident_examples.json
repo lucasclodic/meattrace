@@ -1,0 +1,96 @@
+{
+  "labels": ["Species concern", "Traceability gap", "Routine update"],
+  "train": [
+    [
+      "Horse DNA detected in a product sold as beef",
+      "The laboratory found equine material in the cattle sample",
+      "Species result does not match the beef declaration",
+      "Undeclared pork was identified in the beef trim",
+      "Test report indicates a substitution of beef with horse",
+      "The meat identity on the label disagrees with the assay",
+      "Our laboratory reports an unexpected animal species",
+      "The species certificate conflicts with the lab finding",
+      "Equine markers were present in minced beef",
+      "Investigate suspected meat substitution before dispatch",
+      "A supplier recorded beef but the assay identified horse",
+      "Horse tissue found in beef lasagne",
+      "Batch was labelled beef despite a positive equine finding",
+      "The DNA result suggests the animal listed is incorrect",
+      "Concern about species authenticity in incoming meat",
+      "Possible undeclared animal material in the beef ingredient"
+    ],
+    [
+      "The shipment is missing a lot number",
+      "We cannot link the lab sample to an incoming batch",
+      "No supplier origin was recorded at intake",
+      "The handover record is absent from the delivery file",
+      "The pallet ID has no mapping to the finished lot",
+      "There is a gap in the chain of custody",
+      "Customer destination is unknown for these cases",
+      "The dispatch record cannot be linked to the batch",
+      "The receiving docket lacks a signature",
+      "Missing batch code on the supplier paperwork",
+      "No evidence connects the carton identifier to the delivery",
+      "An input lot is unaccounted for in the production record",
+      "The lineage record skips a processing step",
+      "The carrier did not capture the receiving location",
+      "We lost the link between input and output lots",
+      "The report has no matching sample identifier"
+    ],
+    [
+      "The regular delivery arrived on schedule",
+      "Inventory count is complete and agrees with the system",
+      "The supplier confirmed the Monday pickup time",
+      "The shipment was received and all documents are present",
+      "No discrepancies found in the weekly checks",
+      "The production shift closed as expected",
+      "The delivery window has been confirmed",
+      "The scheduled audit was completed successfully",
+      "QA finished the normal record review",
+      "The approved shipping manifest is available",
+      "The retailer confirmed receipt of all ordered cases",
+      "This is a routine warehouse status update",
+      "All records were reconciled at the end of the shift",
+      "The tracking event was recorded successfully",
+      "The routine pickup has been rescheduled for Friday",
+      "Incoming inventory reconciled without exceptions"
+    ]
+  ],
+  "test": [
+    [
+      "Equine material turned up in the mince sold as cattle",
+      "The assay contradicted the animal identity on the carton",
+      "The beef label and lab species reading disagree",
+      "The sample from the lasagne showed horse tissue",
+      "There may be a different animal in this consignment",
+      "An unexpected porcine signal came from the beef sample",
+      "Authenticity check suggests the contents differ from the label",
+      "This load was marketed as beef but the lab identified a horse marker"
+    ],
+    [
+      "We have a test PDF but cannot pair it with a sample identifier",
+      "No one recorded which retailer got these boxes",
+      "Incoming lot references were omitted from the packing sheet",
+      "Nobody can map the cooked packs back to the source batch",
+      "There is no intake docket for this handover",
+      "The driver left without documenting the receiving location",
+      "One processing step has no linked output lots",
+      "The dispatch list is missing the pallet identifier"
+    ],
+    [
+      "The agreed pickup slot is now Friday afternoon",
+      "The audit concluded without any discrepancies",
+      "The customer acknowledged delivery of every case",
+      "Today's counts reconcile against the warehouse balance",
+      "All paperwork is present and the order arrived on time",
+      "The tracking entry posted successfully after the shift",
+      "The plant completed the usual weekly review",
+      "The manifest is ready and the dispatch time is confirmed"
+    ]
+  ],
+  "challenge": [
+    "Please call me when you have a minute",
+    "The lab result is pending and a pallet ID may be missing",
+    "Please review the note about the new office printer"
+  ]
+}

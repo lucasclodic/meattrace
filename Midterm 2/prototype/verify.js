@@ -1,0 +1,26 @@
+"use strict";
+const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const path = require("node:path");
+const vm = require("node:vm");
+const read = name => fs.readFileSync(path.join(__dirname, name), "utf8");
+const { trace, scopeCSV } = vm.runInNewContext(read("workflow.js") + "\n({trace, scopeCSV})");
+const data = JSON.parse(read("cases.json"));
+const [mismatch,gap,match,unlinked] = data.scenarios;
+const a = trace(data, mismatch);
+assert.deepEqual([a.linePacks,a.affected,a.onHold,a.affected - a.onHold,a.shipments.length,a.canNarrow],
+  [12000,3000,1200,1800,2,true]);
+assert.equal(a.shipments.map(x => x.id).join(","), "SHP-101,SHP-102");
+const b = trace(data, gap);
+assert.deepEqual([b.affected,b.unresolvedPacks,b.canNarrow,b.shipments.length], [1200,1800,false,1]);
+assert.match(scopeCSV(data,gap,b), /"LAS-02","Unresolved"/);
+assert.doesNotMatch(scopeCSV(data,mismatch,a), /LAS-03/);
+assert.deepEqual([trace(data,match).validLab,trace(data,match).canNarrow], [true,false]);
+assert.deepEqual([trace(data,unlinked).validLab,trace(data,unlinked).canNarrow], [false,false]);
+const badStock = structuredClone(data);
+badStock.lots[0].onsite--;
+assert.equal(trace(badStock,mismatch).canNarrow,false);
+const missingRecipient = structuredClone(data);
+missingRecipient.lots[0].shipments[0].recipient = "";
+assert.equal(trace(missingRecipient,mismatch).canNarrow,false);
+console.log("Verified 4 scenario decisions, shipment scope, CSV and conservative fallbacks.");

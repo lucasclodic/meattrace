@@ -1,0 +1,259 @@
+{
+  "train": 48,
+  "test": 24,
+  "vocabulary": 1265,
+  "keywordCorrect": 12,
+  "neuralCorrect": 23,
+  "routed": 24,
+  "routedCorrect": 23,
+  "keywordConfusion": [
+    [
+      3,
+      0,
+      5,
+      0
+    ],
+    [
+      0,
+      1,
+      7,
+      0
+    ],
+    [
+      0,
+      0,
+      8,
+      0
+    ]
+  ],
+  "neuralConfusion": [
+    [
+      8,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      8,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      7,
+      0
+    ]
+  ],
+  "routedConfusion": [
+    [
+      8,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      8,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      7,
+      0
+    ]
+  ],
+  "rows": [
+    {
+      "text": "Equine material turned up in the mince sold as cattle",
+      "expected": 0,
+      "keyword": 0,
+      "neural": 0,
+      "routed": 0
+    },
+    {
+      "text": "The assay contradicted the animal identity on the carton",
+      "expected": 0,
+      "keyword": 2,
+      "neural": 0,
+      "routed": 0
+    },
+    {
+      "text": "The beef label and lab species reading disagree",
+      "expected": 0,
+      "keyword": 2,
+      "neural": 0,
+      "routed": 0
+    },
+    {
+      "text": "The sample from the lasagne showed horse tissue",
+      "expected": 0,
+      "keyword": 0,
+      "neural": 0,
+      "routed": 0
+    },
+    {
+      "text": "There may be a different animal in this consignment",
+      "expected": 0,
+      "keyword": 2,
+      "neural": 0,
+      "routed": 0
+    },
+    {
+      "text": "An unexpected porcine signal came from the beef sample",
+      "expected": 0,
+      "keyword": 2,
+      "neural": 0,
+      "routed": 0
+    },
+    {
+      "text": "Authenticity check suggests the contents differ from the label",
+      "expected": 0,
+      "keyword": 2,
+      "neural": 0,
+      "routed": 0
+    },
+    {
+      "text": "This load was marketed as beef but the lab identified a horse marker",
+      "expected": 0,
+      "keyword": 0,
+      "neural": 0,
+      "routed": 0
+    },
+    {
+      "text": "We have a test PDF but cannot pair it with a sample identifier",
+      "expected": 1,
+      "keyword": 2,
+      "neural": 1,
+      "routed": 1
+    },
+    {
+      "text": "No one recorded which retailer got these boxes",
+      "expected": 1,
+      "keyword": 2,
+      "neural": 1,
+      "routed": 1
+    },
+    {
+      "text": "Incoming lot references were omitted from the packing sheet",
+      "expected": 1,
+      "keyword": 2,
+      "neural": 1,
+      "routed": 1
+    },
+    {
+      "text": "Nobody can map the cooked packs back to the source batch",
+      "expected": 1,
+      "keyword": 2,
+      "neural": 1,
+      "routed": 1
+    },
+    {
+      "text": "There is no intake docket for this handover",
+      "expected": 1,
+      "keyword": 2,
+      "neural": 1,
+      "routed": 1
+    },
+    {
+      "text": "The driver left without documenting the receiving location",
+      "expected": 1,
+      "keyword": 2,
+      "neural": 1,
+      "routed": 1
+    },
+    {
+      "text": "One processing step has no linked output lots",
+      "expected": 1,
+      "keyword": 2,
+      "neural": 1,
+      "routed": 1
+    },
+    {
+      "text": "The dispatch list is missing the pallet identifier",
+      "expected": 1,
+      "keyword": 1,
+      "neural": 1,
+      "routed": 1
+    },
+    {
+      "text": "The agreed pickup slot is now Friday afternoon",
+      "expected": 2,
+      "keyword": 2,
+      "neural": 2,
+      "routed": 2
+    },
+    {
+      "text": "The audit concluded without any discrepancies",
+      "expected": 2,
+      "keyword": 2,
+      "neural": 2,
+      "routed": 2
+    },
+    {
+      "text": "The customer acknowledged delivery of every case",
+      "expected": 2,
+      "keyword": 2,
+      "neural": 1,
+      "routed": 1
+    },
+    {
+      "text": "Today's counts reconcile against the warehouse balance",
+      "expected": 2,
+      "keyword": 2,
+      "neural": 2,
+      "routed": 2
+    },
+    {
+      "text": "All paperwork is present and the order arrived on time",
+      "expected": 2,
+      "keyword": 2,
+      "neural": 2,
+      "routed": 2
+    },
+    {
+      "text": "The tracking entry posted successfully after the shift",
+      "expected": 2,
+      "keyword": 2,
+      "neural": 2,
+      "routed": 2
+    },
+    {
+      "text": "The plant completed the usual weekly review",
+      "expected": 2,
+      "keyword": 2,
+      "neural": 2,
+      "routed": 2
+    },
+    {
+      "text": "The manifest is ready and the dispatch time is confirmed",
+      "expected": 2,
+      "keyword": 2,
+      "neural": 2,
+      "routed": 2
+    }
+  ],
+  "challenge": [
+    {
+      "text": "Please call me when you have a minute",
+      "best": 2,
+      "label": -1,
+      "score": 0.4245482533153721
+    },
+    {
+      "text": "The lab result is pending and a pallet ID may be missing",
+      "best": 1,
+      "label": 1,
+      "score": 0.829240507420002
+    },
+    {
+      "text": "Please review the note about the new office printer",
+      "best": 2,
+      "label": 2,
+      "score": 0.7779983225009888
+    }
+  ]
+}
