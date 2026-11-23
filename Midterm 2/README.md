@@ -2,7 +2,7 @@
 
 Lucas Clodic, Elisa Ouillet and Julia Kozhina
 
-MeatTrace is an offline, configurable prototype of the permissioned traceability solution proposed in Midterm 1. A beef supply chain can load its organizations, lots, transformations, lab records and shipments. FreshMeals is the presentation dataset. North Valley is a second example with boxed beef tracked in kilograms.
+MeatTrace is an offline, configurable prototype of the permissioned traceability solution proposed in Midterm 1. A beef supply chain can load its organizations, lots, transformations, lab records and shipments. FreshMeals is the presentation case. Network settings lets a user import a different beef supply chain.
 
 ## Submission files
 
@@ -13,5 +13,5 @@ MeatTrace is an offline, configurable prototype of the permissioned traceability
 
 ## Presentation preparation
 
-- [Oral presentation script](Oral_Presentation_Script.md) · full speaking notes, speaker handoffs, demo cues and Q&A
-- Start the demo on **Lab mismatch**. Switch to **Missing handover**, click **Suggest queue**, then show the third approval in **Consortium audit**. Prepare the two initial approvals using the oral script. The bundled datasets and model evaluation notes are synthetic. See the source README for the local consortium audit and instructions for importing a network.
+- [Oral presentation script](Oral_Presentation_Script.md) · speaking notes, speaker handoffs and click-by-click demo instructions
+- Prepare two approvals using the oral script. On stage, open **LAB-204** in **Trace investigation**, review the affected stock and shipments, suggest a queue for the incident note, and record the final approval in **Consortium audit**.

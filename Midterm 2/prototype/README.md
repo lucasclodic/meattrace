@@ -6,10 +6,10 @@ MeatTrace is a configurable, offline prototype of the permissioned traceability 
 
 Open the bundled `MeatTrace_Prototype.html` in a recent browser. The app runs locally without an account, server or API key.
 
-- **FreshMeals · Beef lasagne** opens with the four presentation drills. **Lab mismatch** traces 3,000 of 12,000 packs, including 1,200 on site and 1,800 shipped. **Missing handover** flags 1,800 unresolved packs. **Lab match** and **Unlinked sample** show the remaining checks.
-- **North Valley · Boxed beef** uses different organizations, two selectable inputs, multiple transformations and kilograms. Select **NV-110 / R-501** to trace 180.5 kg, of which 40.5 kg remain on site and 140 kg shipped. Select **NV-111** to review a different lot.
-- **Import network JSON** loads another chain. Use **Download example JSON** or the included [network example](network_example.json) as a template. Choose an incoming lot and a lab report in **Trace investigation**, inspect the lineage and shipment scope, and export the trace CSV. The app keeps the data and audit state in memory until you close or reload the page. Import changes neither the original file nor any operational system.
-- **Suggest queue** uses the English-language neural model to route a note. The output is advisory. QA decides what to hold, release or investigate.
+1. The app opens on **FreshMeals · Beef lasagne**. In **Trace investigation**, select **LAB-204** for lot **RO-2026-0412**. The view shows 3,000 affected packs, including 1,200 on site and 1,800 shipped to two retailer distribution centres.
+2. Open **AI note triage** and click **Suggest queue** to route the prefilled note for human review. The output is advisory. QA decides what to hold, release or investigate.
+3. Open **Trace details** for the linked production events and **Download trace CSV**.
+4. For another chain, open **Network settings** and choose **Import network JSON**. **Download example JSON** saves the included [North Valley example](network_example.json), with boxed beef tracked in kilograms. The app keeps the data and audit state in memory until you close or reload the page.
 
 ## Configure a network
 
@@ -27,9 +27,9 @@ An incomplete transformation propagates uncertainty to its downstream lots. Stoc
 
 ## Try the Midterm 1 controls
 
-1. Choose **Consortium audit**, select **Lab report · LAB-204** and select **GenoLab** as the acting organization. Click **Propose record**. Lab reports can only be proposed by the reporting lab in the simulation.
-2. Use **FreshMeals**, **Retailer A**, and **Retailer B** to approve once each. The third approval commits the record with its SHA-256 hash and previous-block hash. Self-approval, duplicate approvals and approvals by organizations outside the validator list are rejected.
-3. Click **Verify ledger**, then **Test an altered copy**. The modified copy fails verification and the original remains intact.
+1. Open **Consortium audit**. Lab report **LAB-204** and the submitting lab appear automatically in FreshMeals. Click **Submit lab report**.
+2. Click **Approve report** first as **FreshMeals SA**, then as **Retailer A**. The app offers only eligible organizations that have yet to approve. **Retailer B** appears automatically once it is the sole remaining approver.
+3. Click **Approve report** as **Retailer B** to commit the report. The audit shows who submitted it and who approved it. Under **Integrity checks**, **Verify ledger** recomputes the hashes and **Test an altered copy** shows what happens when a copy changes after approval.
 
 A trace preview can use imported evidence before local audit approval. A production version would need authenticated organizations, digital signatures, authenticated lab and custody records, replicated nodes, durable storage and ERP or lab integration. This prototype simulates roles and quorum within one browser session. It neither deploys a network nor sends operational instructions.
 

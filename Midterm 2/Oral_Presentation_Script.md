@@ -1,6 +1,6 @@
 # MeatTrace · 7-minute presentation
 
-Open the PDF and load the offline prototype on **FreshMeals · Beef lasagne / Lab mismatch** before you start. Prepare the audit as described under slide 7. The times include transitions and the live demo.
+Open the PDF and load the offline prototype on **FreshMeals · Beef lasagne** before you start. Prepare the audit as described under slide 7. The times include transitions and the live demo.
 
 | Elapsed | Slide | Speaker |
 | --- | --- | --- |
@@ -10,7 +10,7 @@ Open the PDF and load the offline prototype on **FreshMeals · Beef lasagne / La
 | 2:10–3:20 | 4. Where MeatTrace fits | Julia |
 | 3:20–3:55 | 5. Lab evidence and lot lineage | Julia |
 | 3:55–4:35 | 6. Neural triage | Julia |
-| 4:35–5:55 | 7. Live demo | Lucas |
+| 4:35–5:55 | 7. From lab report to action | Lucas |
 | 5:55–6:30 | 8. Simulated results | Lucas |
 | 6:30–7:00 | 9. FreshMeals pilot | Lucas |
 
@@ -56,51 +56,50 @@ MeatTrace uses a network’s own records. A linked lab result points to an input
 
 Staff need to send incident notes to the right reviewer. The same problem can be described in different words, so we tested a neural network against fixed keywords. On the same 24 synthetic notes, it got 23 right versus 12 for keywords. It also routed an unrelated office note in a separate challenge, so its suggestion stays advisory.
 
-**Lucas will show the trace, the suggested queue and the shared approval step.**
+**Lucas will use the same lab report to show the trace, the suggested queue and the shared approval.**
 
 ## Slides 7–9 · Lucas · 4:35–7:00
 
-### 7 · The trace and the consortium approval
+### 7 · From lab report to action
 
 #### Before the presentation · Prepare the first two votes
 
-1. Open the offline app and select **FreshMeals · Beef lasagne** under **Network**.
-2. Open **Consortium audit**. Set **Record** to **Lab report · LAB-204**.
-3. Under **Acting organization**, select **GenoLab (DE)** and click **Propose record**. The lab has now submitted the report.
-4. Select **FreshMeals SA** and click **Approve record**. Then select **Retailer A** and click **Approve record** again. Check that **Pending · 2 of 3 approvals** appears.
-5. Select **Retailer B** as the acting organization and save its vote for the live demo. Return to **Trace investigation** and select **Lab mismatch**. Keep the same browser tab open so the two votes stay in the session.
+1. Open the offline app and check that **FreshMeals · Beef lasagne** appears at the top.
+2. Open **Consortium audit**. The screen shows **LAB-204** and **GenoLab**. Click **Submit lab report**.
+3. Check that **FreshMeals SA** is selected, then click **Approve report**. The app selects **Retailer A** next. Click **Approve report** again.
+4. Check **Pending · 2 of 3 approvals** and the name **Retailer B**. Save that approval for the live demo. Return to **Trace investigation** and keep the same browser tab open.
 
 #### Live demo · 1:20
 
-**0:00–0:20 · Lab mismatch**
+**0:00–0:20 · Open the lab report**
 
-*Show **BEEF** in the declaration and **HORSE** in the lab result. Point to **LAS-01**, **LAS-02** and the two retailer shipments.*
+*In **Lab report**, choose **LAB-204** for incoming lot **RO-2026-0412**. Point to the declared and reported species.*
 
-“The lab reports horse in a lot declared as beef. This view helps the quality team identify the two finished lots, see what stock to hold on site and find which retailers received the product.”
+“The quality team opens the lab report linked to this incoming lot. GenoLab found horse in a lot declared as beef. The app shows the difference so the team can start the investigation.”
 
-**0:20–0:40 · Missing handover**
+**0:20–0:45 · Identify what to hold and where to follow up**
 
-*Click **Missing handover** and point to **LAS-02**, marked **Unresolved**.*
+*Point to **On-site hold**, **Shipments to investigate** and the two finished lots.*
 
-“We removed one production link. MeatTrace flags 1,800 packs for the quality team to check. They stay in the investigation until the team can verify the missing link.”
+“The trace finds two affected finished lots. FreshMeals can see which 1,200 packs to hold on site and which two retailer shipments to investigate. Those shipments contain another 1,800 packs.”
 
-**0:40–0:55 · Suggest queue**
+**0:45–1:00 · Send the note for review**
 
-*Click **Suggest queue** below the prefilled incident note. Show **Traceability gap suggested**.*
+*Open **AI note triage** and click **Suggest queue**. Show **Species concern suggested**.*
 
-“The AI suggests which queue to send the note to. A reviewer can then check the missing record, and the quality team decides what to do with the lots.”
+“The AI suggests the species concern queue for this note. That helps the quality team send it to the right reviewer.”
 
-**0:55–1:20 · Consortium audit**
+**1:00–1:20 · Commit the report**
 
-*Open **Consortium audit**. Check **LAB-204** and **Retailer B**, then click **Approve record**. Point to **Committed · 3 approvals** and the approver names.*
+*Open **Consortium audit**. Check **Retailer B**, then click **Approve report**. Point to **Committed · 3 approvals** and the approver names.*
 
-“The lab submitted the report. FreshMeals and the first retailer already approved it. I’m acting as the second retailer. My vote commits the report to the simulated ledger, where the audit view shows which organizations approved it.”
+“The lab submitted this report. FreshMeals and Retailer A already approved it. Retailer B gives the third vote, so the report enters the simulated ledger with a record of who approved it.”
 
 *Return to slide 8.*
 
-**“Now let’s look at how many packs are affected when the production links are complete.”**
+**“Here’s what that trace means for the size of the withdrawal.”**
 
-*If the browser is unavailable, use slides 5 and 8 to explain the three-of-four rule and the two trace scenarios.*
+*If the browser is unavailable, use slides 5 and 8 to explain the trace and the three-of-four approval rule.*
 
 ### 8 · 3,000 linked packs in a 12,000-pack line
 

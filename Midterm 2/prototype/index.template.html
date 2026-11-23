@@ -19,19 +19,15 @@
   h2{font-size:21px;line-height:1.2;letter-spacing:-.027em;margin-bottom:11px}
   h3{font-size:15px;margin:12px 0 4px}
   .context{margin-top:8px;color:var(--muted)}
-  fieldset{padding:0;border:0;margin:21px 0 16px;min-width:0}
-  legend, .overline{color:var(--muted);font-size:12px;font-weight:780;text-transform:uppercase;letter-spacing:.095em;margin-bottom:7px}
-  .scenarios{display:flex;gap:8px;flex-wrap:wrap}
   button{font:inherit;font-weight:680;border-radius:7px;border:1px solid var(--line);background:white;color:var(--ink);padding:8px 12px;cursor:pointer}
   button:hover{border-color:var(--accent)}
   button:focus-visible,textarea:focus-visible{outline:3px solid #278e7a;outline-offset:3px}
   button[aria-pressed=true],button.primary{background:var(--accent);color:white;border-color:var(--accent)}
-  .description{color:var(--muted);margin-bottom:14px;min-height:24px}
   .decision{background:var(--wash);border:1px solid #f1cbb5;border-left:5px solid #bc583e;border-radius:8px;padding:14px 16px;margin-bottom:16px}
   .decision.neutral{background:var(--mint);border:1px solid #cfe4db;border-left:5px solid var(--accent)}
   .decision strong{display:block;font-size:19px;color:var(--warning)}
   .decision.neutral strong{color:#07574d}
-  .stats{display:grid;grid-template-columns:repeat(4,1fr);background:var(--white);border:1px solid var(--line);border-radius:10px;margin-bottom:18px;overflow:hidden}
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));background:var(--white);border:1px solid var(--line);border-radius:10px;margin-bottom:18px;overflow:hidden}
   .stats div{padding:11px 14px;border-right:1px solid var(--line)}
   .stats div:last-child{border-right:0}
   .stats strong{font-size:27px;display:block;letter-spacing:-.04em;line-height:1.2;font-variant-numeric:tabular-nums}
@@ -43,7 +39,6 @@
   dt,.subtle,.hint{color:var(--muted)}
   dd{margin:0;font-weight:635}
   .hint{font-size:13px;margin:8px 0 0}
-  .notice{margin-top:10px;color:var(--warning);font-weight:630}
   .rowhead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:11px}
   .rowhead h2{margin:0}
   .table-wrap{overflow:auto}
@@ -70,7 +65,13 @@
   .fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:10px 0 12px}
   .fields label{display:grid;gap:5px;font-weight:650}
   .fields select{min-width:0;width:100%;font-weight:400}
-  #workspaceStatus{min-height:20px}
+  .settings{margin:20px 0 0}
+  details .toolbar{margin-top:8px}
+  #workspaceStatus:empty{display:none}
+  .audit-field{max-width:440px}
+  .audit-field .fields{grid-template-columns:1fr}
+  #auditActions{margin-top:12px}
+  #tracePrompt{padding:18px 0}
   #ledgerStatus{min-height:23px;margin-top:12px;font-weight:680}
   #audit h2 + p{margin-bottom:12px}
   .block-list{margin:6px 0 0;padding-left:23px}
@@ -87,66 +88,79 @@
 <main>
   <h1>Traceability workspace</h1>
   <p class="context network"><strong id="networkName"></strong> <span id="networkMeta"></span></p>
-  <div class="toolbar">
-    <label for="networkSelect">Network</label>
-    <select id="networkSelect"><option value="freshmeals">FreshMeals · Beef lasagne</option><option value="northValley">North Valley · Boxed beef</option></select>
-    <button id="importNetwork">Import network JSON</button><input type="file" accept=".json,application/json" id="networkFile" hidden>
-    <button id="sampleNetwork">Download example JSON</button>
-  </div>
-  <p id="workspaceStatus" class="hint" role="status"></p>
   <nav class="toolbar" aria-label="Workspace views">
     <button id="viewTrace" aria-pressed="true">Trace investigation</button>
     <button id="viewAudit" aria-pressed="false">Consortium audit</button>
   </nav>
   <div id="traceView">
-    <fieldset id="demoControls"><legend>FreshMeals drills</legend><div id="scenarios" class="scenarios"></div></fieldset>
     <div class="fields">
       <label for="inputLot">Incoming lot<select id="inputLot"></select></label>
       <label for="report">Lab report<select id="report"></select></label>
     </div>
-    <p id="description" class="description"></p>
-    <div id="decision" class="decision" role="status"></div>
-    <div id="stats" class="stats" aria-label="Scope totals"></div>
-    <div class="workbench">
-      <div class="stack">
-        <section aria-labelledby="evidenceTitle"><h2 id="evidenceTitle">Lab evidence</h2><dl id="evidence"></dl>
-          <p class="hint" id="evidenceHint"></p></section>
-        <section aria-labelledby="triageTitle"><h2 id="triageTitle">AI note triage</h2>
-          <label for="note">Incident note</label><textarea id="note" maxlength="500"></textarea>
-          <div class="triage-row"><button class="primary" id="classify">Suggest queue</button><output id="triageResult" aria-live="polite"></output></div>
-          <p class="hint">The model suggests a review queue for English text. QA makes hold, release and withdrawal decisions.</p>
-        </section>
-      </div>
-      <div class="stack">
-        <section aria-labelledby="traceTitle"><div class="rowhead"><h2 id="traceTitle">Finished lots</h2><button id="export">Download trace CSV</button></div>
-          <div class="table-wrap"><table><thead><tr><th scope="col">Lot</th><th scope="col">Lineage</th><th scope="col" class="num">Total</th><th scope="col" class="num">On site</th><th scope="col" class="num">Shipped</th></tr></thead><tbody id="lots"></tbody></table></div>
-          <details><summary>Lot lineage</summary><ul id="paths"></ul></details>
-        </section>
-        <section aria-labelledby="shipTitle"><h2 id="shipTitle">Shipments to investigate</h2>
-          <div id="shipmentBox"></div><p id="shipNote" class="hint"></p>
-        </section>
+    <p id="tracePrompt" class="subtle">Select an incoming lot and lab report to see which stock and shipments need review.</p>
+    <div id="findings" hidden>
+      <div id="decision" class="decision" role="status"></div>
+      <div id="stats" class="stats" aria-label="Scope totals"></div>
+      <div class="workbench">
+        <div class="stack">
+          <section aria-labelledby="evidenceTitle"><h2 id="evidenceTitle">Lab evidence</h2><dl id="evidence"></dl>
+            <p class="hint" id="evidenceHint"></p></section>
+          <section>
+            <details id="triage"><summary>AI note triage</summary>
+            <label for="note">Incident note</label><textarea id="note" maxlength="500"></textarea>
+            <div class="triage-row"><button class="primary" id="classify">Suggest queue</button><output id="triageResult" aria-live="polite"></output></div>
+            <p class="hint">The model suggests a review queue. QA makes hold, release and withdrawal decisions.</p>
+            </details>
+          </section>
+        </div>
+        <div class="stack">
+          <section aria-labelledby="shipTitle"><h2 id="shipTitle">Shipments to investigate</h2>
+            <div id="shipmentBox"></div><p id="shipNote" class="hint"></p>
+          </section>
+          <section aria-labelledby="traceTitle"><h2 id="traceTitle">Finished lots to review</h2>
+            <div class="table-wrap"><table><thead><tr><th scope="col">Lot</th><th scope="col">Lineage</th><th scope="col" class="num">Total</th><th scope="col" class="num">On site</th><th scope="col" class="num">Shipped</th></tr></thead><tbody id="lots"></tbody></table></div>
+            <details><summary>Trace details</summary><ul id="paths"></ul><button id="export">Download trace CSV</button></details>
+          </section>
+        </div>
       </div>
     </div>
   </div>
   <div id="audit" class="stack board" hidden>
     <section>
       <h2>Consortium audit</h2>
-      <p>The local simulation applies organization roles, separates submission from approval, and commits records to a SHA-256 chain after approval by three of four validators.</p>
-      <p class="hint" id="validatorNames"></p>
-      <div class="fields">
-        <label for="auditRecord">Record<select id="auditRecord"></select></label>
-        <label for="auditActor">Acting organization<select id="auditActor"></select></label>
+      <p>A lab submits its report. Three consortium validators approve it for the shared record.</p>
+      <p id="auditReportLabel"></p>
+      <div class="audit-field">
+        <div class="fields" id="auditRecordField" hidden>
+          <label for="auditRecord">Lab report<select id="auditRecord"></select></label>
+        </div>
+        <div class="fields" id="auditActorField" hidden>
+          <label for="auditActor">Approving organization<select id="auditActor"></select></label>
+        </div>
       </div>
+      <p id="actingName" class="hint"></p>
       <p id="recordState" class="hint"></p>
-      <div class="toolbar">
-        <button id="propose" class="primary">Propose record</button><button id="approve">Approve record</button>
-        <button id="verify">Verify ledger</button><button id="tamper">Test an altered copy</button>
+      <div id="auditActions" class="toolbar">
+        <button id="propose" class="primary" hidden>Submit lab report</button>
+        <button id="approve" class="primary" hidden>Approve report</button>
       </div>
       <p id="ledgerStatus" role="status"></p>
-      <p class="hint">Roles and votes are simulated in this browser session. A live consortium would use authenticated organizations, signatures and replicated validator nodes.</p>
+      <p class="hint">This audit simulates organizations and their approvals in the current browser session.</p>
     </section>
-    <section><h2>Committed records</h2><p id="emptyLedger" class="subtle">No records committed in this session.</p><ol id="blocks" class="block-list"></ol></section>
+    <section id="committedSection" hidden>
+      <h2>Committed reports</h2><ol id="blocks" class="block-list"></ol>
+      <details><summary>Integrity checks</summary><div class="toolbar"><button id="verify">Verify ledger</button><button id="tamper">Test an altered copy</button></div></details>
+    </section>
   </div>
+  <details id="networkSettings" class="settings">
+    <summary>Network settings</summary>
+    <div class="toolbar">
+      <button id="importNetwork">Import network JSON</button><input type="file" accept=".json,application/json" id="networkFile" hidden>
+      <button id="sampleNetwork">Download example JSON</button>
+      <button id="restoreNetwork" hidden>Restore FreshMeals sample</button>
+    </div>
+    <p id="workspaceStatus" class="hint" role="status"></p>
+  </details>
 </main>
 <noscript>Enable JavaScript to run the offline MeatTrace demonstration.</noscript>
 <script>

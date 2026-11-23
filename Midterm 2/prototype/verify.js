@@ -12,10 +12,22 @@ const {validateNetwork, trace, scopeCSV, recordsForNetwork, proposeRecord, appro
     {structuredClone,crypto:webcrypto,TextEncoder});
 
 async function verify() {
-  const {freshmeals,drills} = JSON.parse(read("cases.json"));
+  const {freshmeals} = JSON.parse(read("cases.json"));
   const northValley = JSON.parse(read("network_example.json"));
   for (const network of [freshmeals,northValley]) validateNetwork(network);
-  const [mismatch,gap,match,unlinked] = drills.map(drill => trace(freshmeals,drill));
+  const selection={input:"RO-2026-0412",report:"LAB-204"};
+  assert.equal(freshmeals.labReports.length,1);
+  const mismatch=trace(freshmeals,selection);
+  const missingLink=structuredClone(freshmeals);
+  const event=missingLink.transformations.find(row=>row.output==="LAS-02");
+  event.inputs=[];
+  event.complete=false;
+  const gap=trace(validateNetwork(missingLink),selection);
+  const reference=structuredClone(freshmeals);
+  reference.labReports[0].species="BEEF";
+  const match=trace(reference,selection);
+  reference.labReports[0].custodyVerified=false;
+  const unlinked=trace(reference,selection);
   assert.deepEqual([mismatch.total,mismatch.affected,mismatch.onHold,mismatch.affected-mismatch.onHold,
     mismatch.shipments.length,mismatch.canNarrow],[12000,3000,1200,1800,2,true]);
   assert.equal(mismatch.shipments.map(row => row.id).join(","),"SHP-101,SHP-102");
@@ -69,6 +81,6 @@ async function verify() {
   altered[0].record.payload.species="BEEF";
   assert.equal(await verifyChain(altered,northValley),false);
   assert.equal(await verifyChain(ledger.blocks,northValley),true);
-  console.log("Verified two networks, four drills, incomplete and invalid records, CSV safety, roles, quorum and SHA-256 chain integrity.");
+  console.log("Verified the FreshMeals case, a second network, incomplete and invalid records, CSV safety, roles, quorum and SHA-256 chain integrity.");
 }
 verify().catch(error=>{console.error(error);process.exitCode=1;});

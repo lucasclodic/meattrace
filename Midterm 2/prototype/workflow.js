@@ -90,8 +90,7 @@ function reachable(roots, children) {
 function trace(data, selection) {
   const origin = data.inputs.find(input => input.id === selection.input);
   const lab = data.labReports.find(report => report.id === selection.report);
-  const events = data.transformations.map(event => event.id === selection.missingEvent ?
-    {...event, inputs:[], complete:false} : event);
+  const events = data.transformations;
   const edges = buildEdges(events);
   const children = childIndex(edges);
   const linked = reachable([origin.id], children);
