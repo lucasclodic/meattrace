@@ -62,27 +62,45 @@ Staff need to send incident notes to the right reviewer. The same problem can be
 
 ### 7 · The trace and the consortium approval
 
-*Before presenting, stay in the FreshMeals network. In **Consortium audit**, select **Lab report · LAB-204**. Propose it as **GenoLab**. Approve it as **FreshMeals SA**, then as **Retailer A**. Select **Retailer B** as the acting organization and leave its vote pending. Return to **Trace investigation / Lab mismatch**. Keep the browser open.*
+#### Before the presentation · Prepare the first two votes
 
-*0:00–0:20. Show **Lab mismatch**, then the two finished lots and shipments.*
+1. Open the offline app and select **FreshMeals · Beef lasagne** under **Network**.
+2. Open **Consortium audit**. Set **Record** to **Lab report · LAB-204**.
+3. Under **Acting organization**, select **GenoLab (DE)** and click **Propose record**. The lab has now submitted the report.
+4. Select **FreshMeals SA** and click **Approve record**. Then select **Retailer A** and click **Approve record** again. Check that **Pending · 2 of 3 approvals** appears.
+5. Select **Retailer B** as the acting organization and save its vote for the live demo. Return to **Trace investigation** and select **Lab mismatch**. Keep the same browser tab open so the two votes stay in the session.
 
-The linked sample reports horse, and the lot is declared as beef. QA can see the two finished lots and retailer shipments it needs to investigate.
+#### Live demo · 1:20
 
-*0:20–0:40. Click **Missing handover** and point to LAS-02.*
+**0:00–0:20 · Lab mismatch**
 
-With one production link missing, 1,800 packs remain unresolved. QA keeps them in the wider investigation.
+*Show **BEEF** in the declaration and **HORSE** in the lab result. Point to **LAS-01**, **LAS-02** and the two retailer shipments.*
 
-*0:40–0:55. Click **Suggest queue**.*
+“The lab reports horse in a lot declared as beef. This view helps the quality team identify the two finished lots, see what stock to hold on site and find which retailers received the product.”
 
-The app suggests **Traceability gap** so a reviewer can check the missing record.
+**0:20–0:40 · Missing handover**
 
-*0:55–1:20. Open **Consortium audit** and approve as **Retailer B**. Point to the committed record and its approvals. Return to the deck.*
+*Click **Missing handover** and point to **LAS-02**, marked **Unresolved**.*
 
-The lab submitted the report. The processor and two retailers approved it. This third vote commits it to the simulated ledger.
+“We removed one production link. MeatTrace flags 1,800 packs for the quality team to check. They stay in the investigation until the team can verify the missing link.”
 
-**Now let’s look at the numbers when the production links are complete.**
+**0:40–0:55 · Suggest queue**
 
-*If the browser is unavailable, use slides 5 and 8 to explain the three-of-four approval rule and both trace scenarios.*
+*Click **Suggest queue** below the prefilled incident note. Show **Traceability gap suggested**.*
+
+“The AI suggests which queue to send the note to. A reviewer can then check the missing record, and the quality team decides what to do with the lots.”
+
+**0:55–1:20 · Consortium audit**
+
+*Open **Consortium audit**. Check **LAB-204** and **Retailer B**, then click **Approve record**. Point to **Committed · 3 approvals** and the approver names.*
+
+“The lab submitted the report. FreshMeals and the first retailer already approved it. I’m acting as the second retailer. My vote commits the report to the simulated ledger, where the audit view shows which organizations approved it.”
+
+*Return to slide 8.*
+
+**“Now let’s look at how many packs are affected when the production links are complete.”**
+
+*If the browser is unavailable, use slides 5 and 8 to explain the three-of-four rule and the two trace scenarios.*
 
 ### 8 · 3,000 linked packs in a 12,000-pack line
 
