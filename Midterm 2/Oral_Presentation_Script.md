@@ -1,6 +1,6 @@
 # MeatTrace · 6:30 presentation
 
-Open the PDF and load the offline prototype on **Lab mismatch** before you start. Use these lines as speaking cues. The times include transitions and the live demo.
+Open the PDF and load the offline prototype on **FreshMeals · Beef lasagne / Lab mismatch** before you start. Use these lines as speaking cues. The times include transitions and the live demo.
 
 | Elapsed | Slide | Speaker |
 | --- | --- | --- |
@@ -30,9 +30,9 @@ The lab result, production records and shipments need to link up. Missing links 
 
 ### 3 · What changed since Midterm 1?
 
-In Midterm 1, our Python demo checked record integrity, access rights and species mismatches. This time we focused on what FreshMeals needs to do once a mismatch is found.
+In Midterm 1, we chose a permissioned consortium and demonstrated record integrity, access rights and species checks. This time we focused on what FreshMeals needs to do once a mismatch is found.
 
-**We worked on three things.** First, we compared existing tools to see what FreshMeals could already buy. Second, we built a prototype to show which packs to hold on site and which retailer shipments to investigate. Third, we tested whether AI could help staff send incident notes to the right review queue.
+**We worked on three things.** First, we compared existing tools to see what FreshMeals could already buy. Second, we built a configurable interface for that solution so quality teams can see what to hold and which shipments to investigate. Third, we tested whether AI could help staff send incident notes to the right review queue.
 
 **Julia will start with the market.**
 
@@ -44,13 +44,13 @@ We looked at existing solutions because FreshMeals needs to decide whether to bu
 
 We’d give each vendor the same FreshMeals case so we can compare how they handle a missing record, as well as how much setup costs.
 
-**To make that comparison concrete, we built a prototype around one task. It follows a lab result all the way to the affected stock and shipments.**
+**Our prototype shows how the consortium approach would support a trace from a lab result to stock and shipments.**
 
 ### 5 · Lab evidence and lot lineage
 
-We match the lab sample to the incoming lot so we know which input to investigate. Then we follow that input through trimming and mixing to see which finished lots used it. We separate on-site packs from shipped packs because QA can hold stock at the plant and needs shipment details for anything that already left.
+A network loads its own organizations, lots, lab reports and shipments. The app links a sample to the incoming lot, follows it through production and separates on-site stock from shipments. The local audit simulates role checks, three of four approvals and SHA-256 hashes. We’ll use FreshMeals as the demo dataset.
 
-**Those checks use recorded links. We use AI to sort the notes staff write about an incident.**
+**The trace uses recorded links. AI helps staff route the notes they write about an incident.**
 
 ### 6 · A neural network routes incident notes
 

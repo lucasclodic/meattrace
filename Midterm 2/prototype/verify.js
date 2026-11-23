@@ -1,26 +1,74 @@
 "use strict";
+
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 const vm = require("node:vm");
-const read = name => fs.readFileSync(path.join(__dirname, name), "utf8");
-const { trace, scopeCSV } = vm.runInNewContext(read("workflow.js") + "\n({trace, scopeCSV})");
-const data = JSON.parse(read("cases.json"));
-const [mismatch,gap,match,unlinked] = data.scenarios;
-const a = trace(data, mismatch);
-assert.deepEqual([a.linePacks,a.affected,a.onHold,a.affected - a.onHold,a.shipments.length,a.canNarrow],
-  [12000,3000,1200,1800,2,true]);
-assert.equal(a.shipments.map(x => x.id).join(","), "SHP-101,SHP-102");
-const b = trace(data, gap);
-assert.deepEqual([b.affected,b.unresolvedPacks,b.canNarrow,b.shipments.length], [1200,1800,false,1]);
-assert.match(scopeCSV(data,gap,b), /"LAS-02","Unresolved"/);
-assert.doesNotMatch(scopeCSV(data,mismatch,a), /LAS-03/);
-assert.deepEqual([trace(data,match).validLab,trace(data,match).canNarrow], [true,false]);
-assert.deepEqual([trace(data,unlinked).validLab,trace(data,unlinked).canNarrow], [false,false]);
-const badStock = structuredClone(data);
-badStock.lots[0].onsite--;
-assert.equal(trace(badStock,mismatch).canNarrow,false);
-const missingRecipient = structuredClone(data);
-missingRecipient.lots[0].shipments[0].recipient = "";
-assert.equal(trace(missingRecipient,mismatch).canNarrow,false);
-console.log("Verified 4 scenario decisions, shipment scope, CSV and conservative fallbacks.");
+const {webcrypto} = require("node:crypto");
+const read = name => fs.readFileSync(path.join(__dirname,name),"utf8");
+const {validateNetwork, trace, scopeCSV, recordsForNetwork, proposeRecord, approveRecord, verifyChain} =
+  vm.runInNewContext(read("workflow.js")+"\n"+read("ledger.js")+
+    "\n({validateNetwork,trace,scopeCSV,recordsForNetwork,proposeRecord,approveRecord,verifyChain})",
+    {structuredClone,crypto:webcrypto,TextEncoder});
+
+async function verify() {
+  const {freshmeals,drills} = JSON.parse(read("cases.json"));
+  const northValley = JSON.parse(read("network_example.json"));
+  for (const network of [freshmeals,northValley]) validateNetwork(network);
+  const [mismatch,gap,match,unlinked] = drills.map(drill => trace(freshmeals,drill));
+  assert.deepEqual([mismatch.total,mismatch.affected,mismatch.onHold,mismatch.affected-mismatch.onHold,
+    mismatch.shipments.length,mismatch.canNarrow],[12000,3000,1200,1800,2,true]);
+  assert.equal(mismatch.shipments.map(row => row.id).join(","),"SHP-101,SHP-102");
+  assert.deepEqual([gap.affected,gap.unresolvedQuantity,gap.canNarrow,gap.shipments.length],[1200,1800,false,1]);
+  assert.match(scopeCSV(freshmeals,gap),/"LAS-02","Unresolved"/);
+  assert.doesNotMatch(scopeCSV(freshmeals,mismatch),/LAS-03/);
+  assert.deepEqual([match.validLab,match.canNarrow,unlinked.validLab,unlinked.canNarrow],[true,false,false,false]);
+  const boxed = trace(northValley,{input:"NV-110",report:"R-501"});
+  assert.deepEqual([boxed.total,boxed.affected,boxed.onHold,boxed.affected-boxed.onHold,boxed.canNarrow],
+    [250.5,180.5,40.5,140,true]);
+  assert.match(scopeCSV(northValley,boxed),/"Riverbend Packing","15.5","kg"/);
+  assert.equal(trace(northValley,{input:"NV-111",report:"R-501"}).validLab,false);
+  assert.equal(trace(northValley,{input:"NV-111",report:""}).validLab,false);
+  for (const modify of [
+    network => network.finishedLots[0].onsite++,
+    network => network.finishedLots[0].shipments[0].recipient="",
+    network => network.transformations[0].complete=false
+  ]) {
+    const incomplete = structuredClone(northValley);
+    modify(incomplete);
+    validateNetwork(incomplete);
+    assert.equal(trace(incomplete,{input:"NV-110",report:"R-501"}).canNarrow,false);
+  }
+  const cycle=structuredClone(northValley);
+  cycle.transformations[0].inputs.push("BOX-A");
+  assert.throws(()=>validateNetwork(cycle),/acyclic/);
+  const forged=structuredClone(northValley);
+  forged.labReports[0].organization="wholesale";
+  assert.throws(()=>validateNetwork(forged),/registered lab/);
+  const spreadsheet=structuredClone(northValley);
+  spreadsheet.finishedLots[0].shipments[0].recipient="=1+1";
+  assert.match(scopeCSV(spreadsheet,trace(spreadsheet,{input:"NV-110",report:"R-501"})),/"'=1\+1"/);
+
+  const ledger={pending:[],blocks:[]};
+  const records=recordsForNetwork(northValley);
+  const lab=records.find(row=>row.id==="R-501");
+  assert.throws(()=>proposeRecord(ledger,northValley,"plant",lab),/authorized organization/);
+  proposeRecord(ledger,northValley,"lab",lab);
+  await assert.rejects(approveRecord(ledger,northValley,"lab",lab.id),/own record/);
+  await assert.rejects(approveRecord(ledger,northValley,"farm",lab.id),/configured validators/);
+  assert.equal(await approveRecord(ledger,northValley,"plant",lab.id),false);
+  await assert.rejects(approveRecord(ledger,northValley,"plant",lab.id),/once/);
+  assert.equal(await approveRecord(ledger,northValley,"wholesale",lab.id),false);
+  assert.equal(await approveRecord(ledger,northValley,"market",lab.id),true);
+  const intake=records.find(row=>row.id==="RCV-110");
+  proposeRecord(ledger,northValley,"farm",intake);
+  for (const id of ["lab","plant","market"]) await approveRecord(ledger,northValley,id,intake.id);
+  assert.equal(ledger.blocks[1].previous,ledger.blocks[0].hash);
+  assert.equal(await verifyChain(ledger.blocks,northValley),true);
+  const altered=structuredClone(ledger.blocks);
+  altered[0].record.payload.species="BEEF";
+  assert.equal(await verifyChain(altered,northValley),false);
+  assert.equal(await verifyChain(ledger.blocks,northValley),true);
+  console.log("Verified two networks, four drills, incomplete and invalid records, CSV safety, roles, quorum and SHA-256 chain integrity.");
+}
+verify().catch(error=>{console.error(error);process.exitCode=1;});

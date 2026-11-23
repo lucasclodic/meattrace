@@ -1,0 +1,148 @@
+{
+  "schemaVersion": 1,
+  "name": "North Valley \u00b7 Boxed beef",
+  "unit": "kg",
+  "organizations": [
+    {
+      "id": "farm",
+      "name": "North Valley Farm",
+      "role": "supplier"
+    },
+    {
+      "id": "plant",
+      "name": "Riverbend Packing",
+      "role": "processor"
+    },
+    {
+      "id": "lab",
+      "name": "Fieldstone Analytical",
+      "role": "lab"
+    },
+    {
+      "id": "wholesale",
+      "name": "County Wholesale",
+      "role": "distributor"
+    },
+    {
+      "id": "market",
+      "name": "Market Co-op",
+      "role": "retailer"
+    }
+  ],
+  "validators": [
+    "plant",
+    "lab",
+    "wholesale",
+    "market"
+  ],
+  "inputs": [
+    {
+      "id": "NV-110",
+      "organization": "farm",
+      "declaredSpecies": "BEEF",
+      "recordId": "RCV-110"
+    },
+    {
+      "id": "NV-111",
+      "organization": "farm",
+      "declaredSpecies": "BEEF",
+      "recordId": "RCV-111"
+    }
+  ],
+  "transformations": [
+    {
+      "id": "CUT-9",
+      "organization": "plant",
+      "stage": "Cutting",
+      "inputs": [
+        "NV-110"
+      ],
+      "output": "CUT-LOT-9",
+      "complete": true
+    },
+    {
+      "id": "BOX-30",
+      "organization": "plant",
+      "stage": "Boxing",
+      "inputs": [
+        "CUT-LOT-9"
+      ],
+      "output": "BOX-A",
+      "complete": true
+    },
+    {
+      "id": "BOX-31",
+      "organization": "plant",
+      "stage": "Boxing",
+      "inputs": [
+        "CUT-LOT-9",
+        "NV-111"
+      ],
+      "output": "BOX-B",
+      "complete": true
+    },
+    {
+      "id": "BOX-32",
+      "organization": "plant",
+      "stage": "Boxing",
+      "inputs": [
+        "NV-111"
+      ],
+      "output": "BOX-C",
+      "complete": true
+    }
+  ],
+  "finishedLots": [
+    {
+      "id": "BOX-A",
+      "organization": "plant",
+      "quantity": 80.5,
+      "onsite": 15.5,
+      "shipments": [
+        {
+          "id": "LOAD-5",
+          "recipient": "County Wholesale",
+          "quantity": 65
+        }
+      ]
+    },
+    {
+      "id": "BOX-B",
+      "organization": "plant",
+      "quantity": 100,
+      "onsite": 25,
+      "shipments": [
+        {
+          "id": "LOAD-6",
+          "recipient": "Market Co-op",
+          "quantity": 75
+        }
+      ]
+    },
+    {
+      "id": "BOX-C",
+      "organization": "plant",
+      "quantity": 70,
+      "onsite": 70,
+      "shipments": []
+    }
+  ],
+  "labReports": [
+    {
+      "id": "R-501",
+      "sample": "S-501",
+      "lot": "NV-110",
+      "organization": "lab",
+      "species": "SHEEP",
+      "custodyVerified": true
+    },
+    {
+      "id": "R-502",
+      "sample": "S-502",
+      "lot": "NV-111",
+      "organization": "lab",
+      "species": "BEEF",
+      "custodyVerified": true
+    }
+  ]
+}

@@ -1,34 +1,354 @@
 {
-  "origin": {"id":"RO-2026-0412","site":"Carpati Meat (RO)","declared":"BEEF","record":"REC-001"},
-  "line":"FreshMeals beef lasagne",
-  "edges":[
-    ["RO-2026-0412","TRIM-17"],["TRIM-17","MIX-17"],["ALT-081","MIX-17"],
-    ["MIX-17","LAS-01"],["MIX-17","LAS-02"],
-    ["ALT-081","LAS-03"],["ALT-082","LAS-04"],["ALT-083","LAS-05"],
-    ["ALT-084","LAS-06"],["ALT-085","LAS-07"],["ALT-086","LAS-08"]
-  ],
-  "lots":[
-    {"id":"LAS-01","packs":1200,"onsite":400,"shipments":[{"id":"SHP-101","recipient":"Retailer A / North DC","packs":800}]},
-    {"id":"LAS-02","packs":1800,"onsite":800,"shipments":[{"id":"SHP-102","recipient":"Retailer B / West DC","packs":1000}]},
-    {"id":"LAS-03","packs":1500,"onsite":500,"shipments":[{"id":"SHP-103","recipient":"Retailer A / North DC","packs":1000}]},
-    {"id":"LAS-04","packs":1500,"onsite":650,"shipments":[{"id":"SHP-104","recipient":"Retailer B / West DC","packs":850}]},
-    {"id":"LAS-05","packs":1500,"onsite":600,"shipments":[{"id":"SHP-105","recipient":"Retailer A / North DC","packs":900}]},
-    {"id":"LAS-06","packs":1500,"onsite":550,"shipments":[{"id":"SHP-106","recipient":"Retailer B / West DC","packs":950}]},
-    {"id":"LAS-07","packs":1500,"onsite":400,"shipments":[{"id":"SHP-107","recipient":"Retailer A / North DC","packs":1100}]},
-    {"id":"LAS-08","packs":1500,"onsite":450,"shipments":[{"id":"SHP-108","recipient":"Retailer B / West DC","packs":1050}]}
-  ],
-  "scenarios":[
-    {"id":"mismatch","name":"Lab mismatch","description":"An independent lab reports horse on a sample from a lot declared as beef.",
-     "lab":{"id":"LAB-204","sample":"DNA-204","lot":"RO-2026-0412","species":"HORSE","source":"GenoLab (DE)","chainOfCustody":true},
-     "note":"The beef label and lab species reading disagree."},
-    {"id":"gap","name":"Missing handover","description":"The mismatch still stands. The production record for LAS-02 has a missing input link.",
-     "lab":{"id":"LAB-204","sample":"DNA-204","lot":"RO-2026-0412","species":"HORSE","source":"GenoLab (DE)","chainOfCustody":true},
-     "omit":["MIX-17","LAS-02"],"note":"Incoming lot references were omitted from the packing sheet."},
-    {"id":"match","name":"Lab match","description":"The linked lab sample matches the beef declaration. QA still owns the release decision.",
-     "lab":{"id":"LAB-205","sample":"DNA-205","lot":"RO-2026-0412","species":"BEEF","source":"GenoLab (DE)","chainOfCustody":true},
-     "note":"All paperwork is present and the order arrived on time."},
-    {"id":"unlinked","name":"Unlinked sample","description":"The lab result reports horse, but its sample cannot be linked to the selected batch.",
-     "lab":{"id":"LAB-206","sample":"DNA-206","lot":"RO-UNMATCHED","species":"HORSE","source":"GenoLab (DE)","chainOfCustody":false},
-     "note":"We have a test PDF but cannot pair it with a sample identifier."}
+  "freshmeals": {
+    "schemaVersion": 1,
+    "name": "FreshMeals \u00b7 Beef lasagne",
+    "unit": "packs",
+    "organizations": [
+      {
+        "id": "carpati",
+        "name": "Carpati Meat (RO)",
+        "role": "supplier"
+      },
+      {
+        "id": "freshmeals",
+        "name": "FreshMeals SA",
+        "role": "processor"
+      },
+      {
+        "id": "genolab",
+        "name": "GenoLab (DE)",
+        "role": "lab"
+      },
+      {
+        "id": "retailer-a",
+        "name": "Retailer A",
+        "role": "retailer"
+      },
+      {
+        "id": "retailer-b",
+        "name": "Retailer B",
+        "role": "retailer"
+      }
+    ],
+    "validators": [
+      "freshmeals",
+      "genolab",
+      "retailer-a",
+      "retailer-b"
+    ],
+    "inputs": [
+      {
+        "id": "RO-2026-0412",
+        "organization": "carpati",
+        "declaredSpecies": "BEEF",
+        "recordId": "REC-001"
+      },
+      {
+        "id": "ALT-081",
+        "organization": "carpati",
+        "declaredSpecies": "BEEF",
+        "recordId": "REC-ALT-081"
+      },
+      {
+        "id": "ALT-082",
+        "organization": "carpati",
+        "declaredSpecies": "BEEF",
+        "recordId": "REC-ALT-082"
+      },
+      {
+        "id": "ALT-083",
+        "organization": "carpati",
+        "declaredSpecies": "BEEF",
+        "recordId": "REC-ALT-083"
+      },
+      {
+        "id": "ALT-084",
+        "organization": "carpati",
+        "declaredSpecies": "BEEF",
+        "recordId": "REC-ALT-084"
+      },
+      {
+        "id": "ALT-085",
+        "organization": "carpati",
+        "declaredSpecies": "BEEF",
+        "recordId": "REC-ALT-085"
+      },
+      {
+        "id": "ALT-086",
+        "organization": "carpati",
+        "declaredSpecies": "BEEF",
+        "recordId": "REC-ALT-086"
+      }
+    ],
+    "transformations": [
+      {
+        "id": "EVT-TRIM-17",
+        "organization": "freshmeals",
+        "stage": "Trimming",
+        "inputs": [
+          "RO-2026-0412"
+        ],
+        "output": "TRIM-17",
+        "complete": true
+      },
+      {
+        "id": "EVT-MIX-17",
+        "organization": "freshmeals",
+        "stage": "Mixing",
+        "inputs": [
+          "TRIM-17",
+          "ALT-081"
+        ],
+        "output": "MIX-17",
+        "complete": true
+      },
+      {
+        "id": "EVT-LAS-01",
+        "organization": "freshmeals",
+        "stage": "Packing",
+        "inputs": [
+          "MIX-17"
+        ],
+        "output": "LAS-01",
+        "complete": true
+      },
+      {
+        "id": "EVT-LAS-02",
+        "organization": "freshmeals",
+        "stage": "Packing",
+        "inputs": [
+          "MIX-17"
+        ],
+        "output": "LAS-02",
+        "complete": true
+      },
+      {
+        "id": "EVT-LAS-03",
+        "organization": "freshmeals",
+        "stage": "Packing",
+        "inputs": [
+          "ALT-081"
+        ],
+        "output": "LAS-03",
+        "complete": true
+      },
+      {
+        "id": "EVT-LAS-04",
+        "organization": "freshmeals",
+        "stage": "Packing",
+        "inputs": [
+          "ALT-082"
+        ],
+        "output": "LAS-04",
+        "complete": true
+      },
+      {
+        "id": "EVT-LAS-05",
+        "organization": "freshmeals",
+        "stage": "Packing",
+        "inputs": [
+          "ALT-083"
+        ],
+        "output": "LAS-05",
+        "complete": true
+      },
+      {
+        "id": "EVT-LAS-06",
+        "organization": "freshmeals",
+        "stage": "Packing",
+        "inputs": [
+          "ALT-084"
+        ],
+        "output": "LAS-06",
+        "complete": true
+      },
+      {
+        "id": "EVT-LAS-07",
+        "organization": "freshmeals",
+        "stage": "Packing",
+        "inputs": [
+          "ALT-085"
+        ],
+        "output": "LAS-07",
+        "complete": true
+      },
+      {
+        "id": "EVT-LAS-08",
+        "organization": "freshmeals",
+        "stage": "Packing",
+        "inputs": [
+          "ALT-086"
+        ],
+        "output": "LAS-08",
+        "complete": true
+      }
+    ],
+    "finishedLots": [
+      {
+        "id": "LAS-01",
+        "organization": "freshmeals",
+        "quantity": 1200,
+        "onsite": 400,
+        "shipments": [
+          {
+            "id": "SHP-101",
+            "recipient": "Retailer A / North DC",
+            "quantity": 800
+          }
+        ]
+      },
+      {
+        "id": "LAS-02",
+        "organization": "freshmeals",
+        "quantity": 1800,
+        "onsite": 800,
+        "shipments": [
+          {
+            "id": "SHP-102",
+            "recipient": "Retailer B / West DC",
+            "quantity": 1000
+          }
+        ]
+      },
+      {
+        "id": "LAS-03",
+        "organization": "freshmeals",
+        "quantity": 1500,
+        "onsite": 500,
+        "shipments": [
+          {
+            "id": "SHP-103",
+            "recipient": "Retailer A / North DC",
+            "quantity": 1000
+          }
+        ]
+      },
+      {
+        "id": "LAS-04",
+        "organization": "freshmeals",
+        "quantity": 1500,
+        "onsite": 650,
+        "shipments": [
+          {
+            "id": "SHP-104",
+            "recipient": "Retailer B / West DC",
+            "quantity": 850
+          }
+        ]
+      },
+      {
+        "id": "LAS-05",
+        "organization": "freshmeals",
+        "quantity": 1500,
+        "onsite": 600,
+        "shipments": [
+          {
+            "id": "SHP-105",
+            "recipient": "Retailer A / North DC",
+            "quantity": 900
+          }
+        ]
+      },
+      {
+        "id": "LAS-06",
+        "organization": "freshmeals",
+        "quantity": 1500,
+        "onsite": 550,
+        "shipments": [
+          {
+            "id": "SHP-106",
+            "recipient": "Retailer B / West DC",
+            "quantity": 950
+          }
+        ]
+      },
+      {
+        "id": "LAS-07",
+        "organization": "freshmeals",
+        "quantity": 1500,
+        "onsite": 400,
+        "shipments": [
+          {
+            "id": "SHP-107",
+            "recipient": "Retailer A / North DC",
+            "quantity": 1100
+          }
+        ]
+      },
+      {
+        "id": "LAS-08",
+        "organization": "freshmeals",
+        "quantity": 1500,
+        "onsite": 450,
+        "shipments": [
+          {
+            "id": "SHP-108",
+            "recipient": "Retailer B / West DC",
+            "quantity": 1050
+          }
+        ]
+      }
+    ],
+    "labReports": [
+      {
+        "id": "LAB-204",
+        "sample": "DNA-204",
+        "lot": "RO-2026-0412",
+        "organization": "genolab",
+        "species": "HORSE",
+        "custodyVerified": true
+      },
+      {
+        "id": "LAB-205",
+        "sample": "DNA-205",
+        "lot": "RO-2026-0412",
+        "organization": "genolab",
+        "species": "BEEF",
+        "custodyVerified": true
+      },
+      {
+        "id": "LAB-206",
+        "sample": "DNA-206",
+        "lot": "RO-UNMATCHED",
+        "organization": "genolab",
+        "species": "HORSE",
+        "custodyVerified": false
+      }
+    ]
+  },
+  "drills": [
+    {
+      "id": "mismatch",
+      "name": "Lab mismatch",
+      "description": "An independent lab reports horse on a sample from a lot declared as beef.",
+      "input": "RO-2026-0412",
+      "report": "LAB-204",
+      "note": "The beef label and lab species reading disagree."
+    },
+    {
+      "id": "gap",
+      "name": "Missing handover",
+      "description": "The mismatch still stands. The production record for LAS-02 has a missing input link.",
+      "input": "RO-2026-0412",
+      "report": "LAB-204",
+      "note": "Incoming lot references were omitted from the packing sheet.",
+      "missingEvent": "EVT-LAS-02"
+    },
+    {
+      "id": "match",
+      "name": "Lab match",
+      "description": "The linked lab sample matches the beef declaration. QA still owns the release decision.",
+      "input": "RO-2026-0412",
+      "report": "LAB-205",
+      "note": "All paperwork is present and the order arrived on time."
+    },
+    {
+      "id": "unlinked",
+      "name": "Unlinked sample",
+      "description": "The lab result reports horse, but its sample cannot be linked to the selected batch.",
+      "input": "RO-2026-0412",
+      "report": "LAB-206",
+      "note": "We have a test PDF but cannot pair it with a sample identifier."
+    }
   ]
 }
