@@ -6,7 +6,7 @@ MeatTrace is an offline, configurable prototype of the permissioned traceability
 
 ## Submission files
 
-- [Presentation PDF](MeatTrace_Midterm_2.pdf) · nine slides timed for 6 minutes 30 seconds
+- [Presentation PDF](MeatTrace_Midterm_2.pdf) · nine slides timed for seven minutes
 - [Improvement summary PDF](MeatTrace_Improvement_Summary.pdf) · one page
 - [Offline prototype](MeatTrace_Prototype.html) · download the HTML and open it in a recent browser. GitHub's file viewer shows the source.
 - [Prototype source and reproduction instructions](prototype/README.md) · network schema, audit demonstration, model evaluation and tests
@@ -14,4 +14,4 @@ MeatTrace is an offline, configurable prototype of the permissioned traceability
 ## Presentation preparation
 
 - [Oral presentation script](Oral_Presentation_Script.md) · full speaking notes, speaker handoffs, demo cues and Q&A
-- Start the demo on **Lab mismatch**. Switch to **Missing handover**, click **Suggest queue**, then point to the trace CSV export. The bundled datasets and model evaluation notes are synthetic. See the source README for the local consortium audit and instructions for importing a network.
+- Start the demo on **Lab mismatch**. Switch to **Missing handover**, click **Suggest queue**, then show the third approval in **Consortium audit**. Prepare the two initial approvals using the oral script. The bundled datasets and model evaluation notes are synthetic. See the source README for the local consortium audit and instructions for importing a network.

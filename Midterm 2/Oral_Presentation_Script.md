@@ -1,18 +1,18 @@
-# MeatTrace · 6:30 presentation
+# MeatTrace · 7-minute presentation
 
-Open the PDF and load the offline prototype on **FreshMeals · Beef lasagne / Lab mismatch** before you start. Use these lines as speaking cues. The times include transitions and the live demo.
+Open the PDF and load the offline prototype on **FreshMeals · Beef lasagne / Lab mismatch** before you start. Prepare the audit as described under slide 7. The times include transitions and the live demo.
 
 | Elapsed | Slide | Speaker |
 | --- | --- | --- |
 | 0:00–0:10 | 1. MeatTrace | Elisa |
 | 0:10–1:10 | 2. Business problem | Elisa |
 | 1:10–2:10 | 3. Feedback addressed | Elisa |
-| 2:10–3:05 | 4. Commercial alternatives | Julia |
-| 3:05–3:40 | 5. Lab evidence and lot lineage | Julia |
-| 3:40–4:20 | 6. Neural triage | Julia |
-| 4:20–5:25 | 7. Live demo | Lucas |
-| 5:25–6:00 | 8. Simulated results | Lucas |
-| 6:00–6:30 | 9. FreshMeals pilot | Lucas |
+| 2:10–3:20 | 4. Where MeatTrace fits | Julia |
+| 3:20–3:55 | 5. Lab evidence and lot lineage | Julia |
+| 3:55–4:35 | 6. Neural triage | Julia |
+| 4:35–5:55 | 7. Live demo | Lucas |
+| 5:55–6:30 | 8. Simulated results | Lucas |
+| 6:30–7:00 | 9. FreshMeals pilot | Lucas |
 
 ## Slides 1–3 · Elisa · 0:00–2:10
 
@@ -30,53 +30,59 @@ The lab result, production records and shipments need to link up. Missing links 
 
 ### 3 · What changed since Midterm 1?
 
-In Midterm 1, we chose a permissioned consortium and demonstrated record integrity, access rights and species checks. This time we focused on what FreshMeals needs to do once a mismatch is found.
+In Midterm 1, we chose a permissioned consortium. Our Python demo checked record integrity, access rights and species mismatches.
 
-**We worked on three things.** First, we compared existing tools to see what FreshMeals could already buy. Second, we built a configurable interface for that solution so quality teams can see what to hold and which shipments to investigate. Third, we tested whether AI could help staff send incident notes to the right review queue.
+**The instructor gave us three pieces of feedback.** Make the business problem clearer, look at existing solutions and related projects, and turn the design into a working prototype.
 
-**Julia will start with the market.**
+So we looked at what competitors already do and who can approve the records used in an investigation. We built a configurable prototype to show how our consortium would work alongside lot tracing. We also tested whether AI could help staff send incident notes to the right reviewer.
 
-## Slides 4–6 · Julia · 2:10–4:20
+**Julia will start with what the market already covers and where we chose to focus.**
 
-### 4 · Commercial alternatives
+## Slides 4–6 · Julia · 2:10–4:35
 
-We looked at existing solutions because FreshMeals needs to decide whether to build a tool or buy one. Trustwell offers lot tracing and targeted withdrawals. Folio3 traces mixed inputs in meat production. DockLedger supports lot holds and recall drills. We also looked at Walmart and IBM’s blockchain pilot for pork certificates and mango provenance.
+### 4 · Where MeatTrace fits
 
-We’d give each vendor the same FreshMeals case so we can compare how they handle a missing record, as well as how much setup costs.
+The market confirms that tracing affected lots and managing withdrawals are established needs. Folio3 traces mixed inputs and supports mock recalls. DockLedger also shows what has reached customers and what is still on site. In its documented workflow, release is reserved for an owner or manager. Trustwell supports targeted withdrawals and lab certificates. Its documentation puts approval of supplier documents with the community owner.
 
-**Our prototype shows how the consortium approach would support a trace from a lab result to stock and shipments.**
+**We designed MeatTrace for beef supply chains where separate organizations want a say in which records enter the audit trail.** A lab can submit a report, and three of four consortium validators must approve it before it enters the ledger. That gives the processor, lab and commercial partners a shared approval process. Walmart and IBM are a precedent for blockchain traceability. Our demo shows how our approval rule works alongside a lot trace.
 
 ### 5 · Lab evidence and lot lineage
 
-A network loads its own organizations, lots, lab reports and shipments. The app links a sample to the incoming lot, follows it through production and separates on-site stock from shipments. The local audit simulates role checks, three of four approvals and SHA-256 hashes. We’ll use FreshMeals as the demo dataset.
+MeatTrace uses a network’s own records. A linked lab result points to an input lot, which the app follows to finished lots, on-site stock and retailer shipments. The audit view shows which organizations approved a record and checks whether it changed after approval. FreshMeals is the dataset we’ll use to show both views.
 
-**The trace uses recorded links. AI helps staff route the notes they write about an incident.**
+**AI helps staff with another task. It suggests who should review an incident note.**
 
 ### 6 · A neural network routes incident notes
 
 Staff need to send incident notes to the right reviewer. The same problem can be described in different words, so we tested a neural network against fixed keywords. On the same 24 synthetic notes, it got 23 right versus 12 for keywords. It also routed an unrelated office note in a separate challenge, so its suggestion stays advisory.
 
-**Lucas will show how the trace responds to a missing link, then how the note gets routed.**
+**Lucas will show the trace, the suggested queue and the shared approval step.**
 
-## Slides 7–9 · Lucas · 4:20–6:30
+## Slides 7–9 · Lucas · 4:35–7:00
 
-### 7 · The mismatch and the missing link
+### 7 · The trace and the consortium approval
 
-*0:00–0:25. Open **Lab mismatch**. Point to the result, then the finished lots and shipments.*
+*Before presenting, stay in the FreshMeals network. In **Consortium audit**, select **Lab report · LAB-204**. Propose it as **GenoLab**. Approve it as **FreshMeals SA**, then as **Retailer A**. Select **Retailer B** as the acting organization and leave its vote pending. Return to **Trace investigation / Lab mismatch**. Keep the browser open.*
 
-The declaration says beef. The linked sample reports horse. The app shows LAS-01 and LAS-02 and the two retailer shipments QA needs to investigate.
+*0:00–0:20. Show **Lab mismatch**, then the two finished lots and shipments.*
 
-*0:25–0:50. Click **Missing handover** and point to LAS-02.*
+The linked sample reports horse, and the lot is declared as beef. QA can see the two finished lots and retailer shipments it needs to investigate.
 
-We removed one production link to see what happens with incomplete records. The app flags 1,800 packs as unresolved so QA keeps them in the wider investigation.
+*0:20–0:40. Click **Missing handover** and point to LAS-02.*
 
-*0:50–1:05. Click **Suggest queue**, point to the CSV export and return to the deck.*
+With one production link missing, 1,800 packs remain unresolved. QA keeps them in the wider investigation.
 
-The note goes to **Traceability gap** so someone can check the missing record.
+*0:40–0:55. Click **Suggest queue**.*
 
-**Now let’s quantify the scope when the record is complete.**
+The app suggests **Traceability gap** so a reviewer can check the missing record.
 
-*If the demo is unavailable, describe both cases using slide 8.*
+*0:55–1:20. Open **Consortium audit** and approve as **Retailer B**. Point to the committed record and its approvals. Return to the deck.*
+
+The lab submitted the report. The processor and two retailers approved it. This third vote commits it to the simulated ledger.
+
+**Now let’s look at the numbers when the production links are complete.**
+
+*If the browser is unavailable, use slides 5 and 8 to explain the three-of-four approval rule and both trace scenarios.*
 
 ### 8 · 3,000 linked packs in a 12,000-pack line
 
@@ -86,4 +92,4 @@ Of the 12,000 packs on the line, 3,000 are linked to the affected input. Of thos
 
 ### 9 · A one-line FreshMeals pilot
 
-We’d run the same mock incidents with the current process, a vendor and MeatTrace. We’d measure time, missed lots and extra packs held. With complete records, the goal is to trace in under an hour and miss zero affected lots. That gives FreshMeals a basis for deciding whether to build or buy.
+We’d run the same mock incidents with the current process, a vendor and MeatTrace. We’d measure time, missed lots, extra packs held and the effort to approve a disputed record. With complete records, the goal is to trace in under an hour and miss zero affected lots. That gives FreshMeals a basis for deciding whether to build or buy.
