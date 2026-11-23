@@ -6,7 +6,7 @@ MeatTrace models how FreshMeals would use a linked lab sample, production record
 
 ## Submission files
 
-- [Presentation PDF](MeatTrace_Midterm_2.pdf) · nine slides timed for ten minutes
+- [Presentation PDF](MeatTrace_Midterm_2.pdf) · nine slides timed for 6 minutes 30 seconds
 - [Improvement summary PDF](MeatTrace_Improvement_Summary.pdf) · one page
 - [Offline prototype](MeatTrace_Prototype.html) · download the HTML and open it in a recent browser. GitHub's file viewer shows the source.
 - [Prototype source and reproduction instructions](prototype/README.md) · synthetic cases, neural model training and evaluation, and scenario tests
@@ -14,4 +14,4 @@ MeatTrace models how FreshMeals would use a linked lab sample, production record
 ## Presentation preparation
 
 - [Oral presentation script](Oral_Presentation_Script.md) · full speaking notes, speaker handoffs, demo cues and Q&A
-- Start the demo on **Lab mismatch**. Switch to **Missing handover**, click **Suggest queue**, then export the trace CSV. All incident records and model evaluation notes are synthetic.
+- Start the demo on **Lab mismatch**. Switch to **Missing handover**, click **Suggest queue**, then point to the trace CSV export. All incident records and model evaluation notes are synthetic.
