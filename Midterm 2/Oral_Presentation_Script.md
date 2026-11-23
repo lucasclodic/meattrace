@@ -7,12 +7,12 @@ Open the PDF and load the offline prototype on **FreshMeals · Beef lasagne** be
 | 0:00–0:10 | 1. MeatTrace | Elisa |
 | 0:10–1:10 | 2. Business problem | Elisa |
 | 1:10–2:10 | 3. Feedback addressed | Elisa |
-| 2:10–3:20 | 4. Where MeatTrace fits | Julia |
-| 3:20–3:55 | 5. Lab evidence and lot lineage | Julia |
-| 3:55–4:35 | 6. Neural triage | Julia |
-| 4:35–5:55 | 7. From lab report to action | Lucas |
-| 5:55–6:30 | 8. Simulated results | Lucas |
-| 6:30–7:00 | 9. FreshMeals pilot | Lucas |
+| 2:10–3:20 | 4. Where MeatTrace fits | Lucas |
+| 3:20–3:55 | 5. Lab evidence and lot lineage | Lucas |
+| 3:55–4:35 | 6. Neural triage | Lucas |
+| 4:35–5:55 | 7. From lab report to action | Iuliia |
+| 5:55–6:30 | 8. Simulated results | Iuliia |
+| 6:30–7:00 | 9. FreshMeals pilot | Iuliia |
 
 ## Slides 1–3 · Elisa · 0:00–2:10
 
@@ -36,9 +36,9 @@ In Midterm 1, we chose a permissioned consortium. Our Python demo checked record
 
 So we looked at what competitors already do and who can approve the records used in an investigation. We built a configurable prototype to show how our consortium would work alongside lot tracing. We also tested whether AI could help staff send incident notes to the right reviewer.
 
-**Julia will start with what the market already covers and where we chose to focus.**
+**Lucas will start with what the market already covers and where we chose to focus.**
 
-## Slides 4–6 · Julia · 2:10–4:35
+## Slides 4–6 · Lucas · 2:10–4:35
 
 ### 4 · Where MeatTrace fits
 
@@ -56,9 +56,9 @@ MeatTrace uses a network’s own records. A linked lab result points to an input
 
 Staff need to send incident notes to the right reviewer. The same problem can be described in different words, so we tested a neural network against fixed keywords. On the same 24 synthetic notes, it got 23 right versus 12 for keywords. It also routed an unrelated office note in a separate challenge, so its suggestion stays advisory.
 
-**Lucas will use the same lab report to show the trace, the suggested queue and the shared approval.**
+**Iuliia will use the same lab report to show the trace, the suggested queue and the shared approval.**
 
-## Slides 7–9 · Lucas · 4:35–7:00
+## Slides 7–9 · Iuliia · 4:35–7:00
 
 ### 7 · From lab report to action
 
